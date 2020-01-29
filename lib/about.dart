@@ -1,43 +1,37 @@
 import 'package:flutter/material.dart';
 
-class Help extends StatelessWidget {
+// TODO: rearmar esto con las nuevas cosas
+class About extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      extendBodyBehindAppBar: true,
-      body: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints viewportConstraints) {
-          return SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: viewportConstraints.maxHeight),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 50.0, horizontal: 50),
-                    child: Image(image: AssetImage('assets/Granizo2.jpg')),
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                    child: Text("Es un programa que posibilita la geolocalización temporal de las granizadas y la recolección y caracterización cristalográfica de granizos, a lo largo del territorio provincial, con el fin de correlacionar estos datos con la información obtenida por instrumental remoto científico y las modelizaciones disponibles.",
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300),),
-                  ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: HelpListWidget(),
-                  ),
-                  SizedBox(height: 20),
-                ],
-              ),
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints viewportConstraints) {
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: viewportConstraints.maxHeight),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 50.0, horizontal: 50),
+                  child: Image(image: AssetImage('assets/Granizo2.jpg')),
+                ),
+                Container(
+                  padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                  child: Text("Es un programa que posibilita la geolocalización temporal de las granizadas y la recolección y caracterización cristalográfica de granizos, a lo largo del territorio provincial, con el fin de correlacionar estos datos con la información obtenida por instrumental remoto científico y las modelizaciones disponibles.",
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300),),
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: AboutListWidget(),
+                ),
+                SizedBox(height: 20),
+              ],
             ),
-          );
-        },
-      ),
+          ),
+        );
+      }
     );
   }
 }
@@ -55,14 +49,14 @@ class Item {
   Widget expanded;
 }
 
-class HelpListWidget extends StatefulWidget {
-  HelpListWidget({Key key}) : super(key: key);
+class AboutListWidget extends StatefulWidget {
+  AboutListWidget({Key key}) : super(key: key);
 
   @override
-  _HelpListWidgetState createState() => _HelpListWidgetState();
+  _AboutListWidgetState createState() => _AboutListWidgetState();
 }
 
-class _HelpListWidgetState extends State<HelpListWidget> {
+class _AboutListWidgetState extends State<AboutListWidget> {
   List<Item> _data = [
     Item(
         header: "¿Qué cosechar?",
