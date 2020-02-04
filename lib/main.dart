@@ -1,5 +1,9 @@
 import 'package:cosecheros/about.dart';
+import 'package:cosecheros/harvests.dart';
+import 'package:cosecheros/map.dart';
+import 'package:cosecheros/new_harvest.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 void main() => runApp(MyApp());
 
@@ -12,11 +16,10 @@ class MyApp extends StatelessWidget {
         primaryColor: Color(0xFF01A0C7),
         accentColor: Color(0xFFFF00C7),
         buttonTheme: ButtonThemeData(
-          minWidth: double.infinity,
           buttonColor: Colors.white,
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(8.0),
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10))
+              borderRadius: BorderRadius.all(Radius.circular(4))
           ),
         ),
       ),
@@ -65,17 +68,19 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // TODO: llamar a la pantalla "nueva cosecha"
+          Navigator.push(context,
+            MaterialPageRoute(builder: (context) => NewHarvest()),
+          );
         },
         tooltip: 'Nueva cosecha',
         child: Icon(Icons.add),
       ),
       body: TabBarView(
         controller: _tabController,
+        physics: NeverScrollableScrollPhysics(),
         children: [
-          // TODO cambiar por cada sección
-          About(),
-          About(),
+          MapRecent(),
+          Harvests(),
           About(),
         ]
       ),

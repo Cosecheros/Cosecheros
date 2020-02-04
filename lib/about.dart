@@ -14,13 +14,13 @@ class About extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.symmetric(vertical: 50.0, horizontal: 50),
+                  padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50),
                   child: Image(image: AssetImage('assets/Granizo2.jpg')),
                 ),
                 Container(
                   padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
                   child: Text("Es un programa que posibilita la geolocalización temporal de las granizadas y la recolección y caracterización cristalográfica de granizos, a lo largo del territorio provincial, con el fin de correlacionar estos datos con la información obtenida por instrumental remoto científico y las modelizaciones disponibles.",
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300),),
+                  style: TextStyle(fontWeight: FontWeight.w300),),
                 ),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 20),

@@ -1,103 +1,40 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 
-class MapRoute extends StatelessWidget {
+class MapRecent extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Second Route"),
-      ),
-      body: Center(
-        child:
-        Column(
-          children: <Widget>[
-            RaisedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('Go back!'),
-            ),
-            RaisedButton(
-              child: Text('DatePicker'),
-              onPressed: () {
-                Future<DateTime> selectedDate = showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(2010),
-                  lastDate: DateTime.now(),
-                );
-
-                selectedDate.then((v) {
-                  print(v);
-                }, onError: (){
-                  print("errorerror");
-                });
-
-              },
-            ),
-            RaisedButton(
-              child: Text('ImagePicker'),
-              onPressed: () {}
-            ),
-
-            RainOptionsWidget(),
-
-          ],
-        )
-      ),
-    );
-  }
+  MapRecentState createState() => MapRecentState();
 }
 
+class MapRecentState extends State<MapRecent> {
+  Completer<GoogleMapController> _controller = Completer();
 
-enum RainOptions { before, during, after }
+  static final CameraPosition _kGooglePlex = CameraPosition(
+    target: LatLng(37.42796133580664, -122.085749655962),
+    zoom: 14.4746,
+  );
 
-class RainOptionsWidget extends StatefulWidget {
-  RainOptionsWidget({Key key}) : super(key: key);
-
-  @override
-  _RainOptionsState createState() => _RainOptionsState();
-}
-
-class _RainOptionsState extends State<RainOptionsWidget> {
-  RainOptions _selected = RainOptions.before;
+  final Set<Marker> _markers = Set();
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        RadioListTile<RainOptions>(
-          title: const Text('Antes del granizo'),
-          value: RainOptions.before,
-          groupValue: _selected,
-          onChanged: (RainOptions value) {
-            setState(() {
-              _selected = value;
-            });
-          },
-        ),
-        RadioListTile<RainOptions>(
-          title: const Text('Durante el granizo'),
-          value: RainOptions.during,
-          groupValue: _selected,
-          onChanged: (RainOptions value) {
-            setState(() {
-              _selected = value;
-            });
-          },
-        ),
-        RadioListTile<RainOptions>(
-          title: const Text('Despues del granizo'),
-          value: RainOptions.after,
-          groupValue: _selected,
-          onChanged: (RainOptions value) {
-            setState(() {
-              _selected = value;
-            });
-          },
-        ),
-      ],
+    return GoogleMap(
+      mapType: MapType.normal,
+      markers: _markers,
+
+      compassEnabled: true,
+      myLocationButtonEnabled: true,
+      myLocationEnabled: true,
+
+      initialCameraPosition: _kGooglePlex,
+      onMapCreated: (GoogleMapController controller) {
+        _controller.complete(controller);
+      },
+      onTap: (latLong) {
+      },
     );
   }
 }
