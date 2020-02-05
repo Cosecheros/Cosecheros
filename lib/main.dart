@@ -1,9 +1,8 @@
 import 'package:cosecheros/about.dart';
 import 'package:cosecheros/harvests.dart';
 import 'package:cosecheros/map.dart';
-import 'package:cosecheros/new_harvest.dart';
+import 'package:cosecheros/new_harvest/main.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 void main() => runApp(MyApp());
 

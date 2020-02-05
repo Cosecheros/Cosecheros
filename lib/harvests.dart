@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 class Harvests extends StatelessWidget {
   @override
@@ -15,8 +15,8 @@ class Harvests extends StatelessWidget {
             return new ListView(
               children: snapshot.data.documents.map((DocumentSnapshot document) {
                 return new ListTile(
-                  title: new Text(document['usuario']),
-                  subtitle: new Text(document['usuario']),
+                  title: new Text(document['timestamp'].toDate().toIso8601String()),
+                  subtitle: new Text(document['lluvia']),
                 );
               }).toList(),
             );
