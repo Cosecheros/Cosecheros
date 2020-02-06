@@ -12,9 +12,9 @@ class MapRecent extends StatefulWidget {
 class MapRecentState extends State<MapRecent> {
   Completer<GoogleMapController> _controller = Completer();
 
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
+  static final CameraPosition _initPosition = CameraPosition(
+    target: LatLng(-31.416998, -64.183657),
+    zoom: 10,
   );
 
   final Set<Marker> _markers = Set();
@@ -29,7 +29,7 @@ class MapRecentState extends State<MapRecent> {
       myLocationButtonEnabled: true,
       myLocationEnabled: true,
 
-      initialCameraPosition: _kGooglePlex,
+      initialCameraPosition: _initPosition,
       onMapCreated: (GoogleMapController controller) {
         _controller.complete(controller);
       },

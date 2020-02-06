@@ -47,8 +47,8 @@ class HarvestModel extends ChangeNotifier {
   Map<String, dynamic> toMap() => {
     'timestamp': dateTime,
     'geo': _geoPoint,
-    'lluvia': rain.toString(),
-    'tamaño': size.toString(),
+    'lluvia': rainToString(rain),
+    //'tamaño': sizeToString(size),
   };
 }
 

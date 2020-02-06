@@ -126,7 +126,6 @@ class SliderControlsState extends State<SlideControls>
                       : widget.colorDoneDot, diffValueAnimation);
 
             } else {
-              print(diffValueAnimation);
               // Swipe right
               sizeDots[currentTabIndex] =
                   sizeDot * 1.5 - (sizeDot / 2) * diffValueAnimation;
