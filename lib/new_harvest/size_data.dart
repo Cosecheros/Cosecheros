@@ -13,13 +13,17 @@ class SizeData extends StatelessWidget {
         builder: (context, model, child) => Column(
             children: HailSize.values
                 .map((size) => RadioListTile<HailSize>(
-              title: Text(size.toString()),
-              value: size,
-              groupValue: model.size,
-              onChanged: (HailSize value) {
-                model.size = value;
-              },
-            ))
+                      title: Text(
+                        hailSizeToString(size),
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      activeColor: Colors.white,
+                      value: size,
+                      groupValue: model.size,
+                      onChanged: (HailSize value) {
+                        model.size = value;
+                      },
+                    ))
                 .toList()),
       ),
     );

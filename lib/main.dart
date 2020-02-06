@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
           buttonColor: Colors.white,
           padding: const EdgeInsets.all(8.0),
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(4))
+              borderRadius: BorderRadius.all(Radius.circular(30.0))
           ),
         ),
       ),

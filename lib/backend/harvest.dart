@@ -8,8 +8,8 @@ class HarvestModel extends ChangeNotifier {
   DateTime dateTime;
   GeoPoint _geoPoint;
 
-  Rain _rain;
-  HailSize _size;
+  Rain _rain = Rain.NA;
+  HailSize _size = HailSize.NA;
   File _hail;
   File _hailStorm;
 
@@ -52,9 +52,11 @@ class HarvestModel extends ChangeNotifier {
   };
 }
 
-enum Rain { before, during, after }
+enum Rain { NA, before, during, after }
 String rainToString(Rain rain) {
   switch (rain) {
+    case Rain.NA:
+      return "NS/NC";
     case Rain.before:
       return "Antes del granizo";
       break;
@@ -70,4 +72,23 @@ String rainToString(Rain rain) {
   }
 }
 
-enum HailSize { small, medium, big }
+enum HailSize { NA, small, medium, big }
+String hailSizeToString(HailSize size) {
+  switch (size) {
+    case HailSize.NA:
+      return "NS/NC";
+      break;
+    case HailSize.small:
+      return "Pequeño";
+      break;
+    case HailSize.medium:
+      return "Mediano";
+      break;
+    case HailSize.big:
+      return "Grande";
+      break;
+    default:
+      return "";
+      break;
+  }
+}

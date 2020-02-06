@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 
 enum dotSliderAnimation { SIZE_TRANSITION, DOT_MOVEMENT }
+enum slideOptions { NEXT_ENABLED, NEXT_DISABLED, CAN_OMIT }
 
 class SlideControls extends StatefulWidget {
-
   final Function onDonePress;
   final TabController controller;
-  final List<bool> nextEnabled;
+  final List<slideOptions> options;
 
   // ---------- Dot indicator ----------
   final Color colorDot;
+  final Color colorDoneDot;
+  final Color colorSkipDot;
   final Color colorActiveDot;
   final double sizeDot;
   final dotSliderAnimation typeDotAnimation;
@@ -17,14 +19,15 @@ class SlideControls extends StatefulWidget {
   SlideControls({
     this.onDonePress,
     @required this.controller,
-    @required this.nextEnabled,
+    @required this.options,
 
     // Dots
-    this.colorDot = const Color(0x80000000),
-    this.colorActiveDot = const Color(0x80000000),
+    this.colorDot = Colors.white,
+    this.colorDoneDot = Colors.green,
+    this.colorSkipDot = Colors.black26,
+    this.colorActiveDot = Colors.white,
     this.sizeDot = 8.0,
     this.typeDotAnimation = dotSliderAnimation.DOT_MOVEMENT,
-
   });
 
   @override
@@ -33,7 +36,6 @@ class SlideControls extends StatefulWidget {
 
 class SliderControlsState extends State<SlideControls>
     with SingleTickerProviderStateMixin {
-
   /// Default values
   static const TextStyle defaultBtnNameTextStyle =
       TextStyle(color: Colors.white);
@@ -41,9 +43,10 @@ class SliderControlsState extends State<SlideControls>
   static const Color defaultBtnColor = Colors.transparent;
   static const Color defaultBtnHighlightColor = const Color(0x4dffffff);
 
-  List<Widget> dots = new List();
-  List<double> sizeDots = new List();
-  List<double> opacityDots = new List();
+  List<Widget> dots = List();
+  List<double> sizeDots = List();
+  List<double> opacityDots = List();
+  List<Color> colorDots = List();
 
   // For DOT_MOVEMENT
   double marginLeftDotFocused = 0;
@@ -68,18 +71,19 @@ class SliderControlsState extends State<SlideControls>
       currentAnimationValue = widget.controller.animation.value;
     });
 
-    double initValueMarginRight = (sizeDot * 2) * (widget.nextEnabled.length - 1);
+    double initValueMarginRight = (sizeDot * 2) * (widget.options.length - 1);
 
     switch (widget.typeDotAnimation) {
       case dotSliderAnimation.DOT_MOVEMENT:
-        for (int i = 0; i < widget.nextEnabled.length; i++) {
+        for (int i = 0; i < widget.options.length; i++) {
           sizeDots.add(sizeDot);
           opacityDots.add(1.0);
         }
         marginRightDotFocused = initValueMarginRight;
         break;
       case dotSliderAnimation.SIZE_TRANSITION:
-        for (int i = 0; i < widget.nextEnabled.length; i++) {
+        for (int i = 0; i < widget.options.length; i++) {
+          colorDots.add(widget.colorDot);
           if (i == 0) {
             sizeDots.add(sizeDot * 1.5);
             opacityDots.add(1.0);
@@ -94,7 +98,8 @@ class SliderControlsState extends State<SlideControls>
       this.setState(() {
         switch (widget.typeDotAnimation) {
           case dotSliderAnimation.DOT_MOVEMENT:
-            marginLeftDotFocused = widget.controller.animation.value * sizeDot * 2;
+            marginLeftDotFocused =
+                widget.controller.animation.value * sizeDot * 2;
             marginRightDotFocused = initValueMarginRight -
                 widget.controller.animation.value * sizeDot * 2;
             break;
@@ -104,41 +109,35 @@ class SliderControlsState extends State<SlideControls>
             }
 
             double diffValueAnimation =
-                (widget.controller.animation.value - currentAnimationValue).abs();
-            int diffValueIndex = (currentTabIndex - widget.controller.index).abs();
+                (widget.controller.animation.value - currentAnimationValue)
+                    .abs();
 
-            // When press skip button
-            if (widget.controller.indexIsChanging &&
-                (widget.controller.index - widget.controller.previousIndex).abs() > 1) {
-              if (diffValueAnimation < 1.0) {
-                diffValueAnimation = 1.0;
-              }
-              sizeDots[currentTabIndex] = sizeDot * 1.5 -
-                  (sizeDot / 2) * (1 - (diffValueIndex - diffValueAnimation));
-              sizeDots[widget.controller.index] = sizeDot +
-                  (sizeDot / 2) * (1 - (diffValueIndex - diffValueAnimation));
-              opacityDots[currentTabIndex] =
-                  1.0 - (diffValueAnimation / diffValueIndex) / 2;
-              opacityDots[widget.controller.index] =
-                  0.5 + (diffValueAnimation / diffValueIndex) / 2;
+            if (widget.controller.animation.value > currentAnimationValue) {
+              // Swipe left
+              sizeDots[currentTabIndex] =
+                  sizeDot * 1.5 - (sizeDot / 2) * diffValueAnimation;
+              sizeDots[currentTabIndex + 1] =
+                  sizeDot + (sizeDot / 2) * diffValueAnimation;
+              opacityDots[currentTabIndex + 1] = 0.5 + diffValueAnimation / 2;
+
+              colorDots[currentTabIndex] = Color.lerp(widget.colorDot,
+                  widget.options[currentTabIndex] == slideOptions.CAN_OMIT
+                      ? widget.colorSkipDot
+                      : widget.colorDoneDot, diffValueAnimation);
+
             } else {
-              if (widget.controller.animation.value > currentAnimationValue) {
-                // Swipe left
-                sizeDots[currentTabIndex] =
-                    sizeDot * 1.5 - (sizeDot / 2) * diffValueAnimation;
-                sizeDots[currentTabIndex + 1] =
-                    sizeDot + (sizeDot / 2) * diffValueAnimation;
-                opacityDots[currentTabIndex] = 1.0 - diffValueAnimation / 2;
-                opacityDots[currentTabIndex + 1] = 0.5 + diffValueAnimation / 2;
-              } else {
-                // Swipe right
-                sizeDots[currentTabIndex] =
-                    sizeDot * 1.5 - (sizeDot / 2) * diffValueAnimation;
-                sizeDots[currentTabIndex - 1] =
-                    sizeDot + (sizeDot / 2) * diffValueAnimation;
-                opacityDots[currentTabIndex] = 1.0 - diffValueAnimation / 2;
-                opacityDots[currentTabIndex - 1] = 0.5 + diffValueAnimation / 2;
-              }
+              print(diffValueAnimation);
+              // Swipe right
+              sizeDots[currentTabIndex] =
+                  sizeDot * 1.5 - (sizeDot / 2) * diffValueAnimation;
+              sizeDots[currentTabIndex - 1] =
+                  sizeDot + (sizeDot / 2) * diffValueAnimation;
+              opacityDots[currentTabIndex] = 1.0 - diffValueAnimation / 2;
+
+              colorDots[currentTabIndex - 1] = Color.lerp(
+                  widget.options[currentTabIndex - 1] == slideOptions.CAN_OMIT
+                      ? widget.colorSkipDot
+                      : widget.colorDoneDot, widget.colorDot, diffValueAnimation);
             }
             break;
         }
@@ -149,7 +148,7 @@ class SliderControlsState extends State<SlideControls>
   // Checking if tab is animating
   bool isAnimating() {
     return widget.controller.animation.value -
-        widget.controller.animation.value.truncate() !=
+            widget.controller.animation.value.truncate() !=
         0;
   }
 
@@ -158,27 +157,13 @@ class SliderControlsState extends State<SlideControls>
     return renderBottom();
   }
 
-  Widget buildDoneButton() {
-    return FlatButton(
-      onPressed: widget.onDonePress,
-      child: Text(
-        "FINALIZAR",
-        style: defaultBtnNameTextStyle,
-      ),
-      color: defaultBtnColor,
-      highlightColor: defaultBtnHighlightColor,
-      shape: new RoundedRectangleBorder(
-          borderRadius: new BorderRadius.circular(defaultBtnBorderRadius)),
-    );
-  }
-
   Widget buildPrevButton() {
     if (widget.controller.index == 0) {
       return Container(width: MediaQuery.of(context).size.width / 4);
     } else {
       return FlatButton(
         child: Text(
-          "PREV",
+          "ANTERIOR",
           style: defaultBtnNameTextStyle,
         ),
         onPressed: () {
@@ -188,8 +173,6 @@ class SliderControlsState extends State<SlideControls>
         },
         color: defaultBtnColor,
         highlightColor: defaultBtnHighlightColor,
-        shape: new RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(defaultBtnBorderRadius)),
       );
     }
   }
@@ -197,20 +180,35 @@ class SliderControlsState extends State<SlideControls>
   Widget buildNextButton() {
     return FlatButton(
       child: Text(
-        "SIGUIENTE",
-        style: defaultBtnNameTextStyle,
+        widget.options[widget.controller.index] == slideOptions.CAN_OMIT
+            ? "OMITIR"
+            : "SIGUIENTE",
       ),
-      onPressed: widget.nextEnabled[widget.controller.index]
+      onPressed: widget.options[widget.controller.index] ==
+                  slideOptions.NEXT_ENABLED ||
+              widget.options[widget.controller.index] == slideOptions.CAN_OMIT
           ? () {
               if (!this.isAnimating()) {
                 widget.controller.animateTo(widget.controller.index + 1);
               }
             }
           : null,
-      color: defaultBtnColor,
+      color: Colors.transparent,
+      textColor: Colors.white,
+      disabledTextColor: Colors.white.withOpacity(0.2),
       highlightColor: defaultBtnHighlightColor,
-      shape: new RoundedRectangleBorder(
-          borderRadius: new BorderRadius.circular(defaultBtnBorderRadius)),
+    );
+  }
+
+  Widget buildDoneButton() {
+    return FlatButton(
+      onPressed: widget.onDonePress,
+      child: Text(
+        "FINALIZAR",
+        style: defaultBtnNameTextStyle,
+      ),
+      color: Colors.green,
+      highlightColor: defaultBtnHighlightColor,
     );
   }
 
@@ -256,7 +254,7 @@ class SliderControlsState extends State<SlideControls>
           // Next, Done button
           Container(
             alignment: Alignment.center,
-            child: widget.controller.index + 1 == widget.nextEnabled.length
+            child: widget.controller.index + 1 == widget.options.length
                 ? buildDoneButton()
                 : buildNextButton(),
             width: MediaQuery.of(context).size.width / 4,
@@ -271,14 +269,15 @@ class SliderControlsState extends State<SlideControls>
 
   List<Widget> renderListDots() {
     dots.clear();
-    for (int i = 0; i < widget.nextEnabled.length; i++) {
-      dots.add(renderDot(sizeDots[i], widget.colorDot, opacityDots[i]));
+    for (int i = 0; i < widget.options.length; i++) {
+      dots.add(renderDot(sizeDots[i], colorDots[i], opacityDots[i]));
     }
     return dots;
   }
 
   Widget renderDot(double radius, Color color, double opacity) {
     return Opacity(
+      opacity: opacity,
       child: Container(
         decoration: BoxDecoration(
             color: color, borderRadius: BorderRadius.circular(radius / 2)),
@@ -286,7 +285,6 @@ class SliderControlsState extends State<SlideControls>
         height: radius,
         margin: EdgeInsets.only(left: radius / 2, right: radius / 2),
       ),
-      opacity: opacity,
     );
   }
 }

@@ -13,7 +13,11 @@ class RainData extends StatelessWidget {
         builder: (context, model, child) => Column(
             children: Rain.values
                 .map((rain) => RadioListTile<Rain>(
-                      title: Text(rainToString(rain)),
+                      title: Text(
+                        rainToString(rain),
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      activeColor: Colors.white,
                       value: rain,
                       groupValue: model.rain,
                       onChanged: (Rain value) {

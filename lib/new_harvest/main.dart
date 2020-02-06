@@ -5,12 +5,10 @@ import 'package:cosecheros/shared/slide_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'hail_intro.dart';
 import 'hail_storm_data.dart';
 import 'hail_storm_intro.dart';
 import 'map_data.dart';
 import 'rain_data.dart';
-import 'size_data.dart';
 import 'summary.dart';
 
 class NewHarvest extends StatefulWidget {
@@ -22,7 +20,7 @@ class NewHarvestState extends State<NewHarvest>
     with SingleTickerProviderStateMixin {
   TabController _controller;
   List<Widget> slides = [];
-  List<bool> nextEnabled = [];
+  List<slideOptions> options = [];
 
   HarvestModel model = HarvestModel();
 
@@ -31,28 +29,26 @@ class NewHarvestState extends State<NewHarvest>
     super.initState();
 
     // 0
-    nextEnabled.add(true);
+    options.add(slideOptions.NEXT_ENABLED);
     slides.add(HailStormIntro());
 
-    nextEnabled.add(false);
-    slides.add(HailStormData(1, this.setNext));
+    // 1
+    options.add(slideOptions.NEXT_DISABLED);
+    slides.add(HailStormData(this.setOptions));
 
-    nextEnabled.add(true);
-    slides.add(HailIntro());
+    options.add(slideOptions.CAN_OMIT);
+    slides.add(HailData(this.setOptions));
 
-    nextEnabled.add(false);
-    slides.add(HailData(3, this.setNext));
+    options.add(slideOptions.NEXT_DISABLED);
+    slides.add(MapData(this.setOptions));
 
-    nextEnabled.add(false);
-    slides.add(MapData(4, this.setNext));
-
-    nextEnabled.add(true);
+    options.add(slideOptions.NEXT_ENABLED);
     slides.add(RainData());
 
-    nextEnabled.add(true);
-    slides.add(SizeData());
+//    options.add(slideOptions.NEXT_ENABLED);
+//    slides.add(SizeData());
 
-    nextEnabled.add(true);
+    options.add(slideOptions.NEXT_ENABLED);
     slides.add(Summary());
 
     _controller = TabController(vsync: this, length: slides.length);
@@ -76,11 +72,11 @@ class NewHarvestState extends State<NewHarvest>
                 TabBarView(
                   children: slides,
                   controller: _controller,
-                  physics: NeverScrollableScrollPhysics(),
+//                  physics: NeverScrollableScrollPhysics(),
                 ),
                 SlideControls(
                   controller: _controller,
-                  nextEnabled: nextEnabled,
+                  options: options,
                   typeDotAnimation: dotSliderAnimation.SIZE_TRANSITION,
                   onDonePress: this.onDonePress,
                 ),
@@ -101,9 +97,9 @@ class NewHarvestState extends State<NewHarvest>
     });
   }
 
-  void setNext(index, value) {
+  void setOptions(slide, value) {
     setState(() {
-      nextEnabled[index] = value;
+      options[slides.indexOf(slide)] = value;
     });
   }
 }
