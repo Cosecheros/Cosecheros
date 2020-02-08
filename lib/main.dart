@@ -3,8 +3,13 @@ import 'package:cosecheros/harvests.dart';
 import 'package:cosecheros/map.dart';
 import 'package:cosecheros/new_harvest/main.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  Intl.defaultLocale = 'es';
+  initializeDateFormatting('es', null).then((_) => runApp(MyApp()));
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -18,8 +23,7 @@ class MyApp extends StatelessWidget {
           buttonColor: Colors.white,
           padding: const EdgeInsets.all(8.0),
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(30.0))
-          ),
+              borderRadius: BorderRadius.all(Radius.circular(30.0))),
         ),
       ),
       home: MainPage(),
@@ -28,13 +32,14 @@ class MyApp extends StatelessWidget {
 }
 
 class MainPage extends StatefulWidget {
-  const MainPage({ Key key }) : super(key: key);
+  const MainPage({Key key}) : super(key: key);
 
   @override
   _MainPageState createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin {
+class _MainPageState extends State<MainPage>
+    with SingleTickerProviderStateMixin {
   final List<Tab> myTabs = <Tab>[
     Tab(text: 'Mapa'),
     Tab(text: 'Mis cosechas'),
@@ -67,7 +72,8 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context,
+          Navigator.push(
+            context,
             MaterialPageRoute(builder: (context) => NewHarvest()),
           );
         },
@@ -75,14 +81,13 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
         child: Icon(Icons.add),
       ),
       body: TabBarView(
-        controller: _tabController,
-        physics: NeverScrollableScrollPhysics(),
-        children: [
-          MapRecent(),
-          Harvests(),
-          About(),
-        ]
-      ),
+          controller: _tabController,
+          physics: NeverScrollableScrollPhysics(),
+          children: [
+            MapRecent(),
+            Harvests(),
+            About(),
+          ]),
     );
   }
 }

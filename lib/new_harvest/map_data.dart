@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosecheros/backend/harvest.dart';
 import 'package:cosecheros/shared/slide.dart';
 import 'package:cosecheros/shared/slide_controls.dart';
@@ -45,8 +44,7 @@ class MapDataState extends State<MapData> {
         },
 
         onTap: (latLong) {
-          var geoPoint = GeoPoint(latLong.latitude, latLong.longitude);
-          Provider.of<HarvestModel>(context, listen: false).geoPoint = geoPoint;
+          Provider.of<HarvestModel>(context, listen: false).latLng = latLong;
           setState(() {
             _markers.clear();
             _markers

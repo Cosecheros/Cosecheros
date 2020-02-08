@@ -80,8 +80,7 @@ class Summary extends StatelessWidget {
                           Container(
                               padding: EdgeInsets.symmetric(vertical: 8.0),
                               height: 200,
-                              child: MapSummary(LatLng(model.geoPoint.latitude,
-                                  model.geoPoint.longitude)))
+                              child: MapSummary(model.latLng))
                         ],
                       ),
                       SizedBox(height: 10),

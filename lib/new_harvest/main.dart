@@ -158,7 +158,21 @@ class NewHarvestState extends State<NewHarvest>
       taskTitle = "Verificando...";
     });
 
-    await ref.updateData({'granizada': stormPath, 'granizo': hailPath});
+    String stormThumbUrl = await storageReference
+        .child("cosechas/thumbs/${basenameWithoutExtension(stormPath)}_500x500.${extension(stormPath)}")
+      .getDownloadURL();
+
+    String hailThumbUrl = await storageReference
+        .child("cosechas/thumbs/${basenameWithoutExtension(hailPath)}_500x500.${extension(hailPath)}")
+        .getDownloadURL();
+
+    await ref.updateData({
+      'granizada': stormPath,
+      'granizada_thumb':stormThumbUrl,
+
+      'granizo': hailPath,
+      'granizo_thumb': hailThumbUrl,
+    });
 
     setState(() {
       taskTitle = "Granizo cosechado";
@@ -174,6 +188,7 @@ class NewHarvestState extends State<NewHarvest>
           final StorageTaskSnapshot snapshot = asyncSnapshot.data.snapshot;
           percent = snapshot.bytesTransferred / snapshot.totalByteCount;
         }
+        print(percent);
         return SizedBox(
           height: 60.0,
           width: 60.0,

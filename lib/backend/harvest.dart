@@ -2,21 +2,27 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class HarvestModel extends ChangeNotifier {
 
   DateTime dateTime;
-  GeoPoint _geoPoint;
+  LatLng _latLng;
 
   Rain _rain = Rain.NA;
   HailSize _size = HailSize.NA;
   File _hail;
   File _hailStorm;
 
-  get geoPoint => _geoPoint;
-  set geoPoint(GeoPoint geoPoint) {
-    this._geoPoint = geoPoint;
+  get latLng => _latLng;
+  set latLng(LatLng latLng) {
+    this._latLng = latLng;
     notifyListeners();
+  }
+
+  get geoPoint => GeoPoint(_latLng.latitude, _latLng.longitude);
+  set geoPoint(GeoPoint geoPoint) {
+    this._latLng = LatLng(geoPoint.latitude, geoPoint.longitude);
   }
 
   get rain => _rain;
@@ -45,11 +51,13 @@ class HarvestModel extends ChangeNotifier {
   }
 
   Map<String, dynamic> toMap() => {
-    'timestamp': dateTime,
-    'geo': _geoPoint,
+    'timestamp': FieldValue.serverTimestamp(),
+    'date': dateTime,
+    'geo': geoPoint,
     'lluvia': rainToString(rain),
     //'tamaño': sizeToString(size),
   };
+
 }
 
 enum Rain { NA, before, during, after }
