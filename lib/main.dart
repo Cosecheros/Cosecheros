@@ -42,7 +42,7 @@ class _MainPageState extends State<MainPage>
     with SingleTickerProviderStateMixin {
   final List<Tab> myTabs = <Tab>[
     Tab(text: 'Mapa'),
-    Tab(text: 'Mis cosechas'),
+    Tab(text: 'Cosechas'),
     Tab(text: 'El proyecto')
   ];
 

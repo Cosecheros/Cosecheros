@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cosecheros/backend/harvest.dart';
+import 'package:cosecheros/models/harvest.dart';
 import 'package:cosecheros/new_harvest/hail_data.dart';
 import 'package:cosecheros/shared/slide_controls.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -30,6 +30,7 @@ class NewHarvestState extends State<NewHarvest>
   final StorageReference storageReference = FirebaseStorage().ref();
   StorageUploadTask uploadTask;
   bool uploading = false;
+  bool indeterminate = false;
   bool done = false;
   String taskTitle = "";
 
@@ -142,34 +143,52 @@ class NewHarvestState extends State<NewHarvest>
     StorageTaskSnapshot stormSnapshot = await uploadTask.onComplete;
     String stormPath = stormSnapshot.ref.path;
 
-    uploadTask = storageReference
-        .child("cosechas/$id-${basename(model.hail.path)}")
-        .putFile(model.hail);
+    String hailPath;
+    if (model.hail != null) {
+      uploadTask = storageReference
+          .child("cosechas/$id-${basename(model.hail.path)}")
+          .putFile(model.hail);
 
-    // Trigger update
-    setState(() {
-      taskTitle = "Subiendo fotos...";
-    });
+      // Trigger update
+      setState(() {
+        taskTitle = "Subiendo fotos...";
+      });
 
-    StorageTaskSnapshot hailSnapshot = await uploadTask.onComplete;
-    String hailPath = hailSnapshot.ref.path;
+      StorageTaskSnapshot hailSnapshot = await uploadTask.onComplete;
+      hailPath = hailSnapshot.ref.path;
+    }
 
     setState(() {
       taskTitle = "Verificando...";
+      indeterminate = true;
     });
 
-    String stormThumbUrl = await storageReference
-        .child("cosechas/thumbs/${basenameWithoutExtension(stormPath)}_500x500.${extension(stormPath)}")
-      .getDownloadURL();
+    // Tiempo para que la extension ResizeImage de Firebase genere
+    // los thumbnails.
+    // TODO hacer esto en Firebase Functions.
+    await Future.delayed(Duration(seconds: 10));
 
-    String hailThumbUrl = await storageReference
-        .child("cosechas/thumbs/${basenameWithoutExtension(hailPath)}_500x500.${extension(hailPath)}")
-        .getDownloadURL();
+    String stormThumbUrl;
+    String hailThumbUrl;
+    try {
+      stormThumbUrl = await storageReference
+          .child(
+              "cosechas/thumbs/${basenameWithoutExtension(stormPath)}_500x500${extension(stormPath)}")
+          .getDownloadURL();
+
+      if (hailPath != null) {
+        hailThumbUrl = await storageReference
+            .child(
+                "cosechas/thumbs/${basenameWithoutExtension(hailPath)}_500x500${extension(hailPath)}")
+            .getDownloadURL();
+      }
+    } catch (PlatformException) {
+      print("fek thumbnails");
+    }
 
     await ref.updateData({
       'granizada': stormPath,
-      'granizada_thumb':stormThumbUrl,
-
+      'granizada_thumb': stormThumbUrl,
       'granizo': hailPath,
       'granizo_thumb': hailThumbUrl,
     });
@@ -187,14 +206,14 @@ class NewHarvestState extends State<NewHarvest>
         if (asyncSnapshot.hasData) {
           final StorageTaskSnapshot snapshot = asyncSnapshot.data.snapshot;
           percent = snapshot.bytesTransferred / snapshot.totalByteCount;
+          percent = percent > 0 ? percent : null;
         }
-        print(percent);
         return SizedBox(
           height: 60.0,
           width: 60.0,
           child: CircularProgressIndicator(
             valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
-            value: percent,
+            value: indeterminate ? null : percent,
           ),
         );
       });

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:cosecheros/backend/harvest.dart';
+import 'package:cosecheros/models/harvest.dart';
 import 'package:cosecheros/shared/slide.dart';
 import 'package:cosecheros/shared/slide_controls.dart';
 import 'package:flutter/material.dart';

@@ -14,6 +14,7 @@ class Harvests extends StatelessWidget {
         stream: Firestore.instance
             .collection('cosechas')
             .where("timestamp", isGreaterThan: from)
+            .orderBy("timestamp", descending: true)
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
@@ -30,33 +31,39 @@ class Harvests extends StatelessWidget {
               );
             default:
               return ListView(
+                padding: EdgeInsets.fromLTRB(16, 16, 16, 64),
                 children: snapshot.data.documents
                     .map((DocumentSnapshot document) => Card(
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  elevation: 1,
-                  margin: EdgeInsets.all(16.0),
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          elevation: 1,
+                          margin: EdgeInsets.only(bottom: 16),
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0))),
                           child: Column(
-                           crossAxisAlignment: CrossAxisAlignment.stretch,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
-                              CachedNetworkImage(
-                                placeholder: (context, url) =>
-                                    Center(
-                                      child: SizedBox(
-                                        height: 60.0,
-                                        width: 60.0,
-                                        child: CircularProgressIndicator(
-                                          valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+                              document['granizada_thumb'] != null
+                                  ? CachedNetworkImage(
+                                      placeholder: (context, url) => Center(
+                                        child: SizedBox(
+                                          height: 60.0,
+                                          width: 60.0,
+                                          child: CircularProgressIndicator(
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                    Colors.green),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                imageUrl: document['granizada_thumb'],
-                                fit: BoxFit.cover,
-                                height: 200,
-                              ),
+                                      imageUrl: document['granizada_thumb'],
+                                      fit: BoxFit.cover,
+                                      height: 200,
+                                    )
+                                  : Container(),
                               ListTile(
-                                title: new Text(DateFormat.yMMMMEEEEd().format(document['timestamp'].toDate())),
+                                title: new Text(DateFormat.yMMMMEEEEd()
+                                    .format(document['date'].toDate())),
                                 subtitle: new Text(document['lluvia']),
                               ),
                             ],
