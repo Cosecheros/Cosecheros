@@ -8,7 +8,7 @@ class HailStormIntro extends StatelessWidget {
     return Slide(
       title: "Medidas de seguridad",
       description: "Mantengase en un lugar seguro mientras cae el granizo.",
-      backgroundColor: Color(0xfff5a623),
+      backgroundColor: Color(0xFF01A0C7),
       centerWidget: Container(
         padding: EdgeInsets.all(40),
         child: Image.asset("assets/Resguardo.jpg"),

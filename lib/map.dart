@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 
@@ -19,8 +20,13 @@ class MapRecentState extends State<MapRecent> {
 
   final Set<Marker> _markers = Set();
 
+  void getPos() async {
+    await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  }
+
   @override
   Widget build(BuildContext context) {
+    getPos();
     return GoogleMap(
       mapType: MapType.normal,
       markers: _markers,

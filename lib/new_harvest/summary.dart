@@ -12,9 +12,9 @@ class Summary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Slide(
-      backgroundColor: Color(0xfff5a623),
       marginTitle: EdgeInsets.all(0),
       marginDescription: EdgeInsets.all(0),
+      backgroundColor: Color(0xFF01A0C7),
       centerWidget: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints viewportConstraints) {
         return SingleChildScrollView(

@@ -10,7 +10,7 @@ class SlideControls extends StatefulWidget {
 
   // ---------- Dot indicator ----------
   final Color colorDot;
-  final Color colorDoneDot;
+  final Color colorDone;
   final Color colorSkipDot;
   final Color colorActiveDot;
   final double sizeDot;
@@ -23,7 +23,7 @@ class SlideControls extends StatefulWidget {
 
     // Dots
     this.colorDot = Colors.white,
-    this.colorDoneDot = Colors.green,
+    this.colorDone = Colors.green,
     this.colorSkipDot = Colors.black26,
     this.colorActiveDot = Colors.white,
     this.sizeDot = 8.0,
@@ -39,7 +39,6 @@ class SliderControlsState extends State<SlideControls>
   /// Default values
   static const TextStyle defaultBtnNameTextStyle =
       TextStyle(color: Colors.white);
-  static const double defaultBtnBorderRadius = 30.0;
   static const Color defaultBtnColor = Colors.transparent;
   static const Color defaultBtnHighlightColor = const Color(0x4dffffff);
 
@@ -123,7 +122,7 @@ class SliderControlsState extends State<SlideControls>
               colorDots[currentTabIndex] = Color.lerp(widget.colorDot,
                   widget.options[currentTabIndex] == slideOptions.CAN_OMIT
                       ? widget.colorSkipDot
-                      : widget.colorDoneDot, diffValueAnimation);
+                      : widget.colorDone, diffValueAnimation);
 
             } else {
               // Swipe right
@@ -136,7 +135,7 @@ class SliderControlsState extends State<SlideControls>
               colorDots[currentTabIndex - 1] = Color.lerp(
                   widget.options[currentTabIndex - 1] == slideOptions.CAN_OMIT
                       ? widget.colorSkipDot
-                      : widget.colorDoneDot, widget.colorDot, diffValueAnimation);
+                      : widget.colorDone, widget.colorDot, diffValueAnimation);
             }
             break;
         }
@@ -192,7 +191,7 @@ class SliderControlsState extends State<SlideControls>
               }
             }
           : null,
-      color: Colors.transparent,
+      color: defaultBtnColor,
       textColor: Colors.white,
       disabledTextColor: Colors.white.withOpacity(0.2),
       highlightColor: defaultBtnHighlightColor,
@@ -206,7 +205,7 @@ class SliderControlsState extends State<SlideControls>
         "FINALIZAR",
         style: defaultBtnNameTextStyle,
       ),
-      color: Colors.green,
+      color: widget.colorDone,
       highlightColor: defaultBtnHighlightColor,
     );
   }
@@ -276,7 +275,7 @@ class SliderControlsState extends State<SlideControls>
 
   Widget renderDot(double radius, Color color, double opacity) {
     return Opacity(
-      opacity: opacity,
+      opacity: opacity.clamp(0.0, 1.0), // A veces salta un assertion
       child: Container(
         decoration: BoxDecoration(
             color: color, borderRadius: BorderRadius.circular(radius / 2)),

@@ -25,7 +25,8 @@ class Harvests extends StatelessWidget {
                   height: 60.0,
                   width: 60.0,
                   child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                        Theme.of(context).accentColor),
                   ),
                 ),
               );

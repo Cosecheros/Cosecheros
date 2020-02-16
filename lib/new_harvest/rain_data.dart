@@ -8,7 +8,7 @@ class RainData extends StatelessWidget {
   Widget build(BuildContext context) {
     return Slide(
       title: "Cuando llovió",
-      backgroundColor: Color(0xfff5a623),
+      backgroundColor: Color(0xFF01A0C7),
       centerWidget: Consumer<HarvestModel>(
         builder: (context, model, child) => Column(
             children: Rain.values

@@ -49,8 +49,8 @@ class NewHarvestState extends State<NewHarvest>
     options.add(slideOptions.CAN_OMIT);
     slides.add(HailData(this.setOptions));
 
-    options.add(slideOptions.NEXT_DISABLED);
-    slides.add(MapData(this.setOptions));
+    options.add(slideOptions.NEXT_ENABLED);
+    slides.add(MapData());
 
     options.add(slideOptions.NEXT_ENABLED);
     slides.add(RainData());
@@ -87,6 +87,7 @@ class NewHarvestState extends State<NewHarvest>
                 SlideControls(
                   controller: _controller,
                   options: options,
+                  colorDone: Theme.of(context).accentColor,
                   typeDotAnimation: dotSliderAnimation.SIZE_TRANSITION,
                   onDonePress: this.onDonePress,
                 ),
@@ -212,7 +213,8 @@ class NewHarvestState extends State<NewHarvest>
           height: 60.0,
           width: 60.0,
           child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+            valueColor:
+                AlwaysStoppedAnimation<Color>(Theme.of(context).accentColor),
             value: indeterminate ? null : percent,
           ),
         );
@@ -231,7 +233,7 @@ class NewHarvestState extends State<NewHarvest>
           ),
           shape: new CircleBorder(),
           elevation: 2.0,
-          fillColor: Colors.green,
+          fillColor: Theme.of(context).accentColor,
           padding: const EdgeInsets.all(15.0),
         ),
       );

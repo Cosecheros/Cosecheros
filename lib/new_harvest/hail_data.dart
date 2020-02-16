@@ -26,7 +26,7 @@ class HailData extends StatelessWidget {
         maxLines: 100,
         overflow: TextOverflow.ellipsis,
       ),
-      backgroundColor: Color(0xff9932CC),
+      backgroundColor: Color(0xFF01A0C7),
       centerWidget: Consumer<HarvestModel>(
         builder: (context, model, child) => Column(
           mainAxisSize: MainAxisSize.min,
@@ -60,7 +60,6 @@ class HailData extends StatelessWidget {
             SizedBox(
               height: 4,
             ),
-
             FlatButton(
                 textColor: Colors.white,
                 child: Text("Subir desde la galería",

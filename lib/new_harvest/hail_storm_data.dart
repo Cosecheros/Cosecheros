@@ -18,7 +18,7 @@ class HailStormData extends StatelessWidget {
     return Slide(
       title: "Foto de la granizada",
       description: "Sacá una foto al granizo como indica el dibujo.",
-      backgroundColor: Color(0xff203152),
+      backgroundColor: Color(0xFF01A0C7),
       centerWidget: Consumer<HarvestModel>(
         builder: (context, model, child) => Column(
           mainAxisSize: MainAxisSize.max,

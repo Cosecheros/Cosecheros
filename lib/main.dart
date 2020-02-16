@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       title: 'Cosecheros',
       theme: ThemeData(
         primaryColor: Color(0xFF01A0C7),
-        accentColor: Color(0xFFFF00C7),
+        accentColor: Color(0xFF64E2A1),
         buttonTheme: ButtonThemeData(
           buttonColor: Colors.white,
           padding: const EdgeInsets.all(8.0),
@@ -78,7 +78,10 @@ class _MainPageState extends State<MainPage>
           );
         },
         tooltip: 'Nueva cosecha',
-        child: Icon(Icons.add),
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
       body: TabBarView(
           controller: _tabController,
