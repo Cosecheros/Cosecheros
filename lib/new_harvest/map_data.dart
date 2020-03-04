@@ -61,6 +61,7 @@ class MapDataState extends State<MapData> {
       title: "Mapa",
       description: "Selecciona donde pasó la granizada",
       backgroundColor: Color(0xFF01A0C7),
+      scrollable: false,
       centerWidget: Consumer<HarvestModel>(
         builder: (context, model, child) => GoogleMap(
           mapType: MapType.normal,

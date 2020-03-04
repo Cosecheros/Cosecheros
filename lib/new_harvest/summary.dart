@@ -12,97 +12,63 @@ class Summary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Slide(
-      marginTitle: EdgeInsets.all(0),
-      marginDescription: EdgeInsets.all(0),
+      title: "Cosecha",
+      description: "Revisa que todo esté bien.",
       backgroundColor: Color(0xFF01A0C7),
-      centerWidget: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints viewportConstraints) {
-        return SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints:
-                BoxConstraints(minHeight: viewportConstraints.maxHeight),
-            child: DefaultTextStyle(
-              style: TextStyle(
-                color: Colors.white,
+      centerWidget: Consumer<HarvestModel>(
+        builder: (context, model, child) => Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text("Fecha y hora", style: TextStyle(fontWeight: FontWeight.bold)),
+            Text("${model.dateTime}"),
+            Text("Lluvia", style: TextStyle(fontWeight: FontWeight.bold)),
+            Text("${rainToString(model.rain)}"),
+//              Text("Tamaño: ${model.size}"),
+            SizedBox(height: 10),
+            imagesSelected(model),
+            SizedBox(height: 10),
+            Text("Localización", style: TextStyle(fontWeight: FontWeight.bold)),
+            Container(
+                margin: EdgeInsets.symmetric(vertical: 8.0),
+                height: 200,
+                child: MapSummary(model.latLng))
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget imagesSelected(HarvestModel model) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Expanded(
+            child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text("Granizada", style: TextStyle(fontWeight: FontWeight.bold)),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+              child: Image.file(model.hailStorm),
+            )
+          ],
+        )),
+        Expanded(
+          child: Column(
+            children: <Widget>[
+              Text("Granizo", style: TextStyle(fontWeight: FontWeight.bold)),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                child: model.hail != null
+                    ? Image.file(model.hail)
+                    : Text("alarma configurada"),
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Consumer<HarvestModel>(
-                  builder: (context, model, child) => Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(height: 40),
-                      Text("Cosecha",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 30.0,
-                          )),
-                      Text(
-                        "Revisa que todo este bien",
-                        style: TextStyle(fontSize: 18.0),
-                      ),
-                      SizedBox(height: 20),
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Expanded(
-                              child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Text("Granizada"),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Image.file(model.hailStorm),
-                              )
-                            ],
-                          )),
-                          Expanded(
-                            child: Column(
-                              children: <Widget>[
-                                Text("Granizo"),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: model.hail != null
-                                      ? Image.file(model.hail)
-                                      : Text("alarma configurada"),
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                      SizedBox(height: 20),
-                      Column(
-                        children: <Widget>[
-                          Text("Localización"),
-                          Container(
-                              padding: EdgeInsets.symmetric(vertical: 8.0),
-                              height: 200,
-                              child: MapSummary(model.latLng))
-                        ],
-                      ),
-                      SizedBox(height: 10),
-                      Text.rich(TextSpan(text: "Fecha/Hora: ", children: [
-                        TextSpan(
-                            text: "${model.dateTime}",
-                            style: TextStyle(fontWeight: FontWeight.bold))
-                      ])),
-                      Text.rich(TextSpan(text: "Lluvia: ", children: [
-                        TextSpan(
-                            text: "${rainToString(model.rain)}",
-                            style: TextStyle(fontWeight: FontWeight.bold))
-                      ])),
-//                      Text("Tamaño: ${model.size}"),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            ],
           ),
-        );
-      }),
+        )
+      ],
     );
   }
 }

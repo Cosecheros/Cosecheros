@@ -75,51 +75,53 @@ class NewHarvestState extends State<NewHarvest>
     return ChangeNotifierProvider(
         create: (context) => model,
         child: Scaffold(
-          body: DefaultTabController(
-            length: slides.length,
-            child: Stack(
-              children: <Widget>[
-                TabBarView(
-                  children: slides,
-                  controller: _controller,
-                  physics: NeverScrollableScrollPhysics(),
-                ),
-                SlideControls(
-                  controller: _controller,
-                  options: options,
-                  colorDone: Theme.of(context).accentColor,
-                  typeDotAnimation: dotSliderAnimation.SIZE_TRANSITION,
-                  onDonePress: this.onDonePress,
-                ),
-                uploading
-                    ? Container(
-                        decoration: BoxDecoration(color: Colors.black45),
-                        child: Center(
-                          child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  taskTitle,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 32.0,
-                                      fontWeight: FontWeight.w300),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                uploadTask != null && !done
-                                    ? loadingBar()
-                                    : Container(),
-                                done ? doneButton(context) : Container()
-                              ]),
-                        ))
-                    : Container()
-              ],
+          backgroundColor: Theme.of(context).primaryColor,
+          body: SafeArea(
+            child: DefaultTabController(
+              length: slides.length,
+              child: Stack(
+                children: <Widget>[
+                  TabBarView(
+                    children: slides,
+                    controller: _controller,
+                    physics: NeverScrollableScrollPhysics(),
+                  ),
+                  SlideControls(
+                    controller: _controller,
+                    options: options,
+                    colorDone: Theme.of(context).accentColor,
+                    typeDotAnimation: dotSliderAnimation.SIZE_TRANSITION,
+                    onDonePress: this.onDonePress,
+                  ),
+                  uploading
+                      ? Container(
+                          decoration: BoxDecoration(color: Colors.black45),
+                          child: Center(
+                            child: Column(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                    taskTitle,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 32.0,
+                                        fontWeight: FontWeight.w300),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  uploadTask != null && !done
+                                      ? loadingBar()
+                                      : Container(),
+                                  done ? doneButton(context) : Container()
+                                ]),
+                          ))
+                      : Container()
+                ],
+              ),
             ),
           ),
-          backgroundColor: Colors.white,
         ));
   }
 

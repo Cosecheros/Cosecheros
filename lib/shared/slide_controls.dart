@@ -214,11 +214,10 @@ class SliderControlsState extends State<SlideControls>
     return Positioned(
       child: Row(
         children: <Widget>[
-          // Skip button
+          // Prev button
           Container(
             alignment: Alignment.center,
             child: buildPrevButton(),
-            width: MediaQuery.of(context).size.width / 4,
           ),
 
           // Dot indicator
@@ -255,7 +254,6 @@ class SliderControlsState extends State<SlideControls>
             child: widget.controller.index + 1 == widget.options.length
                 ? buildDoneButton()
                 : buildNextButton(),
-            width: MediaQuery.of(context).size.width / 4,
           ),
         ],
       ),

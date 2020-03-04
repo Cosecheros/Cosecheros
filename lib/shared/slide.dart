@@ -18,6 +18,9 @@ class Slide extends StatelessWidget {
   final LinearGradient backgroundGradient;
   final BoxDecoration widgetBackground;
 
+  // Behavior
+  final bool scrollable;
+
   Slide({
     // Title
     this.widgetTitle,
@@ -32,68 +35,88 @@ class Slide extends StatelessWidget {
     this.description,
     this.marginDescription,
 
-    // Background color
+    // Background
     this.backgroundColor,
     this.backgroundGradient,
-
-    // background image
     this.widgetBackground,
+
+    // Behavior
+    this.scrollable = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      decoration: widgetBackground ??
-          BoxDecoration(
-              gradient: backgroundGradient ??
-                  LinearGradient(colors: [backgroundColor, backgroundColor])),
+    return DefaultTextStyle(
+      style: TextStyle(
+        color: Colors.white,
+      ),
       child: Container(
-        margin: EdgeInsets.only(bottom: 60.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              // Title
-              child: widgetTitle ?? title != null
-                  ? Text(
-                      title,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 30.0,
-                      ),
-                      maxLines: 1,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                    )
-                  : Container(),
-              margin: marginTitle ??
-                  EdgeInsets.only(
-                      top: 70.0, bottom: 20.0, left: 20.0, right: 20.0),
-            ),
-            // Description
-            Container(
-              child: widgetDescription ?? (description != null
-                  ? Text(
-                      description,
-                      style: TextStyle(color: Colors.white, fontSize: 18.0),
-                      textAlign: TextAlign.center,
-                      maxLines: 100,
-                      overflow: TextOverflow.ellipsis,
-                    )
-                  : Container()),
-              margin: marginDescription ??
-                  EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-            ),
-            Expanded(
-              child: centerWidget ?? Container(),
-            )
-          ],
+        width: double.infinity,
+        height: double.infinity,
+        decoration: widgetBackground ??
+            BoxDecoration(color: backgroundColor, gradient: backgroundGradient),
+        child: Container(
+          margin: EdgeInsets.only(bottom: 60.0),
+          child: listOrColumn(
+            <Widget>[
+              titleWidget(),
+              descriptionWidget(),
+              expandedOrNot(centerWidget)
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  Widget listOrColumn(List children) {
+    if (scrollable)
+      return ListView(children: children);
+    else
+      return Column(children: children);
+  }
+
+  Widget expandedOrNot(Widget child) {
+    if (child == null) return Container();
+    if (scrollable)
+      return child;
+    else
+      return Expanded(child: child);
+  }
+
+  Widget titleWidget() {
+    if (widgetTitle != null || title != null)
+      return Container(
+        child: widgetTitle ??
+            Text(
+              title,
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 30.0,
+              ),
+              textAlign: TextAlign.center,
+            ),
+        margin:
+            marginTitle ?? EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
+      );
+    else
+      return Container();
+  }
+
+  Widget descriptionWidget() {
+    if (widgetDescription != null || description != null)
+      return Container(
+        child: widgetDescription ??
+            Text(
+              description,
+              style: TextStyle(color: Colors.white, fontSize: 18.0),
+              textAlign: TextAlign.center,
+            ),
+        margin: marginDescription ??
+            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      );
+    else
+      return Container();
   }
 }

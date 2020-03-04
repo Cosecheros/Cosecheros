@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       title: 'Cosecheros',
       theme: ThemeData(
         primaryColor: Color(0xFF01A0C7),
-        accentColor: Color(0xFF64E2A1),
+        accentColor: Colors.greenAccent[700],
         buttonTheme: ButtonThemeData(
           buttonColor: Colors.white,
           padding: const EdgeInsets.all(8.0),
