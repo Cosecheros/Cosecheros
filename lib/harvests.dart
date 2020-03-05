@@ -13,7 +13,7 @@ class Harvests extends StatelessWidget {
       child: StreamBuilder<QuerySnapshot>(
         stream: Firestore.instance
             .collection('cosechas')
-            .where("timestamp", isGreaterThan: from)
+            // .where("timestamp", isGreaterThan: from)
             .orderBy("timestamp", descending: true)
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -35,12 +35,7 @@ class Harvests extends StatelessWidget {
                 padding: EdgeInsets.fromLTRB(16, 16, 16, 64),
                 children: snapshot.data.documents
                     .map((DocumentSnapshot document) => Card(
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          elevation: 1,
                           margin: EdgeInsets.only(bottom: 16),
-                          shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10.0))),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
@@ -63,9 +58,9 @@ class Harvests extends StatelessWidget {
                                     )
                                   : Container(),
                               ListTile(
-                                title: new Text(DateFormat.yMMMMEEEEd()
+                                title: Text(DateFormat.yMMMMEEEEd()
                                     .format(document['date'].toDate())),
-                                subtitle: new Text(document['lluvia']),
+                                subtitle: Text(document['lluvia']),
                               ),
                             ],
                           ),

@@ -17,15 +17,25 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Cosecheros',
       theme: ThemeData(
-        primaryColor: Color(0xFF01A0C7),
-        accentColor: Colors.greenAccent[700],
-        buttonTheme: ButtonThemeData(
-          buttonColor: Colors.white,
-          padding: const EdgeInsets.all(8.0),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(30.0))),
-        ),
-      ),
+          primaryColor: Color(0xFF01A0C7),
+          accentColor: Colors.greenAccent[700],
+          buttonTheme: ButtonThemeData(
+            buttonColor: Colors.white,
+            padding: const EdgeInsets.all(8.0),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(30.0))),
+          ),
+          cardTheme: CardTheme(
+            elevation: 1,
+            color: Colors.white,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+          ),
+          bottomSheetTheme: BottomSheetThemeData(
+            backgroundColor: Colors.transparent,
+            modalBackgroundColor: Colors.transparent,
+          )),
       home: MainPage(),
     );
   }

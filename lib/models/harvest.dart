@@ -11,8 +11,11 @@ class HarvestModel extends ChangeNotifier {
 
   Rain _rain = Rain.NA;
   HailSize _size = HailSize.NA;
-  File _hail;
   File _hailStorm;
+  File _hail;
+
+  String stormThumb;
+  String hailThumb;
 
   get latLng => _latLng;
   set latLng(LatLng latLng) {
@@ -58,26 +61,25 @@ class HarvestModel extends ChangeNotifier {
     //'tamaño': sizeToString(size),
   };
 
+  static HarvestModel fromSnapshot(DocumentSnapshot doc) {
+    HarvestModel model = HarvestModel();
+    model.dateTime = doc.data['date'].toDate();
+    model.geoPoint = doc.data['geo'];
+    model._rain = stringToRain(doc.data['lluvia']);
+    model.stormThumb = doc.data['granizada_thumb'];
+    model.hailThumb = doc.data['granizo_thumb'];
+    return model;
+  }
+
 }
 
 enum Rain { NA, before, during, after }
+const List<String> RainStrings = ["NS/NC", "Antes del granizo", "Durante el granizo", "Despues del granizo"];
 String rainToString(Rain rain) {
-  switch (rain) {
-    case Rain.NA:
-      return "NS/NC";
-    case Rain.before:
-      return "Antes del granizo";
-      break;
-    case Rain.during:
-      return "Durante el granizo";
-      break;
-    case Rain.after:
-      return "Despues del granizo";
-      break;
-    default:
-      return "";
-      break;
-  }
+  return RainStrings[Rain.values.indexOf(rain)];
+}
+Rain stringToRain(String string) {
+  return Rain.values[RainStrings.indexOf(string)];
 }
 
 enum HailSize { NA, small, medium, big }
