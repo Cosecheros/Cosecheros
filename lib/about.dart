@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // TODO: rearmar esto con las nuevas cosas
 class About extends StatelessWidget {
@@ -59,10 +60,10 @@ class AboutListWidget extends StatefulWidget {
 class _AboutListWidgetState extends State<AboutListWidget> {
   List<Item> _data = [
     Item(
-        header: "¿Qué cosechar?",
+        header: "Qué cosechar",
         expanded: Column(
           children: <Widget>[
-            Text("Registros de granizadas y granizos, recolectando y conservando algunos granizos para su posterior investigación en el laboratorio."),
+            Text("Las fotos de granizadas en especial y, de ser posible, granizos para su posterior investigación en el laboratorio."),
             Padding(
               padding: EdgeInsets.all(4),
               child: Row(
@@ -80,14 +81,45 @@ class _AboutListWidgetState extends State<AboutListWidget> {
         )
     ),
     Item(
-        header: "¿Quién es cosechero?",
-        expanded: Text("Todos podemos ser cosecheros. Cosechando información sobre la granizada y sobre los granizos y resguardando algunos granizos especiales somos verdaderos CIUDADANOS CIENTIFICOS.")),
+        header: "Quién es cosechero",
+        expanded: Text("Todos podemos ser cosecheros. Cosechando información sobre la granizada y resguardando algunos granizos especiales estamos haciendo ciencia, somos verdaderos CIUDADANOS CIENTIFICOS.")),
     Item(
-        header: "¿Por qué cosechar?",
+        header: "Por qué cosechar",
         expanded: Text("Parte de la Provincia de Córdoba está en una de las regiones de tormentas más severas del planeta. Las tormentas extremas son centro de estudio de investigadores de Argentina y de otros países del mundo, con el objetivo de comprender estas tormentas.")),
     Item(
-        header: "¿Aprende a cosechar?",
-        expanded: Text("Link a youtube")),
+        header: "Aprende a cosechar",
+        expanded: Text("Link a youtube")
+
+      //hiperlink. algo hice mal
+        _launchURL() async {
+          const url = 'https://www.youtube.com/watch?v=RGY37mrk5yQ';
+          if (await canLaunch(url)) {
+            await launch(url);
+          } 
+          else {
+            throw 'Could not launch $url';
+          }
+        } ),
+
+    Item(
+        header: "Qué hacemos con las fotos",
+        expanded: Text("Las analizamos: a partir de las fotos podemos deducir la cantidad de granizo que cayó por unidadd de superfficie")),
+    Item(
+        header: 'Qué hacemos con los granizos cosechados',
+        expanded: Text('Nos contactamos con el cosechero, y de ser posible lo buscamos en su domicilio. Nombramos al granizo con el nombre del cosechero')),
+    Item(
+        header: 'Granizos en el lab',
+        expanded: Text('En el laboratorio, cortamos los granizos buscando su nucleo, una tarea muy dificil.')),
+        //aca deberia ir una foto de ejemplo
+    Item(
+        header: 'Permisos de la aplicacion',
+        expanded: Text('Pedimos permiso para acceder al gps porque necesitamos la ubicacion de la tormenta. El permiso a la galeria y cámara es para poder subir la foto')),
+    Item(
+        header: 'Sobre la app',
+        expanded: Text('Desarrollada en Dart.....')), //ver que poner
+    Item(
+        header: 'CONTACTO',
+        expanded: Text('aca iria mail de cosecheros. ver como hacer para que abra gmail con destinatario cosecheros')),    
   ];
 
   @override
