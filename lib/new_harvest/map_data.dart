@@ -82,6 +82,7 @@ class MapDataState extends State<MapData> {
           onMapCreated: _controller.complete,
           onTap: _goTo,
           onCameraMove: (CameraPosition pos) => model.latLng = pos.target,
+          onCameraIdle: () async {  },
         ),
       ),
     );

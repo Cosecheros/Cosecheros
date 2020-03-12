@@ -32,10 +32,10 @@ class Harvests extends StatelessWidget {
               );
             default:
               return ListView(
-                padding: EdgeInsets.fromLTRB(16, 16, 16, 64),
+                padding: EdgeInsets.fromLTRB(8, 8, 8, 100),
                 children: snapshot.data.documents
                     .map((DocumentSnapshot document) => Card(
-                          margin: EdgeInsets.only(bottom: 16),
+                          margin: EdgeInsets.only(bottom: 12),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[

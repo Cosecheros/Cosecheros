@@ -21,12 +21,12 @@ class ImageSelector extends StatelessWidget {
           },
           child: Icon(
             Icons.photo_camera,
-            color: Colors.white,
+            color: Theme.of(context).accentColor,
             size: 40.0,
           ),
           shape: new CircleBorder(),
           elevation: 2.0,
-          fillColor: Theme.of(context).accentColor,
+          fillColor: Colors.white,
           padding: const EdgeInsets.all(15.0),
         ),
         SizedBox(

@@ -45,6 +45,7 @@ class MapRecentState extends State<MapRecent> {
               HarvestModel model = HarvestModel.fromSnapshot(doc);
               return Marker(
                   markerId: MarkerId(doc.documentID),
+                  position: model.latLng,
                   onTap: () => showModalBottomSheet(
                         context: context,
                         builder: (context) => Container(
@@ -53,8 +54,7 @@ class MapRecentState extends State<MapRecent> {
                               margin: EdgeInsets.all(4),
                               child: showHarvest(model)),
                         ),
-                      ),
-                  position: model.latLng);
+                      ));
             }));
           }
           return GoogleMap(
@@ -80,7 +80,7 @@ class MapRecentState extends State<MapRecent> {
             scrollDirection: Axis.horizontal,
             children: <Widget>[
               mayShowImage(model.stormThumb),
-              SizedBox(width: 2),
+              SizedBox(width: 8),
               mayShowImage(model.hailThumb)
             ],
           ),

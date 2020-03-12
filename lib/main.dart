@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
+import 'shared/fab_bottom_bar.dart';
+
 void main() {
   Intl.defaultLocale = 'es';
   initializeDateFormatting('es', null).then((_) => runApp(MyApp()));
 }
-
-// comentario
 
 class MyApp extends StatelessWidget {
   @override
@@ -20,7 +20,8 @@ class MyApp extends StatelessWidget {
       title: 'Cosecheros',
       theme: ThemeData(
           primaryColor: Color(0xFF01A0C7),
-          accentColor: Colors.greenAccent[700],
+          accentColor: Color(0xFF41D1D5),
+          // accentColor: Colors.white,
           buttonTheme: ButtonThemeData(
             buttonColor: Colors.white,
             padding: const EdgeInsets.all(8.0),
@@ -52,18 +53,12 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage>
     with SingleTickerProviderStateMixin {
-  final List<Tab> myTabs = <Tab>[
-    Tab(text: 'Mapa'),
-    Tab(text: 'Cosechas'),
-    Tab(text: 'El proyecto')
-  ];
-
   TabController _tabController;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(vsync: this, length: myTabs.length);
+    _tabController = TabController(vsync: this, length: 4);
   }
 
   @override
@@ -76,13 +71,16 @@ class _MainPageState extends State<MainPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cosecheros de Granizo"),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: myTabs,
+        elevation: 8,
+        centerTitle: true,
+        title: Image.asset(
+          'assets/Granizo4.png',
+          height: 56,
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
+        elevation: 2,
         onPressed: () {
           Navigator.push(
             context,
@@ -95,6 +93,7 @@ class _MainPageState extends State<MainPage>
           color: Colors.white,
         ),
       ),
+      extendBody: true,
       body: TabBarView(
           controller: _tabController,
           physics: NeverScrollableScrollPhysics(),
@@ -102,7 +101,21 @@ class _MainPageState extends State<MainPage>
             MapRecent(),
             Harvests(),
             About(),
+            Container(),
           ]),
+      bottomNavigationBar: FABBottomAppBar(
+        notchedShape: CircularNotchedRectangle(),
+        selectedColor: Theme.of(context).primaryColor,
+        color: Colors.grey,
+        centerItemText: "Cosechar",
+        onTabSelected: _tabController.animateTo,
+        items: [
+          FABBottomAppBarItem(iconData: Icons.place, text: 'Mapa'),
+          FABBottomAppBarItem(iconData: Icons.person, text: 'Perfil'),
+          FABBottomAppBarItem(iconData: Icons.book, text: 'Proyecto'),
+          FABBottomAppBarItem(iconData: Icons.notifications, text: 'Noticias'),
+        ],
+      ),
     );
   }
 }
