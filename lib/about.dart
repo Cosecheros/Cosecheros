@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-// TODO: rearmar esto con las nuevas cosas
 class About extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -82,7 +81,7 @@ class _AboutListWidgetState extends State<AboutListWidget> {
     ),
     Item(
         header: "Quién es cosechero",
-        expanded: Text("Todos podemos ser cosecheros. Cosechando información sobre la granizada y resguardando algunos granizos especiales estamos haciendo ciencia, somos verdaderos CIUDADANOS CIENTIFICOS.")),
+        expanded: Text("Todos podemos ser cosecheros. Cosechando información sobre la granizada y resguardando algunos granizos especiales estamos haciendo ciencia , somos verdaderos CIUDADANOS CIENTIFICOS.")),
     Item(
         header: "Por qué cosechar",
         expanded: Text("Parte de la Provincia de Córdoba está en una de las regiones de tormentas más severas del planeta. Las tormentas extremas son centro de estudio de investigadores de Argentina y de otros países del mundo, con el objetivo de comprender estas tormentas.")),
