@@ -1,8 +1,9 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+
+import 'models/harvest.dart';
+import 'shared/harvest_card.dart';
 
 class Harvests extends StatelessWidget {
   @override
@@ -21,12 +22,15 @@ class Harvests extends StatelessWidget {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
               return Center(
-                child: SizedBox(
-                  height: 60.0,
-                  width: 60.0,
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                        Theme.of(context).accentColor),
+                child: Container(
+                  margin: EdgeInsets.all(8),
+                  child: SizedBox(
+                    height: 30.0,
+                    width: 30.0,
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                          Theme.of(context).accentColor),
+                    ),
                   ),
                 ),
               );
@@ -34,37 +38,8 @@ class Harvests extends StatelessWidget {
               return ListView(
                 padding: EdgeInsets.fromLTRB(8, 8, 8, 100),
                 children: snapshot.data.documents
-                    .map((DocumentSnapshot document) => Card(
-                          margin: EdgeInsets.only(bottom: 12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
-                              document['granizada_thumb'] != null
-                                  ? CachedNetworkImage(
-                                      placeholder: (context, url) => Center(
-                                        child: SizedBox(
-                                          height: 60.0,
-                                          width: 60.0,
-                                          child: CircularProgressIndicator(
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                                    Colors.green),
-                                          ),
-                                        ),
-                                      ),
-                                      imageUrl: document['granizada_thumb'],
-                                      fit: BoxFit.cover,
-                                      height: 200,
-                                    )
-                                  : Container(),
-                              ListTile(
-                                title: Text(DateFormat.yMMMMEEEEd()
-                                    .format(document['date'].toDate())),
-                                subtitle: Text(document['lluvia']),
-                              ),
-                            ],
-                          ),
-                        ))
+                    .map((DocumentSnapshot doc) =>
+                        HarvestCard(HarvestModel.fromSnapshot(doc)))
                     .toList(),
               );
           }
