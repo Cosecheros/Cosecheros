@@ -14,37 +14,39 @@ class HarvestCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
         margin: EdgeInsets.only(bottom: 12),
-        child: Stack(
-          fit: StackFit.passthrough,
-          children: <Widget>[
-            showImage(),
-            Material(
-              color: Colors.transparent,
-              child: InkWell(
-                splashColor: Colors.black26,
-                highlightColor: Colors.black26,
-                onTap: () {
-                  // TODO: mostrar imagen en pantalla completa?
-                  print('Card tapped.');
-                },
-                child: Container(
-                    alignment: Alignment.bottomLeft,
-                    height: 200,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.center,
-                        end: Alignment.bottomCenter,
-                        colors: <Color>[
-                          Colors.black.withAlpha(0),
-                          Colors.black12,
-                          Colors.black38
-                        ],
+        child: Container(
+          height: 200,
+          child: Stack(
+            fit: StackFit.expand,
+            children: <Widget>[
+              showImage(),
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  splashColor: Colors.black26,
+                  highlightColor: Colors.black26,
+                  onTap: () {
+                    // TODO: mostrar imagen en pantalla completa?
+                    print('Card tapped.');
+                  },
+                  child: Container(
+                      alignment: Alignment.bottomLeft,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.center,
+                          end: Alignment.bottomCenter,
+                          colors: <Color>[
+                            Colors.black.withAlpha(0),
+                            Colors.black12,
+                            Colors.black38
+                          ],
+                        ),
                       ),
-                    ),
-                    child: showText()),
-              ),
-            )
-          ],
+                      child: showText()),
+                ),
+              )
+            ],
+          ),
         ));
   }
 

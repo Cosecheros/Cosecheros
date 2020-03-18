@@ -22,15 +22,12 @@ class Harvests extends StatelessWidget {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
               return Center(
-                child: Container(
-                  margin: EdgeInsets.all(8),
-                  child: SizedBox(
-                    height: 30.0,
-                    width: 30.0,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                          Theme.of(context).accentColor),
-                    ),
+                child: SizedBox(
+                  height: 60.0,
+                  width: 60.0,
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                        Theme.of(context).accentColor),
                   ),
                 ),
               );

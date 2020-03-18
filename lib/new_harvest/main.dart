@@ -136,7 +136,7 @@ class NewHarvestState extends State<NewHarvest>
     String id = ref.documentID;
 
     uploadTask = storageReference
-        .child("cosechas/$id-${basename(model.hailStorm.path)}")
+        .child("cosechas/$id-granizada.jpg")
         .putFile(model.hailStorm);
 
     setState(() {
@@ -149,7 +149,7 @@ class NewHarvestState extends State<NewHarvest>
     String hailPath;
     if (model.hail != null) {
       uploadTask = storageReference
-          .child("cosechas/$id-${basename(model.hail.path)}")
+          .child("cosechas/$id-granizo.jpg")
           .putFile(model.hail);
 
       // Trigger update
@@ -166,34 +166,9 @@ class NewHarvestState extends State<NewHarvest>
       indeterminate = true;
     });
 
-    // Tiempo para que la extension ResizeImage de Firebase genere
-    // los thumbnails.
-    // TODO hacer esto en Firebase Functions.
-    await Future.delayed(Duration(seconds: 10));
-
-    String stormThumbUrl;
-    String hailThumbUrl;
-    try {
-      stormThumbUrl = await storageReference
-          .child(
-              "cosechas/thumbs/${basenameWithoutExtension(stormPath)}_500x500${extension(stormPath)}")
-          .getDownloadURL();
-
-      if (hailPath != null) {
-        hailThumbUrl = await storageReference
-            .child(
-                "cosechas/thumbs/${basenameWithoutExtension(hailPath)}_500x500${extension(hailPath)}")
-            .getDownloadURL();
-      }
-    } catch (PlatformException) {
-      print("fek thumbnails");
-    }
-
     await ref.updateData({
       'granizada': stormPath,
-      'granizada_thumb': stormThumbUrl,
       'granizo': hailPath,
-      'granizo_thumb': hailThumbUrl,
     });
 
     setState(() {

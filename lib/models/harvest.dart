@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class HarvestModel extends ChangeNotifier {
-
   DateTime dateTime;
   LatLng _latLng;
 
@@ -54,30 +54,64 @@ class HarvestModel extends ChangeNotifier {
   }
 
   Map<String, dynamic> toMap() => {
-    'timestamp': FieldValue.serverTimestamp(),
-    'date': dateTime,
-    'geo': geoPoint,
-    'lluvia': rainToString(rain),
-    //'tamaño': sizeToString(size),
-  };
+        'timestamp': FieldValue.serverTimestamp(),
+        'date': dateTime,
+        'geo': geoPoint,
+        'lluvia': rainToString(rain),
+        //'tamaño': sizeToString(size),
+      };
 
   static HarvestModel fromSnapshot(DocumentSnapshot doc) {
     HarvestModel model = HarvestModel();
     model.dateTime = doc.data['date'].toDate();
     model.geoPoint = doc.data['geo'];
     model._rain = stringToRain(doc.data['lluvia']);
+
     model.stormThumb = doc.data['granizada_thumb'];
+
+    if (model.stormThumb == 'ready') {
+      model.stormThumb = null;
+      FirebaseStorage()
+          .ref()
+          .child("cosechas/thumbs/${doc.documentID}-granizada_500x500.jpg")
+          .getDownloadURL()
+          .then((url) => Firestore.instance
+                  .document("cosechas/${doc.documentID}")
+                  .updateData({
+                'granizada_thumb': url,
+              }));
+    }
+
     model.hailThumb = doc.data['granizo_thumb'];
+
+    if (model.hailThumb == 'ready') {
+      model.hailThumb = null;
+      FirebaseStorage()
+          .ref()
+          .child("cosechas/thumbs/${doc.documentID}-granizo_500x500.jpg")
+          .getDownloadURL()
+          .then((url) => Firestore.instance
+                  .document("cosechas/${doc.documentID}")
+                  .updateData({
+                'granizo_thumb': url,
+              }));
+    }
+
     return model;
   }
-
 }
 
 enum Rain { NA, before, during, after }
-const List<String> RainStrings = ["NS/NC", "Antes del granizo", "Durante el granizo", "Despues del granizo"];
+const List<String> RainStrings = [
+  "NS/NC",
+  "Antes del granizo",
+  "Durante el granizo",
+  "Despues del granizo"
+];
 String rainToString(Rain rain) {
   return RainStrings[Rain.values.indexOf(rain)];
 }
+
 Rain stringToRain(String string) {
   return Rain.values[RainStrings.indexOf(string)];
 }
