@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "967616938605",
+    "firebase_url": "https://mincyt-granizo.firebaseio.com",
+    "project_id": "mincyt-granizo",
+    "storage_bucket": "mincyt-granizo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:967616938605:android:ba801de6f4b9c10f2af564",
+        "android_client_info": {
+          "package_name": "ar.edu.unc.famaf.cosecheros"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "967616938605-77itfhpp40tl0tmpj7vu6jkkf9ppato7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrLmBriUCUze4CAPBM0yvCmmOg7hBOuCI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "967616938605-77itfhpp40tl0tmpj7vu6jkkf9ppato7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
