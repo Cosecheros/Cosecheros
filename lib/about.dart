@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class About extends StatelessWidget {
   @override
@@ -13,17 +14,6 @@ class About extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50),
-                child: Image(image: AssetImage('assets/Granizo2.jpg')),
-              ),
-              Container(
-                padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                child: Text(
-                  "Es un programa que posibilita la geolocalización temporal de las granizadas y la recolección y caracterización cristalográfica de granizos, a lo largo del territorio provincial, con el fin de correlacionar estos datos con la información obtenida por instrumental remoto científico y las modelizaciones disponibles.",
-                  style: TextStyle(fontWeight: FontWeight.w300),
-                ),
-              ),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: AboutListWidget(),
@@ -59,6 +49,11 @@ class AboutListWidget extends StatefulWidget {
 
 class _AboutListWidgetState extends State<AboutListWidget> {
   List<Item> _data = [
+    Item(
+        header: "Qué es Cosecheros",
+        expanded: Text(
+          "Es un programa que posibilita la geolocalización temporal de las granizadas y la recolección y caracterización cristalográfica de granizos, a lo largo del territorio provincial, con el fin de correlacionar estos datos con la información obtenida por instrumental remoto científico y las modelizaciones disponibles.")),
+
     Item(
         header: "Qué cosechar",
         expanded: Column(
@@ -101,7 +96,11 @@ class _AboutListWidgetState extends State<AboutListWidget> {
     Item(
         header: "Qué hacemos con las fotos",
         expanded: Text(
-            "Las analizamos: a partir de las fotos podemos deducir la cantidad de granizo que cayó por unidadd de superfficie")),
+            "Las analizamos: a partir de las fotos podemos deducir la cantidad de granizo que cayó por unidadd de superfficie",
+          style: GoogleFonts.patrickHand(
+            textStyle: TextStyle(color: Colors.black, letterSpacing: .5),
+          ),
+        )),
     Item(
         header: 'Qué hacemos con los granizos cosechados',
         expanded: Text(
@@ -116,10 +115,7 @@ class _AboutListWidgetState extends State<AboutListWidget> {
         expanded: Text(
             'Pedimos permiso para acceder al gps porque necesitamos la ubicacion de la tormenta. El permiso a la galeria y cámara es para poder subir la foto')),
     Item(
-        header: 'Sobre la app',
-        expanded: Text('Desarrollada en Dart.....')), //ver que poner
-    Item(
-        header: 'CONTACTO',
+        header: 'Contacto',
         expanded: Text(
             'aca iria mail de cosecheros. ver como hacer para que abra gmail con destinatario cosecheros')),
   ];
