@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
@@ -17,6 +18,7 @@ class MapRecent extends StatefulWidget {
 class MapRecentState extends State<MapRecent> {
   Completer<GoogleMapController> _controller = Completer();
   Set<Marker> _markers = Set();
+  String _mapStyle;
 
   static final CameraPosition _initPosition = CameraPosition(
     target: LatLng(-31.416998, -64.183657),
@@ -26,6 +28,15 @@ class MapRecentState extends State<MapRecent> {
   void getPos() async {
     await Geolocator()
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    rootBundle.loadString('assets/map_style.json').then((string) {
+      _mapStyle = string;
+    });
   }
 
   @override
@@ -67,6 +78,7 @@ class MapRecentState extends State<MapRecent> {
             initialCameraPosition: _initPosition,
             onMapCreated: (GoogleMapController controller) {
               _controller.complete(controller);
+              controller.setMapStyle(_mapStyle);
             },
           );
         });

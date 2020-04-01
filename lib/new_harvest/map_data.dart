@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cosecheros/models/harvest.dart';
 import 'package:cosecheros/shared/slide.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,7 @@ class MapDataState extends State<MapData> {
   Completer<GoogleMapController> _controller = Completer();
   bool isLastKnownPos = false;
   HarvestModel noListenModel;
+  String _mapStyle;
 
   void _goTo(LatLng latLng) async {
     final GoogleMapController controller = await _controller.future;
@@ -53,6 +55,9 @@ class MapDataState extends State<MapData> {
     super.initState();
     noListenModel = Provider.of<HarvestModel>(context, listen: false);
     _initPos();
+    rootBundle.loadString('assets/map_style.json').then((string) {
+      _mapStyle = string;
+    });
   }
 
   @override
@@ -79,10 +84,13 @@ class MapDataState extends State<MapData> {
               : null,
           initialCameraPosition: CameraPosition(
               target: model.latLng ?? LatLng(-31.416998, -64.183657), zoom: 10),
-          onMapCreated: _controller.complete,
+          onMapCreated: (controller) {
+            _controller.complete(controller);
+            controller.setMapStyle(_mapStyle);
+          },
           onTap: _goTo,
           onCameraMove: (CameraPosition pos) => model.latLng = pos.target,
-          onCameraIdle: () async {  },
+          onCameraIdle: () async {},
         ),
       ),
     );

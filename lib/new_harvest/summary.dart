@@ -5,6 +5,7 @@ import 'package:cosecheros/shared/slide.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -84,6 +85,16 @@ class MapSummary extends StatefulWidget {
 
 class MapSummaryState extends State<MapSummary> {
   Completer<GoogleMapController> _controller = Completer();
+  String _mapStyle;
+
+  @override
+  void initState() {
+    super.initState();
+
+    rootBundle.loadString('assets/map_style.json').then((string) {
+      _mapStyle = string;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +112,7 @@ class MapSummaryState extends State<MapSummary> {
       ),
       onMapCreated: (GoogleMapController controller) {
         _controller.complete(controller);
+        controller.setMapStyle(_mapStyle);
       },
       onTap: (latLong) {},
     );
