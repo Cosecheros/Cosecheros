@@ -14,7 +14,7 @@ description: Cosecheros de Granizo en Flutter
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -27,15 +27,19 @@ dependencies:
   provider: ^4.0.2
   cached_network_image: ^2.0.0
   intl: ^0.16.1
-  google_maps_flutter: ^0.5.21
+  google_maps_flutter: ^0.5.28
   geolocator: ^5.2.1
   firebase_core: ^0.4.3
   cloud_firestore: ^0.13.0
   firebase_storage: ^3.1.1
   firebase_analytics: ^5.0.2
+  modal_bottom_sheet: ^2.0.0
 
   image_picker: ^0.6.3
   url_launcher: ^5.4.1
+
+  flutter_dynamic_forms: ^0.14.0
+  flutter_dynamic_forms_components: ^0.14.0
 
 dev_dependencies:
   flutter_test:
@@ -86,4 +90,3 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-

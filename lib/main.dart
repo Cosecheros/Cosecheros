@@ -1,44 +1,80 @@
-import 'package:cosecheros/about.dart';
-import 'package:cosecheros/harvests.dart';
+import 'package:cosecheros/cosechar/test_form.dart';
 import 'package:cosecheros/map.dart';
-import 'package:cosecheros/new_harvest/main.dart';
+import 'package:cosecheros/new_harvest/start.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
-import 'shared/fab_bottom_bar.dart';
+import 'alerts/alerts_bottom.dart';
+import 'cosechar/granizo.dart';
 
 void main() {
   Intl.defaultLocale = 'es';
   initializeDateFormatting('es', null).then((_) => runApp(MyApp()));
 }
 
+enum Cosecha { test, granizo, helada }
+
+final Color primary = Color(0xFF5C92FF);
+final Color secondary = Color(0xFF32559B);
+final Color background = Color(0xFFEDF4F5);
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Cosecheros',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          primaryColor: Color(0xFF01A0C7),
-          accentColor: Color(0xFF41D1D5),
-          // accentColor: Colors.white,
-          buttonTheme: ButtonThemeData(
-            buttonColor: Colors.white,
-            padding: const EdgeInsets.all(8.0),
+        colorScheme: ColorScheme.light(
+            primary: primary,
+            primaryVariant: secondary,
+            onBackground: Color(0xFF103940)),
+        primaryColor: primary,
+        accentColor: secondary,
+        backgroundColor: background,
+        buttonTheme: ButtonThemeData(
+          buttonColor: Colors.white,
+          padding: const EdgeInsets.all(8.0),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            primary: secondary,
+            elevation: 4,
+            shadowColor: secondary.withOpacity(.4),
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(30.0))),
+              borderRadius: BorderRadius.circular(30.0),
+            ),
           ),
-          cardTheme: CardTheme(
-            elevation: 1,
-            color: Colors.white,
-            clipBehavior: Clip.antiAliasWithSaveLayer,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(primary: Colors.black),
+        ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: secondary,
+        ),
+        cardTheme: CardTheme(
+          elevation: 1,
+          color: Colors.white,
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10.0))),
+        ),
+        bottomSheetTheme: BottomSheetThemeData(
+          backgroundColor: Colors.transparent,
+          modalBackgroundColor: Colors.transparent,
+        ),
+        textTheme: TextTheme(
+          headline1: TextStyle(
+            fontSize: 32,
+            fontWeight: FontWeight.w800,
+            color: Color(0xFF103940),
           ),
-          bottomSheetTheme: BottomSheetThemeData(
-            backgroundColor: Colors.transparent,
-            modalBackgroundColor: Colors.transparent,
-          )),
+        ),
+      ),
       home: MainPage(),
     );
   }
@@ -70,52 +106,151 @@ class _MainPageState extends State<MainPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 8,
-        centerTitle: true,
-        title: Image.asset(
-          'assets/Granizo4.png',
-          height: 56,
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        elevation: 2,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton.extended(
+        heroTag: null,
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => NewHarvest()),
-          );
+          _onNuevaCosecha();
         },
-        tooltip: 'Nueva cosecha',
-        child: Icon(
+        label: Text(
+          'Cosechar',
+          style: TextStyle(color: Colors.white),
+        ),
+        icon: Icon(
           Icons.add,
           color: Colors.white,
         ),
       ),
       extendBody: true,
-      body: TabBarView(
-          controller: _tabController,
-          physics: NeverScrollableScrollPhysics(),
-          children: [
-            MapRecent(),
-            Harvests(),
-            About(),
-            Container(),
-          ]),
-      bottomNavigationBar: FABBottomAppBar(
-        notchedShape: CircularNotchedRectangle(),
-        selectedColor: Theme.of(context).primaryColor,
-        color: Colors.grey,
-        centerItemText: "Cosechar",
-        onTabSelected: _tabController.animateTo,
-        items: [
-          FABBottomAppBarItem(iconData: Icons.place, text: 'Mapa'),
-          FABBottomAppBarItem(iconData: Icons.person, text: 'Perfil'),
-          FABBottomAppBarItem(iconData: Icons.book, text: 'Proyecto'),
-          FABBottomAppBarItem(iconData: Icons.notifications, text: 'Noticias'),
+      body: Stack(
+        children: [
+          MapRecent(),
+          SafeArea(
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: getLogo(),
+              ),
+            ),
+          )
         ],
       ),
+      bottomNavigationBar: GestureDetector(
+        onTap: () {
+          showMaterialModalBottomSheet(
+            expand: true,
+            context: context,
+            builder: (context) => Container(
+              color: Colors.green,
+            ),
+          );
+        },
+        child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(16),
+          child: AlertsBottom(),
+          decoration: BoxDecoration(
+            color: Theme.of(context).backgroundColor,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.4),
+                blurRadius: 16,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
+  }
+
+  getLogo() => Stack(
+        children: <Widget>[
+          // Stroked text as border.
+          Text(
+            'Cosecheros',
+            style: TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.w800,
+              foreground: Paint()
+                ..style = PaintingStyle.stroke
+                ..strokeWidth = 4
+                ..color = Color(0xFFF7F7F7),
+            ),
+          ),
+          // Solid text as fill.
+          Text(
+            'Cosecheros',
+            style: Theme.of(context).textTheme.headline1,
+          ),
+        ],
+      );
+
+  Future<void> _onNuevaCosecha() async {
+    switch (await showDialog<Cosecha>(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: const Text('¿Qué vas a cosechar?'),
+            children: <Widget>[
+              // Wrap(
+              //   alignment: WrapAlignment.center,
+              //   spacing: 8.0,
+              //   runSpacing: 8.0,
+              //   children: [
+              //     Container(
+              //       width: 100,
+              //       height: 100,
+              //       color: Colors.cyan,
+              //     ),
+              //     Container(
+              //       width: 100,
+              //       height: 100,
+              //       color: Colors.cyan,
+              //     ),
+              //   ],
+              // ),
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context, Cosecha.test);
+                },
+                child: const Text('Test Form'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context, Cosecha.granizo);
+                },
+                child: const Text('Granizada'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context, Cosecha.helada);
+                },
+                child: const Text('Helada'),
+              ),
+            ],
+          );
+        })) {
+      case Cosecha.test:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => CustomExpressionForm()),
+        );
+        break;
+      case Cosecha.granizo:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => GranizoForm()),
+        );
+        break;
+      case Cosecha.helada:
+        // ...
+        break;
+      default:
+        // dialog dismissed
+        break;
+    }
   }
 }
