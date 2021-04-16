@@ -37,20 +37,20 @@ class _GranizoFormState extends State<GranizoForm> {
   @override
   void initState() {
     super.initState();
-    _buildForm();
+    // _buildForm();
   }
 
-  Future _buildForm() async {
-    var doc = await Firestore.instance
-                .collection('forms')
-                .document('granizo')
-                .get();
-    print(doc.data);
-    json = doc.data["data"];
-    setState(() {
-      isLoading = false;
-    });
-  }
+  // Future _buildForm() async {
+  //   var doc = await Firestore.instance
+  //               .collection('forms')
+  //               .document('granizo')
+  //               .get();
+  //   print(doc.data);
+  //   json = doc.data["data"];
+  //   setState(() {
+  //     isLoading = false;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +67,7 @@ class _GranizoFormState extends State<GranizoForm> {
                   content: json,
                   parsers: components.getDefaultParserList(),
                   child: FormRenderer<JsonFormManager>(
-                    renderers: components.getReactiveRenderers(),
+                    renderers: components.getRenderers(),
                   ),
                 ),
         ),

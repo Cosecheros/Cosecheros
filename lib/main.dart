@@ -1,6 +1,7 @@
 import 'package:cosecheros/cosechar/test_form.dart';
 import 'package:cosecheros/map.dart';
 import 'package:cosecheros/new_harvest/start.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
@@ -80,29 +81,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MainPage extends StatefulWidget {
-  const MainPage({Key key}) : super(key: key);
-
-  @override
-  _MainPageState createState() => _MainPageState();
-}
-
-class _MainPageState extends State<MainPage>
-    with SingleTickerProviderStateMixin {
-  TabController _tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(vsync: this, length: 4);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
+class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -110,7 +89,7 @@ class _MainPageState extends State<MainPage>
       floatingActionButton: FloatingActionButton.extended(
         heroTag: null,
         onPressed: () {
-          _onNuevaCosecha();
+          _onNuevaCosecha(context);
         },
         label: Text(
           'Cosechar',
@@ -124,13 +103,24 @@ class _MainPageState extends State<MainPage>
       extendBody: true,
       body: Stack(
         children: [
-          MapRecent(),
+          FutureBuilder(
+            future: Firebase.initializeApp(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Text('error de firebase');
+              }
+              if (snapshot.connectionState == ConnectionState.done) {
+                return MapRecent();
+              }
+              return CircularProgressIndicator();
+            },
+          ),
           SafeArea(
             child: Align(
               alignment: Alignment.topLeft,
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: getLogo(),
+                child: getLogo(context),
               ),
             ),
           )
@@ -166,7 +156,7 @@ class _MainPageState extends State<MainPage>
     );
   }
 
-  getLogo() => Stack(
+  getLogo(BuildContext context) => Stack(
         children: <Widget>[
           // Stroked text as border.
           Text(
@@ -188,7 +178,7 @@ class _MainPageState extends State<MainPage>
         ],
       );
 
-  Future<void> _onNuevaCosecha() async {
+  Future<void> _onNuevaCosecha(BuildContext context) async {
     switch (await showDialog<Cosecha>(
         context: context,
         builder: (BuildContext context) {

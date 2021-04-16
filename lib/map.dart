@@ -68,7 +68,7 @@ class MapRecentState extends State<MapRecent> {
     return Stack(
       children: [
         StreamBuilder<QuerySnapshot>(
-            stream: Firestore.instance
+            stream: FirebaseFirestore.instance
                 .collection('cosechas')
                 // TODO filtrar por gps/tiempo
                 // .where("timestamp", isGreaterThan: from)
@@ -80,10 +80,10 @@ class MapRecentState extends State<MapRecent> {
                 return new Text('Error: ${snapshot.error}');
               if (snapshot.connectionState != ConnectionState.waiting) {
                 _markers
-                    .addAll(snapshot.data.documents.map((DocumentSnapshot doc) {
+                    .addAll(snapshot.data.docs.map((QueryDocumentSnapshot doc) {
                   HarvestModel model = HarvestModel.fromSnapshot(doc);
                   return Marker(
-                      markerId: MarkerId(doc.documentID),
+                      markerId: MarkerId(doc.id),
                       position: model.latLng,
                       icon: markerIcon,
                       onTap: () => showModalBottomSheet(

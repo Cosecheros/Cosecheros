@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 
 class ImageSelector extends StatelessWidget {
   final Function(File file) onPicked;
+  final _picker = ImagePicker();
 
   ImageSelector({this.onPicked});
 
@@ -14,9 +15,9 @@ class ImageSelector extends StatelessWidget {
       children: <Widget>[
         RawMaterialButton(
           onPressed: () async {
-            File file = await ImagePicker.pickImage(source: ImageSource.camera);
+            PickedFile file = await _picker.getImage(source: ImageSource.camera);
             if (file != null) {
-              onPicked(file);
+              onPicked(File(file.path));
             }
           },
           child: Icon(
@@ -32,15 +33,14 @@ class ImageSelector extends StatelessWidget {
         SizedBox(
           height: 4,
         ),
-        FlatButton(
-            textColor: Colors.white,
+        TextButton(
             child: Text("Subir desde la galería",
-                style: TextStyle(fontWeight: FontWeight.w800)),
+                style: TextStyle(fontWeight: FontWeight.w800, color: Colors.white)),
             onPressed: () async {
-              File file =
-                  await ImagePicker.pickImage(source: ImageSource.gallery);
+              PickedFile file =
+                  await _picker.getImage(source: ImageSource.gallery);
               if (file != null) {
-                onPicked(file);
+                onPicked(File(file.path));
               }
             }),
       ],

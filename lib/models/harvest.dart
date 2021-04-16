@@ -61,38 +61,38 @@ class HarvestModel extends ChangeNotifier {
         //'tamaño': sizeToString(size),
       };
 
-  static HarvestModel fromSnapshot(DocumentSnapshot doc) {
+  static HarvestModel fromSnapshot(QueryDocumentSnapshot doc) {
     HarvestModel model = HarvestModel();
-    model.dateTime = doc.data['date'].toDate();
-    model.geoPoint = doc.data['geo'];
-    model._rain = stringToRain(doc.data['lluvia']);
+    model.dateTime = doc.data()['date'].toDate();
+    model.geoPoint = doc.data()['geo'];
+    model._rain = stringToRain(doc.data()['lluvia']);
 
-    model.stormThumb = doc.data['granizada_thumb'];
+    model.stormThumb = doc.data()['granizada_thumb'];
 
     if (model.stormThumb == 'ready') {
       model.stormThumb = null;
-      FirebaseStorage()
+      FirebaseStorage.instance
           .ref()
-          .child("cosechas/thumbs/${doc.documentID}-granizada_500x500.jpg")
+          .child("cosechas/thumbs/${doc.id}-granizada_500x500.jpg")
           .getDownloadURL()
-          .then((url) => Firestore.instance
-                  .document("cosechas/${doc.documentID}")
-                  .updateData({
+          .then((url) => FirebaseFirestore.instance
+                  .doc("cosechas/${doc.id}")
+                  .update({
                 'granizada_thumb': url,
               }));
     }
 
-    model.hailThumb = doc.data['granizo_thumb'];
+    model.hailThumb = doc.data()['granizo_thumb'];
 
     if (model.hailThumb == 'ready') {
       model.hailThumb = null;
-      FirebaseStorage()
+      FirebaseStorage.instance
           .ref()
-          .child("cosechas/thumbs/${doc.documentID}-granizo_500x500.jpg")
+          .child("cosechas/thumbs/${doc.id}-granizo_500x500.jpg")
           .getDownloadURL()
-          .then((url) => Firestore.instance
-                  .document("cosechas/${doc.documentID}")
-                  .updateData({
+          .then((url) => FirebaseFirestore.instance
+                  .doc("cosechas/${doc.id}")
+                  .update({
                 'granizo_thumb': url,
               }));
     }

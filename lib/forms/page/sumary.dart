@@ -15,7 +15,9 @@ class SumaryPage extends StatelessWidget {
           padding: EdgeInsets.all(8.0),
           children: props
               .map((i) => Text(
-                    '${i.id} = ${i.property}: ${i.value}',
+                    i.property == 'point'
+                        ? '${i.id} = ${i.property}: ${i.value}'
+                        : '${i.id} = ${i.property}: ${i.value}',
                     style: Theme.of(context).textTheme.bodyText1.apply(
                         color: i.value == "false" || i.value == ""
                             ? Colors.red
