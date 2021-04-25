@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
+    <!-- <item>
         <bitmap
             android:gravity="center"
-            android:src="@mipmap/logos" />
-    </item>
+            android:src="@mipmap/splash" />
+    </item> -->
+    <item android:drawable="@color/background"/>
+    <item android:drawable="@drawable/splash" android:gravity="center|left"/>
 </layer-list>
