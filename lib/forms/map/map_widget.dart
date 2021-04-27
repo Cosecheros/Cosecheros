@@ -19,7 +19,7 @@ class MapWidget extends StatefulWidget {
   State<MapWidget> createState() => MapWidgetState();
 }
 
-class MapWidgetState extends State<MapWidget> {
+class MapWidgetState extends State<MapWidget> with AutomaticKeepAliveClientMixin {
   GoogleMapController _controller;
   bool isLastKnownPos = false;
   String _mapStyle;
@@ -32,9 +32,10 @@ class MapWidgetState extends State<MapWidget> {
     _moveMapTo(latLngFromPosition(pos));
     widget.dispatcher(
       ChangeValueEvent(
-          value: geoPosFromPosition(pos),
-          elementId: widget.element.id,
-          propertyName: Map.pointPropName),
+        value: geoPosFromPosition(pos),
+        elementId: widget.element.id,
+        propertyName: Map.pointPropName,
+      ),
     );
   }
 
@@ -69,9 +70,12 @@ class MapWidgetState extends State<MapWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    GeoPos point = widget.element.point;
+  bool get wantKeepAlive => true;
 
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    GeoPos point = widget.element.point;
     return GoogleMap(
       mapType: MapType.normal,
       compassEnabled: true,
@@ -86,21 +90,23 @@ class MapWidgetState extends State<MapWidget> {
                   consumeTapEvents: true)
             ])
           : null,
-      initialCameraPosition: CameraPosition(
-          target: latLngFromGeoPos(point), zoom: 8),
+      initialCameraPosition:
+          CameraPosition(target: latLngFromGeoPos(point), zoom: 10),
       onMapCreated: (controller) {
         _controller = controller;
         controller.setMapStyle(_mapStyle);
       },
       onTap: _moveMapTo,
-      onCameraMove: (CameraPosition pos) async => widget.dispatcher(
+      onCameraMove: (CameraPosition pos) => widget.dispatcher(
         ChangeValueEvent(
-          value: geoPosFromLatLng(pos.target),
-          elementId: widget.element.id,
-          propertyName: Map.pointPropName),
+            value: geoPosFromLatLng(pos.target),
+            elementId: widget.element.id,
+            propertyName: Map.pointPropName),
       ),
       onCameraIdle: () {},
-      gestureRecognizers: Set()..add(Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer())),
+      gestureRecognizers: Set()
+        ..add(Factory<OneSequenceGestureRecognizer>(
+            () => EagerGestureRecognizer())),
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:cosecheros/forms/page/tab_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_dynamic_forms/flutter_dynamic_forms.dart';
@@ -5,7 +6,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:flutter_dynamic_forms_components/flutter_dynamic_forms_components.dart'
     as model;
 
-class SingleChoiceRenderer extends FormElementRenderer<model.RadioButton> {
+class SingleChoiceRenderer extends FormElementRenderer<model.SingleSelectChoice> {
   BoxDecoration getDecorationBox(context, value) {
     return value
         ? BoxDecoration(
@@ -28,11 +29,11 @@ class SingleChoiceRenderer extends FormElementRenderer<model.RadioButton> {
 
   @override
   Widget render(
-      model.RadioButton element,
+      model.SingleSelectChoice element,
       BuildContext context,
       FormElementEventDispatcherFunction dispatcher,
       FormElementRendererFunction renderer) {
-    var parent = element.parent as model.RadioButtonGroup;
+    var parent = element.parent as model.SingleSelectGroup;
 
     return LazyStreamBuilder<String>(
       initialData: parent.value,
@@ -52,6 +53,7 @@ class SingleChoiceRenderer extends FormElementRenderer<model.RadioButton> {
                     elementId: parent.id,
                     propertyName: model.SingleSelectGroup.valuePropertyName),
               );
+              TabWidget.of(context).movePage(1);
             },
             child: Center(
               child: Text(

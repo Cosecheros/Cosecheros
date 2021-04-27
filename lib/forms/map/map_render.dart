@@ -19,8 +19,6 @@ class MapRenderer extends FormElementRenderer<Map> {
             initialData: element.point,
             stream: element.pointChanged,
             builder: (context, snapshot) {
-              String lat = snapshot.data.latitude.toStringAsFixed(8);
-              String lon = snapshot.data.longitude.toStringAsFixed(8);
               return Column(
                 children: [
                   Text(
@@ -30,7 +28,7 @@ class MapRenderer extends FormElementRenderer<Map> {
                   ),
                   SizedBox(height: 16),
                   Text(
-                    "$lat, $lon",
+                    snapshot.data.toString(),
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.caption,
                   ),

@@ -1,0 +1,115 @@
+{
+	"@name": "form",
+	"id": "granizo_v1",
+	"name": "Granizada",
+	"children": [
+		{
+			"@name": "formGroup",
+			"id": "page1",
+			"children": [
+				{
+					"@name": "map",
+					"id": "geopoint_map"
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"id": "page3",
+			"children": [
+				{
+					"@name":"label",
+					"value":"¿Cuando llovió?"
+				},
+				{
+					"@name": "choices",
+					"id": "cuando_llovio",
+					"value": "-1",
+					"choices": [
+						{
+							"@name": "choice",
+							"label": "Antes de granizar",
+							"value": "1"
+						},
+						{
+							"@name": "choice",
+							"label": "Mientras granizaba",
+							"value": "2"
+						},
+						{
+							"@name": "choice",
+							"label": "Despues que granizó",
+							"value": "3"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"id": "page3",
+			"children": [
+				{
+					"@name": "label",
+					"value": "Sácale una foto a la granizada."
+				},
+				{
+					"@name": "pic",
+					"id": "granizada_pic"
+				},
+				{
+					"@name": "label",
+					"value": "Recuerda:"
+				},
+				{
+					"@name": "info",
+					"title": "Busca un lugar abierto lejos de paredes.",
+					"subtitle": "Queremos que el granizo esté sano y distribuido uniformemente.",
+					"img": "https://mincyt-granizo.web.app/info/photographer.png"
+				},
+				{
+					"@name": "info",
+					"title": "Ubica la regla de cosecheros.",
+					"subtitle": "También puedes usar alguna tarjeta, como la del colectivo.",
+					"img": "https://mincyt-granizo.web.app/info/photographer.png"
+				},
+				{
+					"@name": "info",
+					"title": "Saca la foto lo más vertical que puedas.",
+					"subtitle": "Así será más fácil de analizar para los científicos.",
+					"img": "https://mincyt-granizo.web.app/info/photographer.png"
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"id": "page4",
+			"children": [
+				{
+					"@name": "label",
+					"value": "Sácale una foto al granizo que elegiste."
+				},
+				{
+					"@name": "pic",
+					"id": "granizo_pic"
+				},
+				{
+					"@name": "label",
+					"value": "Recuerda:"
+				},
+				{
+					"@name": "info",
+					"title": "Ponlo cerca de la regla de cosecheros.",
+					"subtitle": "También puedes usar alguna tarjeta, como la del colectivo.",
+					"img": "https://mincyt-granizo.web.app/info/photographer.png"
+				},
+				{
+					"@name": "info",
+					"title": "Recuerda que debe estar 30 minutos en el congelador.",
+					"subtitle": "No queremos que se descongele mientras tomas la foto.",
+					"img": "https://mincyt-granizo.web.app/info/photographer.png"
+				}
+			]
+		}
+	]
+}

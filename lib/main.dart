@@ -6,12 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 import 'alerts/alerts_bottom.dart';
 import 'cosechar/granizo.dart';
 
 void main() {
   Intl.defaultLocale = 'es';
+  timeago.setDefaultLocale('es');
   initializeDateFormatting('es', null).then((_) => runApp(MyApp()));
 }
 
@@ -112,7 +114,7 @@ class MainPage extends StatelessWidget {
               if (snapshot.connectionState == ConnectionState.done) {
                 return MapRecent();
               }
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             },
           ),
           SafeArea(
@@ -127,15 +129,15 @@ class MainPage extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: GestureDetector(
-        onTap: () {
-          showMaterialModalBottomSheet(
-            expand: true,
-            context: context,
-            builder: (context) => Container(
-              color: Colors.green,
-            ),
-          );
-        },
+        // onTap: () {
+        //   showMaterialModalBottomSheet(
+        //     expand: true,
+        //     context: context,
+        //     builder: (context) => Container(
+        //       color: Colors.green,
+        //     ),
+        //   );
+        // },
         child: Container(
           width: double.infinity,
           padding: EdgeInsets.all(16),

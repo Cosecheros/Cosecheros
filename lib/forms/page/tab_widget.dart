@@ -9,11 +9,19 @@ class TabWidget extends StatefulWidget {
 
   TabWidget({this.header, this.children, this.dispatcher});
 
+  static TabWidgetState of(BuildContext context) {
+    assert(context != null);
+    final TabWidgetState result = context.findAncestorStateOfType<TabWidgetState>();
+    if (result != null)
+      return result;
+    throw Exception("No se encontró un TabWidget padre.");
+  }
+
   @override
-  _TabWidgetState createState() => _TabWidgetState();
+  TabWidgetState createState() => TabWidgetState();
 }
 
-class _TabWidgetState extends State<TabWidget> with SingleTickerProviderStateMixin {
+class TabWidgetState extends State<TabWidget> with SingleTickerProviderStateMixin {
   TabController _controller;
 
   Future<bool> onBack() async {
