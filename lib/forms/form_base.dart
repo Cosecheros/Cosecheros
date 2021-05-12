@@ -1,21 +1,22 @@
-import 'package:cosecheros/forms/events.dart';
-import 'package:cosecheros/forms/expressions.dart';
-import 'package:cosecheros/forms/form_manager.dart';
-import 'package:cosecheros/forms/info/info_parser.dart';
-import 'package:cosecheros/forms/info/info_render.dart';
-import 'package:cosecheros/forms/label/label.dart';
-import 'package:cosecheros/forms/map/map_parser.dart';
-import 'package:cosecheros/forms/map/map_render.dart';
-import 'package:cosecheros/forms/page/page.dart';
-import 'package:cosecheros/forms/page/tab.dart';
-import 'package:cosecheros/forms/picture/pic_parser.dart';
-import 'package:cosecheros/forms/picture/pic_render.dart';
-import 'package:cosecheros/forms/textfield/text_field.dart';
+import 'package:cosecheros/forms/submit_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dynamic_forms/flutter_dynamic_forms.dart';
 import 'package:flutter_dynamic_forms_components/flutter_dynamic_forms_components.dart'
     as components;
 
+import 'events.dart';
+import 'expressions.dart';
+import 'form_manager.dart';
+import 'info/info_parser.dart';
+import 'info/info_render.dart';
+import 'label/label.dart';
+import 'map/map_parser.dart';
+import 'map/map_render.dart';
+import 'page/page.dart';
+import 'page/tab.dart';
+import 'picture/pic_parser.dart';
+import 'picture/pic_render.dart';
+import 'textfield/text_field_renderer.dart';
 import 'checkbox/checkbox_renderer.dart';
 import 'singlechoice/singlechoice_group_parser.dart';
 import 'singlechoice/singlechoice_group_renderer.dart';
@@ -35,8 +36,10 @@ class BaseForm extends StatefulWidget {
 
 class _BaseFormState extends State<BaseForm> {
   final CustomFormManager _formManager = CustomFormManager();
+  final SubmitFirestore _submiter = SubmitFirestore();
   bool isLoading = true;
   Future<String> json;
+  Stream<SubmitProgress> upload;
 
   @override
   void initState() {
@@ -56,27 +59,104 @@ class _BaseFormState extends State<BaseForm> {
     }
 
     if (event is DoneEvent) {
-      Navigator.pop(context);
+      setState(() {
+        upload = _submiter.submit(
+          _formManager.form.id,
+          _formManager.getElementsData(),
+        );
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    print(json);
-    return FutureBuilder(
-      future: json,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) {
-          return Center(child: CircularProgressIndicator());
-        }
-        if (snapshot.hasError) {
-          return _buildError(context);
-        }
-        if (snapshot.hasData) {
-          return _buildData(context, snapshot.data);
-        }
-        return Container(); // No debería suceder
+    return Stack(
+      children: [
+        FutureBuilder(
+          future: json,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState != ConnectionState.done) {
+              return Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasError) {
+              return _buildError(context);
+            }
+            if (snapshot.hasData) {
+              return _buildData(context, snapshot.data);
+            }
+            return Container(); // No debería suceder
+          },
+        ),
+        if (upload == null)
+          SizedBox()
+        else
+          WillPopScope(
+            onWillPop: () async => false, // Fixme: Prevenir retroceder el form
+            child: Container(
+              decoration: BoxDecoration(color: Colors.black45),
+              child: Center(
+                child: StreamBuilder(
+                    stream: upload,
+                    builder: (BuildContext context,
+                        AsyncSnapshot<SubmitProgress> event) {
+                      print(event);
+                      if (event.connectionState == ConnectionState.waiting) {
+                        return _circularProgress(null);
+                      }
+
+                      return Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            event.data.task,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline4
+                                .copyWith(color: Colors.white),
+                          ),
+                          SizedBox(height: 10),
+                          if (event.connectionState == ConnectionState.done)
+                            _doneButton()
+                          else
+                            _circularProgress(event.data.progress)
+                        ],
+                      );
+                    }),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _circularProgress(double value) {
+    return SizedBox(
+      height: 64.0,
+      width: 64.0,
+      child: CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(
+          Theme.of(context).colorScheme.primaryVariant,
+        ),
+        value: value,
+      ),
+    );
+  }
+
+  Widget _doneButton() {
+    return RawMaterialButton(
+      onPressed: () {
+        Navigator.of(context).pop();
       },
+      child: Icon(
+        Icons.done,
+        color: Colors.white,
+        size: 32.0,
+      ),
+      shape: CircleBorder(),
+      elevation: 2.0,
+      fillColor: Theme.of(context).colorScheme.primaryVariant,
+      padding: const EdgeInsets.all(16.0),
     );
   }
 

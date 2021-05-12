@@ -41,8 +41,8 @@ class SingleChoiceRenderer extends FormElementRenderer<model.SingleSelectChoice>
           MergeStream([parent.valueChanged, element.propertyChanged]),
       builder: (context, _) {
         return Container(
-          height: 72,
-          margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
+          height: 80,
+          margin: const EdgeInsets.symmetric(horizontal: 48.0, vertical: 4),
           decoration: getDecorationBox(context, element.value == parent.value),
           child: InkWell(
             borderRadius: BorderRadius.circular(10),

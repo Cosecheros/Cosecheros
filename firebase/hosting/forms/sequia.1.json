@@ -1,0 +1,168 @@
+{
+	"@name": "form",
+	"id": "sequia_v1",
+	"name": "Sequía",
+	"children": [
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "label",
+					"value": "Area de reporte"
+				},
+				{
+					"@name": "textField",
+					"id": "area_reporte",
+					"label": "Tu respuesta"
+				},
+				{
+					"@name": "label",
+					"value": "Responsable"
+				},
+				{
+					"@name": "textField",
+					"id": "responsable",
+					"label": "Tu respuesta"
+				},
+				{
+					"@name": "label",
+					"value": "Contacto tel/cel"
+				},
+				{
+					"@name": "textField",
+					"id": "celular",
+					"label": "Tu respuesta"
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "label",
+					"value": "Institución"
+				},
+				{
+					"@name": "choices",
+					"id": "institucion",
+					"choices": [
+						{
+							"@name": "choice",
+							"label": "SENASA"
+						},
+						{
+							"@name": "choice",
+							"label": "INTA"
+						},
+						{
+							"@name": "choice",
+							"label": "Ministerio de Agricultura y Ganaderia - Regional Nacional",
+							"value": "ministerio_regional_nacional"
+						},
+						{
+							"@name": "choice",
+							"label": "Ministerio de Agricultura y Ganaderia - Regional Provincial",
+							"value": "ministerio_regional_provincial"
+						},
+						{
+							"@name": "choice",
+							"label": "Particular"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "map",
+					"id": "geo"
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "label",
+					"value": "Tipo de producción"
+				},
+				{
+					"@name": "choices",
+					"id": "tipo_produccion",
+					"choices": [
+						{
+							"@name": "choice",
+							"label": "Animal"
+						},
+						{
+							"@name": "choice",
+							"label": "Vegetal"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"id": "vegetal1",
+			"isVisible": {
+				"expression": "@tipo_produccion == \"vegetal\""
+			},
+			"children": [
+				{
+					"@name": "label",
+					"value": "Tipo de cultivo"
+				},
+				{
+					"@name": "choices",
+					"id": "tipo_cultivo",
+					"choices": [
+						{
+							"@name": "choice",
+							"label": "Estival"
+						},
+						{
+							"@name": "choice",
+							"label": "Invernal"
+						},
+						{
+							"@name": "choice",
+							"label": "Pastura"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "label",
+					"value": "Sácale una foto al granizo que elegiste."
+				},
+				{
+					"@name": "pic",
+					"id": "granizo_pic"
+				},
+				{
+					"@name": "label",
+					"value": "Recuerda:"
+				},
+				{
+					"@name": "info",
+					"title": "Ponlo cerca de la regla de cosecheros.",
+					"subtitle": "También puedes usar alguna tarjeta, como la del colectivo.",
+					"img": "https://mincyt-granizo.web.app/info/photographer.png"
+				},
+				{
+					"@name": "info",
+					"title": "Recuerda que debe estar 30 minutos en el congelador.",
+					"subtitle": "No queremos que se descongele mientras tomas la foto.",
+					"img": "https://mincyt-granizo.web.app/info/photographer.png"
+				}
+			]
+		}
+	]
+}

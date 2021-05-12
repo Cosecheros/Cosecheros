@@ -1,8 +1,8 @@
 import 'package:cosecheros/cosechar/test_form.dart';
 import 'package:cosecheros/map.dart';
-import 'package:cosecheros/new_harvest/start.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -10,6 +10,7 @@ import 'package:timeago/timeago.dart' as timeago;
 
 import 'alerts/alerts_bottom.dart';
 import 'cosechar/granizo.dart';
+import 'cosechar/local.dart';
 
 void main() {
   Intl.defaultLocale = 'es';
@@ -31,17 +32,19 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.light(
-            primary: primary,
-            primaryVariant: secondary,
-            onBackground: Color(0xFF103940)),
+          primary: primary,
+          primaryVariant: secondary,
+          onBackground: Color(0xFF103940),
+        ),
         primaryColor: primary,
         accentColor: secondary,
         backgroundColor: background,
         buttonTheme: ButtonThemeData(
           buttonColor: Colors.white,
           padding: const EdgeInsets.all(8.0),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
@@ -64,19 +67,14 @@ class MyApp extends StatelessWidget {
           color: Colors.white,
           clipBehavior: Clip.antiAliasWithSaveLayer,
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10.0))),
+            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+          ),
         ),
         bottomSheetTheme: BottomSheetThemeData(
           backgroundColor: Colors.transparent,
           modalBackgroundColor: Colors.transparent,
         ),
-        textTheme: TextTheme(
-          headline1: TextStyle(
-            fontSize: 32,
-            fontWeight: FontWeight.w800,
-            color: Color(0xFF103940),
-          ),
-        ),
+        textTheme: GoogleFonts.interTextTheme(),
       ),
       home: MainPage(),
     );
@@ -128,57 +126,65 @@ class MainPage extends StatelessWidget {
           )
         ],
       ),
-      bottomNavigationBar: GestureDetector(
-        // onTap: () {
-        //   showMaterialModalBottomSheet(
-        //     expand: true,
-        //     context: context,
-        //     builder: (context) => Container(
-        //       color: Colors.green,
-        //     ),
-        //   );
-        // },
-        child: Container(
-          width: double.infinity,
-          padding: EdgeInsets.all(16),
-          child: AlertsBottom(),
-          decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor,
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.4),
-                blurRadius: 16,
-              ),
-            ],
-          ),
-        ),
-      ),
+      // bottomNavigationBar: GestureDetector(
+      //   onTap: () {
+      //     showMaterialModalBottomSheet(
+      //       expand: true,
+      //       context: context,
+      //       builder: (context) => Container(
+      //         color: Colors.green,
+      //       ),
+      //     );
+      //   },
+      //   child: Container(
+      //     width: double.infinity,
+      //     padding: EdgeInsets.all(16),
+      //     child: AlertsBottom(),
+      //     decoration: BoxDecoration(
+      //       color: Theme.of(context).backgroundColor,
+      //       borderRadius: BorderRadius.only(
+      //         topLeft: Radius.circular(10),
+      //         topRight: Radius.circular(10),
+      //       ),
+      //       boxShadow: [
+      //         BoxShadow(
+      //           color: Colors.grey.withOpacity(0.4),
+      //           blurRadius: 16,
+      //         ),
+      //       ],
+      //     ),
+      //   ),
+      // ),
     );
   }
 
-  getLogo(BuildContext context) => Stack(
-        children: <Widget>[
-          // Stroked text as border.
-          Text(
-            'Cosecheros',
-            style: TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.w800,
-              foreground: Paint()
-                ..style = PaintingStyle.stroke
-                ..strokeWidth = 4
-                ..color = Color(0xFFF7F7F7),
-            ),
+  Widget getLogo(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        // Stroked text as border.
+        Text(
+          'Cosecheros',
+          style: GoogleFonts.inter(
+            fontSize: 32,
+            fontWeight: FontWeight.w900,
+            foreground: Paint()
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 4
+              ..color = Color(0xFFF5F5F5),
           ),
-          // Solid text as fill.
-          Text(
-            'Cosecheros',
-            style: Theme.of(context).textTheme.headline1,
+        ),
+        // Solid text as fill.
+        Text(
+          'Cosecheros',
+          style: GoogleFonts.inter(
+            fontSize: 32,
+            fontWeight: FontWeight.w900,
+            color: Theme.of(context).colorScheme.onBackground,
           ),
-        ],
-      );
+        ),
+      ],
+    );
+  }
 
   Future<void> _onNuevaCosecha(BuildContext context) async {
     switch (await showDialog<Cosecha>(
@@ -208,7 +214,7 @@ class MainPage extends StatelessWidget {
                 onPressed: () {
                   Navigator.pop(context, Cosecha.test);
                 },
-                child: const Text('Test Form'),
+                child: const Text('Local'),
               ),
               SimpleDialogOption(
                 onPressed: () {
@@ -228,7 +234,7 @@ class MainPage extends StatelessWidget {
       case Cosecha.test:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => CustomExpressionForm()),
+          MaterialPageRoute(builder: (context) => LocalForm()),
         );
         break;
       case Cosecha.granizo:

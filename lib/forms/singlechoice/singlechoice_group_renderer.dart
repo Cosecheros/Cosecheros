@@ -20,9 +20,7 @@ class SingleChoiceGroupRenderer extends FormElementRenderer<SingleSelectGroup> {
           ),
           builder: (context, _) => Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-              ),
+              SizedBox(height: 8),
               ...element.choices
                   .where((c) => c.isVisible)
                   .map((choice) => renderer(choice, context))

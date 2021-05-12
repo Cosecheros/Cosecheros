@@ -98,8 +98,7 @@
         {
           "@name": "textField",
           "id": "situacion_obs",
-          "label": "Observaciones",
-          "value": ""
+          "label": "Observaciones"
         }
       ]
     },

@@ -48,7 +48,7 @@ class CheckBoxRenderer extends FormElementRenderer<model.CheckBox> {
             margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
             decoration: getDecorationBox(context, element.value),
             clipBehavior: Clip.antiAlias,
-            height: 72,
+            height: 80,
             child: InkWell(
               onTap: () => changeValue(dispatcher, element),
               borderRadius: BorderRadius.circular(10),
@@ -65,7 +65,7 @@ class CheckBoxRenderer extends FormElementRenderer<model.CheckBox> {
                       padding: EdgeInsets.only(left: 8),
                       child: Text(
                         element.label,
-                        style: Theme.of(context).textTheme.bodyText1.copyWith(
+                        style: Theme.of(context).textTheme.bodyText2.copyWith(
                             color: snapshot.data
                                 ? Theme.of(context).colorScheme.primaryVariant
                                 : Theme.of(context).colorScheme.onBackground),

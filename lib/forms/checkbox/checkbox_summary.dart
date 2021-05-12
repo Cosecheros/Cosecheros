@@ -10,15 +10,23 @@ class CheckBoxSummary extends SummaryWidget<model.CheckBox> {
       return Container();
     }
     return Container(
-      margin: EdgeInsets.symmetric(horizontal:16, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
       child: Row(
         children: [
           Icon(
             Icons.check,
-            color: Theme.of(context).colorScheme.primary,
+            color: Theme.of(context).colorScheme.onBackground,
           ),
           SizedBox(width: 8),
-          Text(element.label),
+          Expanded(
+            child: Text(
+              element.label,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onBackground,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
         ],
       ),
     );

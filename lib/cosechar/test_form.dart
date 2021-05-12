@@ -94,7 +94,13 @@ class CustomExpressionForm extends StatelessWidget {
                 "value": "6"
               }
             ]
-          }
+          },
+        {
+          "@name": "textField",
+          "id": "situacion_obs",
+          "label": "Observaciones",
+          "value": ""
+        }
         ]
       }
     ]

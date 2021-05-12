@@ -9,3 +9,5 @@ LatLng latLngFromPosition(Position pos) => LatLng(pos.latitude, pos.longitude);
 GeoPos geoPosFromLatLng(LatLng latLng) => GeoPos(latLng.latitude, latLng.longitude);
 GeoPos geoPosFromPosition(Position pos) => GeoPos(pos.latitude, pos.longitude);
 // LatLng latLngFromPosition(Position pos) => LatLng(pos.latitude, pos.longitude);
+
+GeoPoint geoPoinFromGeoPos(GeoPos pos) => GeoPoint(pos.latitude, pos.longitude);

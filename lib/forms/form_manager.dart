@@ -2,10 +2,12 @@ import 'package:dynamic_forms/dynamic_forms.dart';
 import 'package:expression_language/expression_language.dart';
 
 class CustomFormManager extends JsonFormManager {
-  Future<void> sendDataToServer() async {
-    var properties = getFormProperties();
-    print(properties);
-    // send properties to the server
+  List<FormElement> getElementsData() {
+    return getFormElementIterator<FormElement>(form)
+        .where(
+          (e) => e.getProperties().values.any((prop) => isData(prop)),
+        )
+        .toList();
   }
 
   List<Map<String, dynamic>> getFormData() {

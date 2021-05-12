@@ -13,7 +13,7 @@ class InfoItem extends StatelessWidget {
 
   InfoItem({
     @required this.title,
-    @required this.subtitle,
+    this.subtitle,
     this.img,
     this.file,
     this.child,
@@ -25,7 +25,7 @@ class InfoItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          flex: 8,
+          flex: (img ?? file ?? child) == null ? 0 : 8,
           child: ConstrainedBox(
             constraints: BoxConstraints.loose(
               Size(double.infinity, 96),
@@ -46,17 +46,18 @@ class InfoItem extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 8),
-              Text(
-                subtitle,
-                style: TextStyle(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onBackground
-                      .withOpacity(0.8),
-                  fontWeight: FontWeight.normal,
+              if (subtitle != null) SizedBox(height: 8),
+              if (subtitle != null)
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onBackground
+                        .withOpacity(0.8),
+                    fontWeight: FontWeight.normal,
+                  ),
                 ),
-              ),
             ],
           ),
         ),
@@ -87,6 +88,6 @@ class InfoItem extends StatelessWidget {
     if (child != null) {
       return child;
     }
-    return SizedBox();
+    return SizedBox.shrink();
   }
 }
