@@ -1,5 +1,6 @@
 import 'package:cosecheros/cosechar/test_form.dart';
 import 'package:cosecheros/map.dart';
+import 'package:cosecheros/shared/grid_icon_button.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -31,51 +32,54 @@ class MyApp extends StatelessWidget {
       title: 'Cosecheros',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.light(
-          primary: primary,
-          primaryVariant: secondary,
-          onBackground: Color(0xFF103940),
-        ),
-        primaryColor: primary,
-        accentColor: secondary,
-        backgroundColor: background,
-        buttonTheme: ButtonThemeData(
-          buttonColor: Colors.white,
-          padding: const EdgeInsets.all(8.0),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30.0),
+          colorScheme: ColorScheme.light(
+            primary: primary,
+            primaryVariant: secondary,
+            onBackground: Color(0xFF103940),
           ),
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            primary: secondary,
-            elevation: 4,
-            shadowColor: secondary.withOpacity(.4),
+          primaryColor: primary,
+          accentColor: secondary,
+          backgroundColor: background,
+          buttonTheme: ButtonThemeData(
+            buttonColor: Colors.white,
+            padding: const EdgeInsets.all(8.0),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0),
             ),
           ),
-        ),
-        textButtonTheme: TextButtonThemeData(
-          style: TextButton.styleFrom(primary: Colors.black),
-        ),
-        floatingActionButtonTheme: FloatingActionButtonThemeData(
-          backgroundColor: secondary,
-        ),
-        cardTheme: CardTheme(
-          elevation: 1,
-          color: Colors.white,
-          clipBehavior: Clip.antiAliasWithSaveLayer,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              primary: secondary,
+              elevation: 4,
+              shadowColor: secondary.withOpacity(.4),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ),
+            ),
           ),
-        ),
-        bottomSheetTheme: BottomSheetThemeData(
-          backgroundColor: Colors.transparent,
-          modalBackgroundColor: Colors.transparent,
-        ),
-        textTheme: GoogleFonts.interTextTheme(),
-      ),
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(primary: Colors.black),
+          ),
+          floatingActionButtonTheme: FloatingActionButtonThemeData(
+            backgroundColor: secondary,
+          ),
+          cardTheme: CardTheme(
+            elevation: 1,
+            color: Colors.white,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+            ),
+          ),
+          bottomSheetTheme: BottomSheetThemeData(
+            backgroundColor: Colors.transparent,
+            modalBackgroundColor: Colors.transparent,
+          ),
+          textTheme: GoogleFonts.interTextTheme(),
+          dialogTheme: DialogTheme(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12.0))),
+          )),
       home: MainPage(),
     );
   }
@@ -190,45 +194,53 @@ class MainPage extends StatelessWidget {
     switch (await showDialog<Cosecha>(
         context: context,
         builder: (BuildContext context) {
-          return SimpleDialog(
-            title: const Text('¿Qué vas a cosechar?'),
-            children: <Widget>[
-              // Wrap(
-              //   alignment: WrapAlignment.center,
-              //   spacing: 8.0,
-              //   runSpacing: 8.0,
-              //   children: [
-              //     Container(
-              //       width: 100,
-              //       height: 100,
-              //       color: Colors.cyan,
-              //     ),
-              //     Container(
-              //       width: 100,
-              //       height: 100,
-              //       color: Colors.cyan,
-              //     ),
-              //   ],
-              // ),
-              SimpleDialogOption(
-                onPressed: () {
-                  Navigator.pop(context, Cosecha.test);
-                },
-                child: const Text('Local'),
-              ),
-              SimpleDialogOption(
-                onPressed: () {
-                  Navigator.pop(context, Cosecha.granizo);
-                },
-                child: const Text('Granizada'),
-              ),
-              SimpleDialogOption(
-                onPressed: () {
-                  Navigator.pop(context, Cosecha.helada);
-                },
-                child: const Text('Helada'),
-              ),
-            ],
+          return Dialog(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(top: 24),
+                  child: Text(
+                    '¿Qué vas a cosechar?',
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                ),
+                GridView.count(
+                  shrinkWrap: true,
+                  crossAxisCount: 2,
+                  padding: const EdgeInsets.all(16),
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                  children: [
+                    GridIconButton(
+                      title: "Local",
+                      background: Colors.black87,
+                      onPressed: () => Navigator.pop(context, Cosecha.test),
+                    ),
+                    GridIconButton(
+                      title: "Sequía",
+                      background: Color(0xFFF9787A),
+                      onPressed: () => Navigator.pop(context, Cosecha.granizo),
+                    ),
+                    GridIconButton(
+                      title: "Helada",
+                      background: Color(0xFF58D5E8),
+                      onPressed: () => Navigator.pop(context, Cosecha.granizo),
+                    ),
+                    GridIconButton(
+                      title: "Daños por granizo",
+                      background: Colors.green[300],
+                      onPressed: () => Navigator.pop(context, Cosecha.helada),
+                    ),
+                    GridIconButton(
+                      title: "Lluvias",
+                      background: Color(0xFF80A5EE),
+                      onPressed: () => Navigator.pop(context, Cosecha.helada),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           );
         })) {
       case Cosecha.test:

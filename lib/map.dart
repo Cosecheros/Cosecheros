@@ -40,7 +40,7 @@ class MapRecentState extends State<MapRecent> {
       CameraPosition(
         bearing: 0,
         target: LatLng(current.latitude, current.longitude),
-        zoom: 15.0,
+        zoom: 12.0,
       ),
     ));
   }
