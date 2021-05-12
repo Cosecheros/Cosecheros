@@ -9,7 +9,7 @@
 			"children": [
 				{
 					"@name": "map",
-					"id": "geopoint_map"
+					"id": "geo"
 				}
 			]
 		},

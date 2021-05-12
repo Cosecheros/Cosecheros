@@ -86,7 +86,7 @@ class SubmitFirestore {
       yield SubmitProgress("Subiendo foto", Mode.Indeterminate);
 
       UploadTask uploadTask = rootRef
-          .child("aaaa/${ref.id}-${element.id}.jpg")
+          .child("dev/${ref.id}-${element.id}.jpg")
           .putFile(File(element.path));
 
       try {
