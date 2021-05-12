@@ -8,6 +8,7 @@ import 'package:flutter_dynamic_forms_components/flutter_dynamic_forms_component
 
 class TextFieldSummary extends SummaryWidget<model.TextField> {
   Widget render(BuildContext context, model.TextField element) {
+    if (element.value.isEmpty) return SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: InfoItem(
