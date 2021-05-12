@@ -1,22 +1,27 @@
-import 'package:cosecheros/cosechar/test_form.dart';
-import 'package:cosecheros/map.dart';
+import 'dart:convert';
+
+import 'package:cosecheros/map/map.dart';
 import 'package:cosecheros/shared/grid_icon_button.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import 'alerts/alerts_bottom.dart';
-import 'cosechar/granizo.dart';
 import 'cosechar/local.dart';
 
-void main() {
+import 'package:firebase_remote_config/firebase_remote_config.dart';
+
+import 'cosechar/online.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   Intl.defaultLocale = 'es';
   timeago.setDefaultLocale('es');
-  initializeDateFormatting('es', null).then((_) => runApp(MyApp()));
+  await initializeDateFormatting('es', null);
+  runApp(MyApp());
 }
 
 enum Cosecha { test, granizo, helada }
@@ -29,60 +34,89 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Cosecheros',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-          colorScheme: ColorScheme.light(
-            primary: primary,
-            primaryVariant: secondary,
-            onBackground: Color(0xFF103940),
-          ),
-          primaryColor: primary,
-          accentColor: secondary,
-          backgroundColor: background,
-          buttonTheme: ButtonThemeData(
-            buttonColor: Colors.white,
-            padding: const EdgeInsets.all(8.0),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30.0),
+        title: 'Cosecheros',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+            colorScheme: ColorScheme.light(
+              primary: primary,
+              primaryVariant: secondary,
+              onBackground: Color(0xFF103940),
             ),
-          ),
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              primary: secondary,
-              elevation: 4,
-              shadowColor: secondary.withOpacity(.4),
+            primaryColor: primary,
+            accentColor: secondary,
+            backgroundColor: background,
+            buttonTheme: ButtonThemeData(
+              buttonColor: Colors.white,
+              padding: const EdgeInsets.all(8.0),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30.0),
               ),
             ),
-          ),
-          textButtonTheme: TextButtonThemeData(
-            style: TextButton.styleFrom(primary: Colors.black),
-          ),
-          floatingActionButtonTheme: FloatingActionButtonThemeData(
-            backgroundColor: secondary,
-          ),
-          cardTheme: CardTheme(
-            elevation: 1,
-            color: Colors.white,
-            clipBehavior: Clip.antiAliasWithSaveLayer,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+            scaffoldBackgroundColor: background,
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                primary: secondary,
+                elevation: 4,
+                shadowColor: secondary.withOpacity(.4),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+              ),
             ),
-          ),
-          bottomSheetTheme: BottomSheetThemeData(
-            backgroundColor: Colors.transparent,
-            modalBackgroundColor: Colors.transparent,
-          ),
-          textTheme: GoogleFonts.interTextTheme(),
-          dialogTheme: DialogTheme(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(12.0))),
-          )),
-      home: MainPage(),
-    );
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(primary: Colors.black),
+            ),
+            floatingActionButtonTheme: FloatingActionButtonThemeData(
+              backgroundColor: secondary,
+            ),
+            cardTheme: CardTheme(
+              elevation: 1,
+              color: Colors.white,
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              ),
+            ),
+            bottomSheetTheme: BottomSheetThemeData(
+              backgroundColor: Colors.transparent,
+              modalBackgroundColor: Colors.transparent,
+            ),
+            textTheme: GoogleFonts.interTextTheme(),
+            dialogTheme: DialogTheme(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(12.0))),
+            )),
+        home: FutureBuilder<FirebaseApp>(
+          future: setupFirebase(),
+          builder: (BuildContext context, AsyncSnapshot<FirebaseApp> snapshot) {
+            if (snapshot.hasError) {
+              return Center(child: Text('Ocurrió un error!'));
+            }
+            if (snapshot.hasData) {
+              return MainPage();
+            }
+            return Container(
+              color: background,
+            );
+          },
+        ));
   }
+}
+
+Future<FirebaseApp> setupFirebase() async {
+  var app = await Firebase.initializeApp();
+  final RemoteConfig remoteConfig = RemoteConfig.instance;
+  await remoteConfig.setConfigSettings(RemoteConfigSettings(
+    fetchTimeout: const Duration(seconds: 10),
+    minimumFetchInterval: const Duration(hours: 1),
+  ));
+  await remoteConfig.setDefaults(<String, dynamic>{
+    'welcome': 'default welcome',
+    'hello': 'default hello',
+  });
+  remoteConfig.fetchAndActivate();
+  RemoteConfigValue(null, ValueSource.valueStatic);
+  return app;
 }
 
 class MainPage extends StatelessWidget {
@@ -107,18 +141,7 @@ class MainPage extends StatelessWidget {
       extendBody: true,
       body: Stack(
         children: [
-          FutureBuilder(
-            future: Firebase.initializeApp(),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return Text('error de firebase');
-              }
-              if (snapshot.connectionState == ConnectionState.done) {
-                return MapRecent();
-              }
-              return Center(child: CircularProgressIndicator());
-            },
-          ),
+          HomeMap(),
           SafeArea(
             child: Align(
               alignment: Alignment.topLeft,
@@ -191,7 +214,12 @@ class MainPage extends StatelessWidget {
   }
 
   Future<void> _onNuevaCosecha(BuildContext context) async {
-    switch (await showDialog<Cosecha>(
+    var forms = RemoteConfig.instance.getString('dev_forms');
+    print(forms);
+
+    Iterable list = json.decode(forms);
+
+    var selected = await showDialog<String>(
         context: context,
         builder: (BuildContext context) {
           return Dialog(
@@ -212,55 +240,55 @@ class MainPage extends StatelessWidget {
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
                   children: [
+                    ...list.map(
+                      (e) => GridIconButton(
+                        title: e['label'],
+                        background: e['color'],
+                        onPressed: () => Navigator.pop(context, e['url']),
+                      ),
+                    ),
                     GridIconButton(
                       title: "Local",
                       background: Colors.black87,
-                      onPressed: () => Navigator.pop(context, Cosecha.test),
+                      onPressed: () => Navigator.pop(context, "local"),
                     ),
-                    GridIconButton(
-                      title: "Sequía",
-                      background: Color(0xFFF9787A),
-                      onPressed: () => Navigator.pop(context, Cosecha.granizo),
-                    ),
-                    GridIconButton(
-                      title: "Helada",
-                      background: Color(0xFF58D5E8),
-                      onPressed: () => Navigator.pop(context, Cosecha.granizo),
-                    ),
-                    GridIconButton(
-                      title: "Daños por granizo",
-                      background: Colors.green[300],
-                      onPressed: () => Navigator.pop(context, Cosecha.helada),
-                    ),
-                    GridIconButton(
-                      title: "Lluvias",
-                      background: Color(0xFF80A5EE),
-                      onPressed: () => Navigator.pop(context, Cosecha.helada),
-                    ),
+                    // GridIconButton(
+                    //   title: "Sequía",
+                    //   background: Color(0xFFF9787A),
+                    //   onPressed: () => Navigator.pop(context, Cosecha.granizo),
+                    // ),
+                    // GridIconButton(
+                    //   title: "Helada",
+                    //   background: Color(0xFF58D5E8),
+                    //   onPressed: () => Navigator.pop(context, Cosecha.granizo),
+                    // ),
+                    // GridIconButton(
+                    //   title: "Daños por granizo",
+                    //   background: Colors.green[300],
+                    //   onPressed: () => Navigator.pop(context, Cosecha.helada),
+                    // ),
+                    // GridIconButton(
+                    //   title: "Lluvias",
+                    //   background: Color(0xFF80A5EE),
+                    //   onPressed: () => Navigator.pop(context, Cosecha.helada),
+                    // ),
                   ],
                 ),
               ],
             ),
           );
-        })) {
-      case Cosecha.test:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => LocalForm()),
-        );
-        break;
-      case Cosecha.granizo:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => GranizoForm()),
-        );
-        break;
-      case Cosecha.helada:
-        // ...
-        break;
-      default:
-        // dialog dismissed
-        break;
+        });
+
+    if (selected == "local") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => LocalForm()),
+      );
+    } else if (selected != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => OnlineForm(selected)),
+      );
     }
   }
 }

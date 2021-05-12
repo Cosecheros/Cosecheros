@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "967616938605",
-    "firebase_url": "https://mincyt-granizo.firebaseio.com",
-    "project_id": "mincyt-granizo",
-    "storage_bucket": "mincyt-granizo.appspot.com"
+    "project_number": "743557439664",
+    "firebase_url": "https://cosecheros-12886-default-rtdb.firebaseio.com",
+    "project_id": "cosecheros-12886",
+    "storage_bucket": "cosecheros-12886.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:967616938605:android:ba801de6f4b9c10f2af564",
+        "mobilesdk_app_id": "1:743557439664:android:24a94773b3fe6879179b75",
         "android_client_info": {
-          "package_name": "ar.edu.unc.famaf.cosecheros"
+          "package_name": "ar.edu.unc.cosecheros"
         }
       },
       "oauth_client": [
         {
-          "client_id": "967616938605-77itfhpp40tl0tmpj7vu6jkkf9ppato7.apps.googleusercontent.com",
+          "client_id": "743557439664-uq38aa3623iri9ll6enaevgjcrlk7e5h.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDrLmBriUCUze4CAPBM0yvCmmOg7hBOuCI"
+          "current_key": "AIzaSyBNcWD8HaXsoWikDyl1qfEIizufDzT9Xi8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "967616938605-77itfhpp40tl0tmpj7vu6jkkf9ppato7.apps.googleusercontent.com",
+              "client_id": "743557439664-uq38aa3623iri9ll6enaevgjcrlk7e5h.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

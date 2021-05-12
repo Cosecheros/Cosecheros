@@ -6,8 +6,12 @@ class GridIconButton extends StatelessWidget {
   final Widget icon;
   final VoidCallback onPressed;
   final Color background;
-  const GridIconButton(
-      {this.title = "title", this.icon, this.onPressed, this.background});
+  const GridIconButton({
+    this.title = "title",
+    this.icon,
+    this.onPressed,
+    this.background,
+  });
 
   @override
   Widget build(BuildContext context) {

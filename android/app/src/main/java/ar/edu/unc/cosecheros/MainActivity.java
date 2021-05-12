@@ -1,4 +1,4 @@
-package ar.edu.unc.famaf.cosecheros;
+package ar.edu.unc.cosecheros;
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity;
