@@ -22,19 +22,19 @@
 					"@name": "info",
 					"title": "Busca un lugar abierto lejos de paredes.",
 					"subtitle": "Queremos que el granizo esté sano y distribuido uniformemente.",
-					"img": "https://mincyt-granizo.web.app/info/photographer.png"
+					"img": "https://cosecheros.web.app/info/photographer.png"
 				},
 				{
 					"@name": "info",
 					"title": "Ubica la regla de Cosecheros.",
 					"subtitle": "También puedes usar alguna tarjeta, como la del colectivo.",
-					"img": "https://mincyt-granizo.web.app/info/photographer.png"
+					"img": "https://cosecheros.web.app/info/photographer.png"
 				},
 				{
 					"@name": "info",
 					"title": "Saca la foto lo más vertical que puedas.",
 					"subtitle": "Así será más fácil de analizar para los científicos.",
-					"img": "https://mincyt-granizo.web.app/info/photographer.png"
+					"img": "https://cosecheros.web.app/info/photographer.png"
 				}
 			]
 		},
@@ -57,19 +57,19 @@
 					"@name": "info",
 					"title": "Busca un lugar bien iluminado.",
 					"subtitle": "No queremos que la foto salga oscura ni borrosa.",
-					"img": "https://mincyt-granizo.web.app/info/photographer.png"
+					"img": "https://cosecheros.web.app/info/photographer.png"
 				},
 				{
 					"@name": "info",
 					"title": "Enfoca la foto a los daños.",
 					"subtitle": "Así será más fácil de analizar tu situación.",
-					"img": "https://mincyt-granizo.web.app/info/photographer.png"
+					"img": "https://cosecheros.web.app/info/photographer.png"
 				},
 				{
 					"@name": "info",
 					"title": "Evita los amaneceres o atareceres.",
 					"subtitle": "Intenta que sea durante el día, con luz clara y blanca.",
-					"img": "https://mincyt-granizo.web.app/info/photographer.png"
+					"img": "https://cosecheros.web.app/info/photographer.png"
 				}
 			]
 		},
@@ -528,7 +528,7 @@
 						},
 						{
 							"@name": "choice",
-							"label": "Pelota de"
+							"label": "Pelota de tenis"
 						}
 					]
 				}

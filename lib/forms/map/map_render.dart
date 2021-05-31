@@ -33,7 +33,7 @@ class MapRenderer extends FormElementRenderer<Map> {
                     style: Theme.of(context).textTheme.caption,
                   ),
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.6, // TODO: 60% de la pantalla
+                    height: MediaQuery.of(context).size.height * 0.6,
                     child: MapWidget(
                       element: element,
                       dispatcher: dispatcher,

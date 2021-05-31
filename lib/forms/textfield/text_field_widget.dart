@@ -61,7 +61,6 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
         keyboardType: getTextInputType(widget.textInputType),
         controller: _controller,
         maxLines: getMaxLines(widget.textInputType),
-        // scrollPadding: EdgeInsets.only(bottom: 96),
       ),
     );
   }

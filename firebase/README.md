@@ -4,11 +4,11 @@
 
 ```
 firebase projects:list
-firebase use cosecheros-12886
+firebase use cosecheros
 ```
 
 ### Deploy hosting
 
 ```
-firebase deploy --only hosting
+firebase deploy --only hosting,remoteconfig
 ```

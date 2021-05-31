@@ -1,5 +1,4 @@
 import 'package:cosecheros/forms/events.dart';
-import 'package:cosecheros/shared/on_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dynamic_forms/flutter_dynamic_forms.dart';
 
@@ -23,9 +22,9 @@ class TabWidget extends StatefulWidget {
 }
 
 class TabWidgetState extends State<TabWidget> {
-  // TabController _controller;
   final controller = PageController(initialPage: 0);
   int currentPage = 0;
+  bool userShowSummary = false;
 
   Future<bool> onBack() async {
     if (!isFirst()) {
@@ -35,24 +34,20 @@ class TabWidgetState extends State<TabWidget> {
     return true;
   }
 
-  // @override
-  // void didUpdateWidget(covariant TabWidget oldWidget) {
-  //   super.didUpdateWidget(oldWidget);
-  //   print("TabWidget: updating: lenght: ${widget.children.length}");
-  //   var tab = TabController(vsync: this, length: widget.children.length);
-  //   tab.index = _controller.index;
-  //   _controller = tab;
-  // }
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _controller = TabController(vsync: this, length: widget.children.length);
-  // }
+  @override
+  void initState() {
+    super.initState();
+    controller.addListener(() {
+      setState(() {
+        userShowSummary = userShowSummary || isLast();
+        print(userShowSummary);
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return NestedWillPopScope(
+    return WillPopScope(
       onWillPop: onBack,
       child: Stack(
         alignment: AlignmentDirectional.topCenter,
@@ -69,20 +64,32 @@ class TabWidgetState extends State<TabWidget> {
               },
             ),
           ),
-          if (!isFirst())
-            Positioned(
-              top: 4,
-              left: 16,
-              child: SafeArea(
-                child: TextButton.icon(
-                  onPressed: () {
-                    movePage(-1);
-                  },
-                  icon: Icon(Icons.arrow_back),
-                  label: Text("Volver"),
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: SafeArea(
+              child: LinearProgressIndicator(
+                value: currentPage / (widget.children.length - 1),
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  Theme.of(context).colorScheme.primary,
                 ),
               ),
             ),
+          ),
+          Positioned(
+            top: 4,
+            left: 4,
+            child: SafeArea(
+              child: TextButton.icon(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(Icons.arrow_back),
+                label: Text("SALIR"),
+              ),
+            ),
+          ),
           Positioned(
             top: 16,
             child: SafeArea(
@@ -92,13 +99,23 @@ class TabWidgetState extends State<TabWidget> {
               ),
             ),
           ),
-          Positioned(
-            top: 20,
-            right: 16,
-            child: SafeArea(
-              child: Text("Parte $currentPage"),
+          if (userShowSummary && !isLast())
+            Positioned(
+              top: 4,
+              right: 4,
+              child: SafeArea(
+                child: TextButton(
+                  onPressed: () {
+                    moveToPage(widget.children.length - 1);
+                  },
+                  child: Row(children: [
+                    Text("Resumen"),
+                    SizedBox(width: 8),
+                    Icon(Icons.arrow_forward),
+                  ]),
+                ),
+              ),
             ),
-          ),
           Positioned(
             bottom: 16,
             left: 16,
@@ -117,9 +134,19 @@ class TabWidgetState extends State<TabWidget> {
   }
 
   bool isFirst() => currentPage == 0;
-  bool isLast() => currentPage + 1 == widget.children.length;
+  bool isLast() => currentPage == widget.children.length - 1;
+
+  void moveToPage(int page) {
+    print("moveToPage: $page");
+    controller.animateToPage(
+      page,
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeInOut,
+    );
+  }
 
   void movePage(int step) {
+    print("movePage: $step");
     controller.animateToPage(
       currentPage + step,
       duration: const Duration(milliseconds: 400),

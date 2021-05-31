@@ -19,8 +19,8 @@ class MapParser extends FormElementParser<Map> {
 
     map.pointProperty = parserNode.getProperty(
       'point',
-      (String s) => null, // TODO
-      () => GeoPos(-31.416998, -64.183657),
+      (String s) => null,
+      () => null,
       isImmutable: false,
     );
   }

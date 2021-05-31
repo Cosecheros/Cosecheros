@@ -85,9 +85,7 @@ class _AboutListWidgetState extends State<AboutListWidget> {
             "Parte de la Provincia de Córdoba está en una de las regiones de tormentas más severas del planeta. Las tormentas extremas son centro de estudio de investigadores de Argentina y de otros países del mundo, con el objetivo de comprender estas tormentas.")),
     Item(
         header: "Aprende a cosechar",
-        expanded: FlatButton(
-            color: Colors.red,
-            textColor: Colors.white,
+        expanded: TextButton(
             onPressed: _launchYoutube,
             child: Text(
               "Ver en Youtube",

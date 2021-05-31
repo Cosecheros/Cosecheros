@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:cosecheros/forms/page/sumary.dart';
 import 'package:cosecheros/shared/extensions.dart';
-import 'package:cosecheros/shared/info_item.dart';
+import 'package:cosecheros/widgets/info_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -17,7 +17,10 @@ class PictureSummary extends SummaryWidget<Picture> {
         child: InfoItem(
           title: idToTitle(element.id),
           subtitle: "Sin foto.",
-          child: Icon(Icons.no_photography_rounded),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Icon(Icons.no_photography_rounded),
+          ),
         ),
       );
     }

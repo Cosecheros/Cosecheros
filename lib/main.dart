@@ -1,20 +1,18 @@
 import 'dart:convert';
 
 import 'package:cosecheros/map/map.dart';
-import 'package:cosecheros/shared/grid_icon_button.dart';
+import 'package:cosecheros/shared/constants.dart';
+import 'package:cosecheros/widgets/grid_icon_button.dart';
+import 'package:cosecheros/cosechar/local.dart';
+import 'package:cosecheros/cosechar/online.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
-
-import 'alerts/alerts_bottom.dart';
-import 'cosechar/local.dart';
-
 import 'package:firebase_remote_config/firebase_remote_config.dart';
-
-import 'cosechar/online.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -107,12 +105,11 @@ Future<FirebaseApp> setupFirebase() async {
   var app = await Firebase.initializeApp();
   final RemoteConfig remoteConfig = RemoteConfig.instance;
   await remoteConfig.setConfigSettings(RemoteConfigSettings(
-    fetchTimeout: const Duration(seconds: 10),
-    minimumFetchInterval: const Duration(hours: 1),
+    fetchTimeout: Constants.formsFetchTimeout,
+    minimumFetchInterval: Constants.formsFetchInterval,
   ));
   await remoteConfig.setDefaults(<String, dynamic>{
-    'welcome': 'default welcome',
-    'hello': 'default hello',
+    Constants.formsSource: '[]',
   });
   remoteConfig.fetchAndActivate();
   RemoteConfigValue(null, ValueSource.valueStatic);
@@ -214,7 +211,7 @@ class MainPage extends StatelessWidget {
   }
 
   Future<void> _onNuevaCosecha(BuildContext context) async {
-    var forms = RemoteConfig.instance.getString('dev_forms');
+    var forms = RemoteConfig.instance.getString(Constants.formsSource);
     print(forms);
 
     Iterable list = json.decode(forms);
@@ -247,31 +244,20 @@ class MainPage extends StatelessWidget {
                         onPressed: () => Navigator.pop(context, e['url']),
                       ),
                     ),
-                    GridIconButton(
-                      title: "Local",
-                      background: Colors.black87,
-                      onPressed: () => Navigator.pop(context, "local"),
-                    ),
-                    // GridIconButton(
+                    if (kDebugMode)
+                      GridIconButton(
+                        title: "Local",
+                        background: Colors.black87,
+                        onPressed: () => Navigator.pop(context, "local"),
+                      ),
                     //   title: "Sequía",
                     //   background: Color(0xFFF9787A),
-                    //   onPressed: () => Navigator.pop(context, Cosecha.granizo),
-                    // ),
-                    // GridIconButton(
                     //   title: "Helada",
                     //   background: Color(0xFF58D5E8),
-                    //   onPressed: () => Navigator.pop(context, Cosecha.granizo),
-                    // ),
-                    // GridIconButton(
                     //   title: "Daños por granizo",
                     //   background: Colors.green[300],
-                    //   onPressed: () => Navigator.pop(context, Cosecha.helada),
-                    // ),
-                    // GridIconButton(
                     //   title: "Lluvias",
                     //   background: Color(0xFF80A5EE),
-                    //   onPressed: () => Navigator.pop(context, Cosecha.helada),
-                    // ),
                   ],
                 ),
               ],

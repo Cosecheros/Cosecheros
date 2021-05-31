@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cosecheros/shared/constants.dart';
+import 'package:cosecheros/shared/helpers.dart';
 import 'package:cosecheros/shared/marker_icon_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -15,72 +17,86 @@ class HomeMap extends StatefulWidget {
   HomeMapState createState() => HomeMapState();
 }
 
-class HomeMapState extends State<HomeMap> {
+class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
   Completer<GoogleMapController> _controller = Completer();
   String _mapStyle;
-
   BitmapDescriptor markerIcon;
 
-  static final CameraPosition _initPosition = CameraPosition(
-    target: LatLng(-31.416998, -64.183657),
-    zoom: 10,
-  );
-
-  getPos() async {
-    return await Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-  }
-
-  void _currentLocation() async {
-    final GoogleMapController controller = await _controller.future;
-    var current = await getPos();
-    controller.animateCamera(CameraUpdate.newCameraPosition(
-      CameraPosition(
-        bearing: 0,
-        target: LatLng(current.latitude, current.longitude),
-        zoom: 12.0,
-      ),
-    ));
-  }
+  static CameraPosition initPos =
+      CameraPosition(target: LatLng(-31.416998, -64.183657), zoom: 10);
 
   void initMarkerIcon() async {
     markerIcon = await MarkerGenerator(96.0).bitmapDescriptorFrom(
         Icons.place, Colors.black, Colors.transparent, Colors.transparent);
   }
 
+  void updateByCurrentPos() async {
+    var pos = await getCurrentPosition();
+    if (pos != null) {
+      print("updateByCurrentPos: $pos: wait for map controller");
+      final GoogleMapController controller = await _controller.future;
+      print("updateByCurrentPos: $pos: controller ready, animating...");
+      controller.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(target: pos, zoom: 12.0),
+      ));
+    }
+  }
+
+  void initPosition() async {
+    var pos = await getLastPosition();
+    if (pos != null) {
+      print("initPosition: $pos");
+      // Intentamos ganarle al mapa y reescribir la posición inicial
+      initPos = CameraPosition(target: pos, zoom: 10);
+      print("initPosition: $pos: wait for map controller");
+      final GoogleMapController controller = await _controller.future;
+      print("initPosition: $pos: controller ready, move!");
+      controller.moveCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(target: pos, zoom: 10.0),
+      ));
+    }
+    updateByCurrentPos();
+  }
+
   @override
   void initState() {
     super.initState();
-    getPos();
-
+    initPosition();
     initMarkerIcon();
 
-    rootBundle.loadString('assets/map_style.json').then((string) {
+    rootBundle.loadString('assets/app/map_style.json').then((string) {
       _mapStyle = string;
     });
   }
 
   @override
-  Widget build(BuildContext context) {
-    Set<Marker> _markers = Set();
-    initMarkerIcon();
+  bool get wantKeepAlive => true;
 
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
     return Stack(
       children: [
         StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
-              .collection('dev')
+              .collection(Constants.collection)
               // TODO filtrar por gps/tiempo
               // .where("timestamp", isGreaterThan: from)
               .orderBy("timestamp", descending: true)
               .snapshots(),
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.hasError) return Text('Error: ${snapshot.error}');
+            Set<Marker> _markers = Set();
+
+            if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            }
+
             if (snapshot.connectionState != ConnectionState.waiting) {
               _markers.addAll(
                 snapshot.data.docs.map(
                   (QueryDocumentSnapshot doc) {
+                    print(doc.data());
                     Cosecha model = Cosecha.fromSnapshot(doc);
                     return Marker(
                       markerId: MarkerId(doc.id),
@@ -111,8 +127,9 @@ class HomeMapState extends State<HomeMap> {
               myLocationButtonEnabled: false,
               myLocationEnabled: true,
               zoomControlsEnabled: false,
-              initialCameraPosition: _initPosition,
+              initialCameraPosition: initPos,
               onMapCreated: (GoogleMapController controller) {
+                print("onMapCreated");
                 _controller.complete(controller);
                 controller.setMapStyle(_mapStyle);
               },
@@ -135,7 +152,7 @@ class HomeMapState extends State<HomeMap> {
                   color: Theme.of(context).accentColor,
                 ),
                 onPressed: () {
-                  _currentLocation();
+                  updateByCurrentPos();
                 },
               ),
             ),

@@ -68,6 +68,8 @@ class _BaseFormState extends State<BaseForm> {
     }
   }
 
+  // TODO: Retry on error
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -87,9 +89,7 @@ class _BaseFormState extends State<BaseForm> {
             return Container(); // No debería suceder
           },
         ),
-        if (upload == null)
-          SizedBox()
-        else
+        if (upload != null)
           WillPopScope(
             onWillPop: () async => false, // Fixme: Prevenir retroceder el form
             child: Container(
@@ -109,7 +109,7 @@ class _BaseFormState extends State<BaseForm> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Text(
-                            event.data.task,
+                            event.data?.task ?? "Error",
                             style: Theme.of(context)
                                 .textTheme
                                 .headline4

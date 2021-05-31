@@ -1,34 +1,33 @@
 {
   "project_info": {
-    "project_number": "743557439664",
-    "firebase_url": "https://cosecheros-12886-default-rtdb.firebaseio.com",
-    "project_id": "cosecheros-12886",
-    "storage_bucket": "cosecheros-12886.appspot.com"
+    "project_number": "786218857395",
+    "project_id": "cosecheros",
+    "storage_bucket": "cosecheros.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:743557439664:android:24a94773b3fe6879179b75",
+        "mobilesdk_app_id": "1:786218857395:android:84c5fe64f580135a2d11c6",
         "android_client_info": {
           "package_name": "ar.edu.unc.cosecheros"
         }
       },
       "oauth_client": [
         {
-          "client_id": "743557439664-uq38aa3623iri9ll6enaevgjcrlk7e5h.apps.googleusercontent.com",
+          "client_id": "786218857395-a2l42gghdlhr2vacgi149ldqhgr7rlcm.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBNcWD8HaXsoWikDyl1qfEIizufDzT9Xi8"
+          "current_key": "AIzaSyDC28kboUTFE88PdC3BAv4_UckWA0p1qDo"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "743557439664-uq38aa3623iri9ll6enaevgjcrlk7e5h.apps.googleusercontent.com",
+              "client_id": "786218857395-a2l42gghdlhr2vacgi149ldqhgr7rlcm.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

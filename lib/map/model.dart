@@ -8,7 +8,7 @@ class Cosecha {
   static Cosecha fromSnapshot(QueryDocumentSnapshot doc) {
     Cosecha result = Cosecha();
 
-    result.timestamp = doc.data()['timestamp'].toDate();
+    result.timestamp = doc.data()['timestamp']?.toDate() ?? DateTime.now();
 
     GeoPoint geo = doc.data()['geo'];
     result.latLng = LatLng(geo.latitude, geo.longitude);

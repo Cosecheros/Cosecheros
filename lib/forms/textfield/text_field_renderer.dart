@@ -19,13 +19,16 @@ class TextFieldRenderer extends FormElementRenderer<model.TextField> {
         var errorText = element.validations
             .firstWhere((v) => !v.isValid, orElse: () => null)
             ?.message;
-        return TextFieldWidget(
-          text: element.value,
-          id: element.id,
-          errorText: errorText,
-          label: element.label,
-          textInputType: element.inputType,
-          dispatcher: dispatcher,
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: TextFieldWidget(
+            text: element.value,
+            id: element.id,
+            errorText: errorText,
+            label: element.label,
+            textInputType: element.inputType,
+            dispatcher: dispatcher,
+          ),
         );
       },
     );

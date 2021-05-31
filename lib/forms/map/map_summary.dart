@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:cosecheros/forms/page/sumary.dart';
 import 'package:cosecheros/shared/helpers.dart';
-import 'package:cosecheros/shared/info_item.dart';
+import 'package:cosecheros/widgets/info_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -51,13 +51,14 @@ class _MapInfoState extends State<MapInfo> {
     if (places.length > 0) {
       setState(() {
         var p = places.first;
-        subtitle = "Cerca de " + (p.subLocality.isNotEmpty
-            ? p.subLocality
-            : p.locality.isNotEmpty
-                ? p.locality
-                : p.subAdministrativeArea.isNotEmpty
-                    ? p.subAdministrativeArea
-                    : p.name);
+        subtitle = "Cerca de " +
+            (p.subLocality.isNotEmpty
+                ? p.subLocality
+                : p.locality.isNotEmpty
+                    ? p.locality
+                    : p.subAdministrativeArea.isNotEmpty
+                        ? p.subAdministrativeArea
+                        : p.name);
       });
     }
   }
@@ -66,7 +67,7 @@ class _MapInfoState extends State<MapInfo> {
   Widget build(BuildContext context) {
     return InfoItem(
       title: "Ubicación.",
-      subtitle: "${widget.element.point.toString()}\n${subtitle ?? ''}",
+      subtitle: "${subtitle ?? ''}",
       child: MiniMapWidget(latLngFromGeoPos(widget.element.point)),
     );
   }
@@ -89,33 +90,39 @@ class MiniMapWidgetState extends State<MiniMapWidget> {
   void initState() {
     super.initState();
 
-    rootBundle.loadString('assets/map_style.json').then((string) {
+    rootBundle.loadString('assets/app/map_style.json').then((string) {
       _mapStyle = string;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return GoogleMap(
-      mapType: MapType.normal,
-      markers: Set.of(
-          [Marker(markerId: MarkerId('selected'), position: widget.position)]),
-      mapToolbarEnabled: false,
-      rotateGesturesEnabled: false,
-      scrollGesturesEnabled: false,
-      zoomGesturesEnabled: false,
-      compassEnabled: false,
-      myLocationEnabled: false,
-      zoomControlsEnabled: false,
-      initialCameraPosition: CameraPosition(
-        target: widget.position,
-        zoom: 10,
+    return AbsorbPointer(
+      absorbing: true,
+      child: GoogleMap(
+        mapType: MapType.normal,
+        markers: Set.of([
+          Marker(
+            markerId: MarkerId('selected'),
+            position: widget.position,
+          )
+        ]),
+        mapToolbarEnabled: false,
+        rotateGesturesEnabled: false,
+        scrollGesturesEnabled: false,
+        zoomGesturesEnabled: false,
+        compassEnabled: false,
+        myLocationEnabled: false,
+        zoomControlsEnabled: false,
+        initialCameraPosition: CameraPosition(
+          target: widget.position,
+          zoom: 10,
+        ),
+        onMapCreated: (GoogleMapController controller) {
+          _controller.complete(controller);
+          controller.setMapStyle(_mapStyle);
+        },
       ),
-      onMapCreated: (GoogleMapController controller) {
-        _controller.complete(controller);
-        controller.setMapStyle(_mapStyle);
-      },
-      onTap: (latLong) {},
     );
   }
 }

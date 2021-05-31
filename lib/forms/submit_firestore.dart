@@ -2,13 +2,14 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosecheros/forms/picture/pic.dart';
+import 'package:cosecheros/shared/constants.dart';
 import 'package:cosecheros/shared/helpers.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:dynamic_forms/dynamic_forms.dart';
 import 'package:cosecheros/forms/map/map.dart' as mapModel;
 import 'package:cosecheros/shared/extensions.dart';
 
-enum Mode { Uploading, Indeterminate, Done }
+enum Mode { Uploading, Indeterminate, Done, Fail }
 
 class SubmitProgress {
   final String task;
@@ -49,7 +50,8 @@ class SubmitFirestore {
     )
       ..removeWhere(
         // Quitar nulls o falses o textos vacios
-        (key, value) => value == null || value == false || value.toString().isEmpty,
+        (key, value) =>
+            value == null || value == false || value.toString().isEmpty,
       )
       ..addAll(
         {
@@ -66,8 +68,9 @@ class SubmitFirestore {
     yield SubmitProgress("Cargando", Mode.Uploading);
 
     // Subir documento inicial
-    DocumentReference ref =
-        firestore.collection('dev').doc(DateTime.now().toIso8601String());
+    DocumentReference ref = firestore
+        .collection(Constants.collection)
+        .doc(DateTime.now().toIso8601String());
 
     await ref.set(_firestoreDoc(idForm, payload));
 
@@ -105,6 +108,8 @@ class SubmitFirestore {
             print("submit: pic url: " + url);
             updateDoc[element.id] = url;
             break;
+          } else {
+            yield SubmitProgress("Error", Mode.Fail);
           }
         }
       } catch (e) {

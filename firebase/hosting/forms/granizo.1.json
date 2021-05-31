@@ -65,19 +65,19 @@
 					"@name": "info",
 					"title": "Busca un lugar abierto lejos de paredes.",
 					"subtitle": "Queremos que el granizo esté sano y distribuido uniformemente.",
-					"img": "https://mincyt-granizo.web.app/info/photographer.png"
+					"img": "https://cosecheros.web.app/info/photographer.png"
 				},
 				{
 					"@name": "info",
 					"title": "Ubica la regla de cosecheros.",
 					"subtitle": "También puedes usar alguna tarjeta, como la del colectivo.",
-					"img": "https://mincyt-granizo.web.app/info/photographer.png"
+					"img": "https://cosecheros.web.app/info/photographer.png"
 				},
 				{
 					"@name": "info",
 					"title": "Saca la foto lo más vertical que puedas.",
 					"subtitle": "Así será más fácil de analizar para los científicos.",
-					"img": "https://mincyt-granizo.web.app/info/photographer.png"
+					"img": "https://cosecheros.web.app/info/photographer.png"
 				}
 			]
 		},
@@ -101,13 +101,13 @@
 					"@name": "info",
 					"title": "Ponlo cerca de la regla de cosecheros.",
 					"subtitle": "También puedes usar alguna tarjeta, como la del colectivo.",
-					"img": "https://mincyt-granizo.web.app/info/photographer.png"
+					"img": "https://cosecheros.web.app/info/photographer.png"
 				},
 				{
 					"@name": "info",
 					"title": "Recuerda que debe estar 30 minutos en el congelador.",
 					"subtitle": "No queremos que se descongele mientras tomas la foto.",
-					"img": "https://mincyt-granizo.web.app/info/photographer.png"
+					"img": "https://cosecheros.web.app/info/photographer.png"
 				}
 			]
 		}

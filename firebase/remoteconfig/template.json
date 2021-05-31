@@ -1,0 +1,14 @@
+{
+  "parameters": {
+    "dev_forms": {
+      "defaultValue": {
+        "value": "[{\"label\":\"Daños por granizo\",\"url\":\"https://cosecheros.web.app/forms/dañosgranizo.1.json\"}, {\"label\":\"Granizada\",\"url\":\"https://cosecheros.web.app/forms/granizo.1.json\"}]"
+      }
+    },
+    "prod_forms": {
+      "defaultValue": {
+        "value": "[{\"label\":\"Daños por granizo\",\"url\":\"https://cosecheros.web.app/forms/dañosgranizo.1.json\"}, {\"label\":\"Granizada\",\"url\":\"https://cosecheros.web.app/forms/granizo.1.json\"}]"
+      }
+    }
+  }
+}
