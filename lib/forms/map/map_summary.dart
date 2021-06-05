@@ -114,6 +114,7 @@ class MiniMapWidgetState extends State<MiniMapWidget> {
         compassEnabled: false,
         myLocationEnabled: false,
         zoomControlsEnabled: false,
+        liteModeEnabled: true,
         initialCameraPosition: CameraPosition(
           target: widget.position,
           zoom: 10,

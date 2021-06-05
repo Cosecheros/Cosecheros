@@ -6,7 +6,6 @@ import 'package:cosecheros/shared/helpers.dart';
 import 'package:cosecheros/shared/marker_icon_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'cosecha_mini.dart';
@@ -20,49 +19,21 @@ class HomeMap extends StatefulWidget {
 class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
   Completer<GoogleMapController> _controller = Completer();
   String _mapStyle;
-  BitmapDescriptor markerIcon;
+  BitmapDescriptor _markerIcon;
 
   static CameraPosition initPos =
       CameraPosition(target: LatLng(-31.416998, -64.183657), zoom: 10);
 
   void initMarkerIcon() async {
-    markerIcon = await MarkerGenerator(96.0).bitmapDescriptorFrom(
+    _markerIcon = await MarkerGenerator(96.0).bitmapDescriptorFrom(
         Icons.place, Colors.black, Colors.transparent, Colors.transparent);
-  }
-
-  void updateByCurrentPos() async {
-    var pos = await getCurrentPosition();
-    if (pos != null) {
-      print("updateByCurrentPos: $pos: wait for map controller");
-      final GoogleMapController controller = await _controller.future;
-      print("updateByCurrentPos: $pos: controller ready, animating...");
-      controller.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(target: pos, zoom: 12.0),
-      ));
-    }
-  }
-
-  void initPosition() async {
-    var pos = await getLastPosition();
-    if (pos != null) {
-      print("initPosition: $pos");
-      // Intentamos ganarle al mapa y reescribir la posición inicial
-      initPos = CameraPosition(target: pos, zoom: 10);
-      print("initPosition: $pos: wait for map controller");
-      final GoogleMapController controller = await _controller.future;
-      print("initPosition: $pos: controller ready, move!");
-      controller.moveCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(target: pos, zoom: 10.0),
-      ));
-    }
-    updateByCurrentPos();
   }
 
   @override
   void initState() {
     super.initState();
     initPosition();
-    initMarkerIcon();
+    // initMarkerIcon();
 
     rootBundle.loadString('assets/app/map_style.json').then((string) {
       _mapStyle = string;
@@ -75,6 +46,7 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    _createMarkerImageFromAsset(context);
     return Stack(
       children: [
         StreamBuilder<QuerySnapshot>(
@@ -98,23 +70,7 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
                   (QueryDocumentSnapshot doc) {
                     print(doc.data());
                     Cosecha model = Cosecha.fromSnapshot(doc);
-                    return Marker(
-                      markerId: MarkerId(doc.id),
-                      position: model.latLng,
-                      icon: markerIcon,
-                      onTap: () => showModalBottomSheet(
-                        context: context,
-                        builder: (context) => ConstrainedBox(
-                          constraints: BoxConstraints.loose(
-                            Size(double.infinity, 230),
-                          ),
-                          child: Card(
-                            margin: EdgeInsets.all(16),
-                            child: CosechaMini(model),
-                          ),
-                        ),
-                      ),
-                    );
+                    return _createMarker(model);
                   },
                 ),
               );
@@ -160,5 +116,72 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
         )
       ],
     );
+  }
+
+  void updateByCurrentPos() async {
+    final pos = await getCurrentPosition();
+    if (pos != null) {
+      print("updateByCurrentPos: $pos: wait for map controller");
+      final GoogleMapController controller = await _controller.future;
+      print("updateByCurrentPos: $pos: controller ready, animating...");
+      controller.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(target: pos, zoom: 12.0),
+      ));
+    }
+  }
+
+  void initPosition() async {
+    var pos = await getLastPosition();
+    if (pos != null) {
+      print("initPosition: $pos");
+      // Intentamos ganarle al mapa y reescribir la posición inicial
+      initPos = CameraPosition(target: pos, zoom: 10);
+      print("initPosition: $pos: wait for map controller");
+      final GoogleMapController controller = await _controller.future;
+      print("initPosition: $pos: controller ready, move!");
+      controller.moveCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(target: pos, zoom: 10.0),
+      ));
+    }
+    updateByCurrentPos();
+  }
+
+  Future<void> _createMarkerImageFromAsset(BuildContext context) async {
+    if (_markerIcon == null) {
+      final ImageConfiguration imageConfiguration =
+          createLocalImageConfiguration(context, size: Size.square(48));
+      final bitmap = await BitmapDescriptor.fromAssetImage(
+          imageConfiguration, 'assets/app/plant_1.png');
+      setState(() {
+        _markerIcon = bitmap;
+      });
+    }
+  }
+
+  Marker _createMarker(Cosecha model) {
+    if (_markerIcon != null) {
+      return Marker(
+        markerId: MarkerId(model.id),
+        position: model.latLng,
+        icon: _markerIcon,
+        onTap: () => showModalBottomSheet(
+          context: context,
+          builder: (context) => ConstrainedBox(
+            constraints: BoxConstraints.loose(
+              Size(double.infinity, 230),
+            ),
+            child: Card(
+              margin: EdgeInsets.all(16),
+              child: CosechaMini(model),
+            ),
+          ),
+        ),
+      );
+    } else {
+      return Marker(
+        markerId: MarkerId(model.id),
+        position: model.latLng,
+      );
+    }
   }
 }
