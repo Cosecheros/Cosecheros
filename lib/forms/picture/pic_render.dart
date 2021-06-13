@@ -70,12 +70,22 @@ class PictureRenderer extends FormElementRenderer<Picture> {
             onPicked(path);
           }
         },
-        child: Text(
-          "SUBIR FOTO",
-          style: Theme.of(context)
-              .textTheme
-              .button
-              .copyWith(color: Theme.of(context).colorScheme.primaryVariant),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.crop_original_rounded,
+              size: 32,
+              color: Theme.of(context).colorScheme.primaryVariant.withOpacity(0.7),
+            ),
+            SizedBox(height: 8),
+            Text(
+              "SUBIR FOTO",
+              style: Theme.of(context).textTheme.button.copyWith(
+                  color: Theme.of(context).colorScheme.primaryVariant,
+                  fontWeight: FontWeight.bold),
+            ),
+          ],
         ),
       ),
     );
@@ -87,7 +97,10 @@ class PictureRenderer extends FormElementRenderer<Picture> {
         Container(
           height: 264,
           width: double.infinity,
-          child: Image.file(img, fit: BoxFit.cover,),
+          child: Image.file(
+            img,
+            fit: BoxFit.cover,
+          ),
         ),
         Align(
           alignment: Alignment.topRight,
@@ -149,11 +162,14 @@ class PictureRenderer extends FormElementRenderer<Picture> {
             ],
           );
         });
+    if (selected == null) {
+      return null;
+    }
 
     PickedFile file = await _picker.getImage(source: selected);
-    if (file != null) {
-      return file.path;
+    if (file == null) {
+      return null;
     }
-    return null;
+    return file.path;
   }
 }

@@ -124,7 +124,13 @@ class TabWidgetState extends State<TabWidget> {
               onPressed: () {
                 isLast() ? widget.dispatcher(DoneEvent()) : movePage(1);
               },
-              child: Text(isLast() ? "COSECHAR" : "SIGUIENTE"),
+              child: Text(
+                isLast() ? "COSECHAR" : "SIGUIENTE",
+                style: Theme.of(context).textTheme.button.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
             ),
           )
         ],

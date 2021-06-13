@@ -1,0 +1,597 @@
+{
+	"@name": "form",
+	"id": "danosgranizo_v2",
+	"name": "Daños granizo",
+	"children": [
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "label",
+					"value": "Sácale una foto a la granizada."
+				},
+				{
+					"@name": "pic",
+					"id": "granizada_pic"
+				},
+				{
+					"@name": "label",
+					"value": "Recuerda:"
+				},
+				{
+					"@name": "info",
+					"title": "Busca un lugar abierto lejos de paredes.",
+					"subtitle": "Queremos que el granizo esté sano y distribuido uniformemente.",
+					"img": "https://cosecheros.web.app/info/photographer.png"
+				},
+				{
+					"@name": "info",
+					"title": "Ubica la regla de Cosecheros.",
+					"subtitle": "También puedes usar alguna tarjeta, como la del colectivo.",
+					"img": "https://cosecheros.web.app/info/photographer.png"
+				},
+				{
+					"@name": "info",
+					"title": "Saca la foto lo más vertical que puedas.",
+					"subtitle": "Así será más fácil de analizar para los investigadores.",
+					"img": "https://cosecheros.web.app/info/photographer.png"
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "label",
+					"value": "Sácale una foto a los daños producidos por el granizo."
+				},
+				{
+					"@name": "pic",
+					"id": "granizada_pic"
+				},
+				{
+					"@name": "label",
+					"value": "Recuerda:"
+				},
+				{
+					"@name": "info",
+					"title": "Busca un lugar bien iluminado.",
+					"subtitle": "No queremos que la foto salga oscura ni borrosa.",
+					"img": "https://cosecheros.web.app/info/photographer.png"
+				},
+				{
+					"@name": "info",
+					"title": "Enfoca la foto a los daños.",
+					"subtitle": "Así será más fácil de analizar tu situación.",
+					"img": "https://cosecheros.web.app/info/photographer.png"
+				},
+				{
+					"@name": "info",
+					"title": "Evita los amaneceres o atareceres.",
+					"subtitle": "Intenta que sea durante el día, con luz clara y blanca.",
+					"img": "https://cosecheros.web.app/info/photographer.png"
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "map",
+					"id": "geo"
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "singleChoice",
+					"id": "tipo_cultivo",
+					"label": "Tipo de cultivo",
+					"choices": [
+						{
+							"@name": "single",
+							"label": "Estival"
+						},
+						{
+							"@name": "single",
+							"label": "Invernal"
+						},
+						{
+							"@name": "single",
+							"label": "Horticolas"
+						},
+						{
+							"@name": "single",
+							"label": "Frutales"
+						},
+						{
+							"@name": "single",
+							"label": "Pasturas"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@tipo_cultivo == \"estival\""
+			},
+			"children": [
+				{
+					"@name": "singleChoice",
+					"id": "estival",
+					"label": "Cultivo estival",
+					"choices": [
+						{
+							"@name": "single",
+							"label": "Maiz"
+						},
+						{
+							"@name": "single",
+							"label": "Sorgo"
+						},
+						{
+							"@name": "single",
+							"label": "Soja"
+						},
+						{
+							"@name": "single",
+							"label": "Maní"
+						},
+						{
+							"@name": "single",
+							"label": "Girasol"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@tipo_cultivo == \"invernal\""
+			},
+			"children": [
+				{
+					"@name": "singleChoice",
+					"id": "invernal",
+					"label": "Cultivo invernal",
+					"choices": [
+						{
+							"@name": "single",
+							"label": "Trigo"
+						},
+						{
+							"@name": "single",
+							"label": "Garbanzo"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@tipo_cultivo == \"horticolas\""
+			},
+			"children": [
+				{
+					"@name": "multiChoice",
+					"id": "horticolas_hojas",
+					"label": "Horticolas: Hojas",
+					"choices": [
+						{
+							"@name": "multi",
+							"label": "Acelga"
+						},
+						{
+							"@name": "multi",
+							"label": "Achicoria"
+						},
+						{
+							"@name": "multi",
+							"label": "Apio"
+						},
+						{
+							"@name": "multi",
+							"label": "Espinaca"
+						},
+						{
+							"@name": "multi",
+							"label": "Lechuga"
+						},
+						{
+							"@name": "multi",
+							"label": "Perejil"
+						},
+						{
+							"@name": "multi",
+							"label": "Puerro"
+						},
+						{
+							"@name": "multi",
+							"label": "Rucula"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@tipo_cultivo == \"horticolas\""
+			},
+			"children": [
+				{
+					"@name": "multiChoice",
+					"id": "horticolas_frutas",
+					"label": "Horticolas: Frutas",
+					"choices": [
+						{
+							"@name": "multi",
+							"label": "Arveja"
+						},
+						{
+							"@name": "multi",
+							"label": "Berenjena"
+						},
+						{
+							"@name": "multi",
+							"label": "Brocoli"
+						},
+						{
+							"@name": "multi",
+							"label": "Calabaza"
+						},
+						{
+							"@name": "multi",
+							"label": "Chaucha"
+						},
+						{
+							"@name": "multi",
+							"label": "Choclo"
+						},
+						{
+							"@name": "multi",
+							"label": "Coliflor"
+						},
+						{
+							"@name": "multi",
+							"label": "Haba"
+						},
+						{
+							"@name": "multi",
+							"label": "Melon"
+						},
+						{
+							"@name": "multi",
+							"label": "Pepino"
+						},
+						{
+							"@name": "multi",
+							"label": "Pimiento"
+						},
+						{
+							"@name": "multi",
+							"label": "Repollo"
+						},
+						{
+							"@name": "multi",
+							"label": "Sandia"
+						},
+						{
+							"@name": "multi",
+							"label": "Tomate"
+						},
+						{
+							"@name": "multi",
+							"label": "Zapallo"
+						},
+						{
+							"@name": "multi",
+							"label": "Zapallito"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@tipo_cultivo == \"horticolas\""
+			},
+			"children": [
+				{
+					"@name": "multiChoice",
+					"id": "horticolas_raices",
+					"label": "Horticolas: Raíces y tubérculos",
+					"choices": [
+						{
+							"@name": "multi",
+							"label": "Ajo"
+						},
+						{
+							"@name": "multi",
+							"label": "Batata"
+						},
+						{
+							"@name": "multi",
+							"label": "Cebolla de bulbo"
+						},
+						{
+							"@name": "multi",
+							"label": "Cebolla de verdeo"
+						},
+						{
+							"@name": "multi",
+							"label": "Papa"
+						},
+						{
+							"@name": "multi",
+							"label": "Remolacha"
+						},
+						{
+							"@name": "multi",
+							"label": "Zanahoria"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@tipo_cultivo == \"frutales\""
+			},
+			"children": [
+				{
+					"@name": "multiChoice",
+					"id": "frutales",
+					"label": "Cultivo de frutales",
+					"choices": [
+						{
+							"@name": "multi",
+							"label": "Durazno"
+						},
+						{
+							"@name": "multi",
+							"label": "Manzana"
+						},
+						{
+							"@name": "multi",
+							"label": "Damasco"
+						},
+						{
+							"@name": "multi",
+							"label": "Higo"
+						},
+						{
+							"@name": "multi",
+							"label": "Ciruela"
+						},
+						{
+							"@name": "multi",
+							"label": "Olivo"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@tipo_cultivo == \"pasturas\""
+			},
+			"children": [
+				{
+					"@name": "singleChoice",
+					"id": "pasturas",
+					"label": "Cultivo de pasturas",
+					"choices": [
+						{
+							"@name": "single",
+							"label": "Pasturas megatermicas implantadas"
+						},
+						{
+							"@name": "single",
+							"label": "Alfalfa/Melilotus"
+						},
+						{
+							"@name": "single",
+							"label": "Pastizal natural"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "singleChoice",
+					"id": "estado_cultivo",
+					"label": "Estado de cultivo",
+					"choices": [
+						{
+							"@name": "single",
+							"label": "Muy bueno"
+						},
+						{
+							"@name": "single",
+							"label": "Bueno"
+						},
+						{
+							"@name": "single",
+							"label": "Regular"
+						},
+						{
+							"@name": "single",
+							"label": "Malo"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "multiChoice",
+					"id": "dano_planta",
+					"label": "Parte de la planta dañada",
+					"choices": [
+						{
+							"@name": "multi",
+							"label": "Hojas"
+						},
+						{
+							"@name": "multi",
+							"label": "Tallos"
+						},
+						{
+							"@name": "multi",
+							"label": "Frutos"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "singleChoice",
+					"id": "tamano_granizo",
+					"label": "Tamaño del granizo registrado",
+					"choices": [
+						{
+							"@name": "single",
+							"label": "Moneda 10 centavos"
+						},
+						{
+							"@name": "single",
+							"label": "Moneda de 1 peso"
+						},
+						{
+							"@name": "single",
+							"label": "Pelota de golf"
+						},
+						{
+							"@name": "single",
+							"label": "Huevo de gallina"
+						},
+						{
+							"@name": "single",
+							"label": "Pelota de tenis"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "singleChoice",
+					"id": "tamano_granizo",
+					"label": "Capa de granizo registrado",
+					"choices": [
+						{
+							"@name": "single",
+							"label": "1 CM",
+							"value": "1"
+						},
+						{
+							"@name": "single",
+							"label": "5 CM",
+							"value": "5"
+						},
+						{
+							"@name": "single",
+							"label": "10 CM",
+							"value": "10"
+						},
+						{
+							"@name": "single",
+							"label": "15 CM",
+							"value": "15"
+						},
+						{
+							"@name": "single",
+							"label": "20 CM",
+							"value": "20"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "multiChoice",
+					"id": "danos_infra",
+					"label": "Daños de infraestructura",
+					"choices": [
+						{
+							"@name": "multi",
+							"label": "Rotura de media sombra",
+							"id": "rotura_media_sombra"
+						},
+						{
+							"@name": "multi",
+							"label": "Rotura de mallas antigranizo",
+							"id": "rotura_mallas_anigranizo"
+						},
+						{
+							"@name": "multi",
+							"label": "Caida de postes",
+							"id": "caida_postes"
+						},
+						{
+							"@name": "multi",
+							"label": "Ruptura de invernaderos",
+							"id": "ruptura_invernaderos"
+						},
+						{
+							"@name": "multi",
+							"label": "Rotura de sistema de riego",
+							"id": "rotura_sistema_riesgo"
+						},
+						{
+							"@name": "multi",
+							"label": "Caminos cortados agua en calzada",
+							"id": "caminos_cortados_agua"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "label",
+					"value": "Última pregunta"
+				},
+				{
+					"@name": "checkBox",
+					"id": "situación_actual_esperada",
+					"label": "¿La situación actual es la que se espera para la época del año?"
+				},
+				{
+					"@name": "label",
+					"value": "¿Alguna observación final?"
+				},
+				{
+					"@name": "textField",
+					"id": "observacion",
+					"label": "Observaciones"
+				}
+			]
+		}
+	]
+}

@@ -11,36 +11,41 @@ class CosechaSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        padding: EdgeInsets.all(16),
-        child: Row(
-          children: [
-            // TODO: Un icono
-            Icon(Icons.keyboard_arrow_up_rounded),
-            SizedBox(width: 8),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  model.alias + " " + timeago.format(model.timestamp),
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 12,
-                  ),
-                ),
-                SizedBox(height: 2),
-                Text(
-                  "Cosechado por " + model.username,
-                  style: TextStyle(
-                      fontWeight: FontWeight.w300,
+    return InkWell(
+      onTap: () {
+
+      },
+      child: Container(
+          padding: EdgeInsets.all(16),
+          child: Row(
+            children: [
+              // TODO: Un icono
+              Icon(Icons.keyboard_arrow_up_rounded),
+              SizedBox(width: 8),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    model.alias + " " + timeago.format(model.timestamp),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
                       fontSize: 12,
-                      color: Colors.black87),
-                ),
-              ],
-            ),
-          ],
-        ));
+                    ),
+                  ),
+                  SizedBox(height: 2),
+                  Text(
+                    "Cosechado por " + model.username,
+                    style: TextStyle(
+                        fontWeight: FontWeight.w300,
+                        fontSize: 12,
+                        color: Colors.black87),
+                  ),
+                ],
+              ),
+            ],
+          )),
+    );
   }
 
   // Widget showHarvest(HarvestModel model) {

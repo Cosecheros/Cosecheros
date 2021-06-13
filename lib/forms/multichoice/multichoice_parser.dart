@@ -14,6 +14,11 @@ class MultiChoiceParser<TMultiSelectChoice extends MultiSelectChoice>
     ElementParserFunction parser,
   ) {
     super.fillProperties(multiSelectChoice, parserNode, parent, parser);
-    multiSelectChoice.id = "${parent.id}:${multiSelectChoice.id}";
+    final id = parserNode.getPlainString('id') ??
+        multiSelectChoice.label
+            .trim()
+            .replaceAll(RegExp(r' '), '_')
+            .toLowerCase();
+    multiSelectChoice.id = "${parent.id}_$id";
   }
 }

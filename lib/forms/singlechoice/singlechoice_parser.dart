@@ -21,7 +21,10 @@ class SingleChoiceParser extends SingleSelectChoiceParser<SingleSelectChoice> {
       )
       ..valueProperty = parserNode.getStringProperty(
         'value',
-        defaultValue: () => singleSelectChoice.label.toLowerCase(),
+        defaultValue: () => singleSelectChoice.label
+            .trim()
+            .replaceAll(RegExp(r' '), '_')
+            .toLowerCase(),
         isImmutable: true,
       );
   }

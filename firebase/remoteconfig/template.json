@@ -2,12 +2,17 @@
   "parameters": {
     "dev_forms": {
       "defaultValue": {
-        "value": "[{\"label\":\"Daños por granizo\",\"url\":\"https://cosecheros.web.app/forms/dañosgranizo.1.json\"}, {\"label\":\"Granizada\",\"url\":\"https://cosecheros.web.app/forms/granizo.1.json\"}]"
+        "value": "[{\"label\":\"Daños por granizo\",\"url\":\"https://cosecheros.web.app/forms/dañosgranizo.2.json\"}, {\"label\":\"Granizada\",\"url\":\"https://cosecheros.web.app/forms/granizo.2.json\"}, {\"label\":\"Sequía\",\"url\":\"https://cosecheros.web.app/forms/sequia.2.json\"}]"
       }
     },
     "prod_forms": {
       "defaultValue": {
         "value": "[{\"label\":\"Daños por granizo\",\"url\":\"https://cosecheros.web.app/forms/dañosgranizo.1.json\"}, {\"label\":\"Granizada\",\"url\":\"https://cosecheros.web.app/forms/granizo.1.json\"}]"
+      }
+    },
+    "prod_forms_2": {
+      "defaultValue": {
+        "value": "[{\"label\":\"Daños por granizo\",\"url\":\"https://cosecheros.web.app/forms/dañosgranizo.2.json\"}, {\"label\":\"Granizada\",\"url\":\"https://cosecheros.web.app/forms/granizo.2.json\"}, {\"label\":\"Sequía\",\"url\":\"https://cosecheros.web.app/forms/sequia.2.json\"}]"
       }
     }
   }

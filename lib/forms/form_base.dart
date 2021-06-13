@@ -64,6 +64,7 @@ class _BaseFormState extends State<BaseForm> {
     print("_onEvent: $event");
 
     if (event is ChangeValueEvent) {
+      print("_onEvent: elementId: ${event.elementId}, value: ${event.value}");
       _formManager.changeValue(
           value: event.value,
           elementId: event.elementId,

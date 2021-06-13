@@ -54,8 +54,8 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
         StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
               .collection(Constants.collection)
-              // TODO filtrar por gps/tiempo
-              // .where("timestamp", isGreaterThan: from)
+              .where("timestamp",
+                  isGreaterThan: DateTime.now().subtract(Duration(days: 30)))
               .orderBy("timestamp", descending: true)
               .snapshots(),
           builder:
@@ -178,7 +178,8 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
               child: Card(
                 margin: EdgeInsets.only(top: 36),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+                  borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(16.0)),
                 ),
                 child: CosechaSummary(model),
               ),
