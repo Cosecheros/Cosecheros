@@ -6,7 +6,8 @@ import 'package:rxdart/rxdart.dart';
 import 'package:flutter_dynamic_forms_components/flutter_dynamic_forms_components.dart'
     as model;
 
-class SingleChoiceRenderer extends FormElementRenderer<model.SingleSelectChoice> {
+class SingleChoiceRenderer
+    extends FormElementRenderer<model.SingleSelectChoice> {
   BoxDecoration getDecorationBox(context, value) {
     return value
         ? BoxDecoration(
@@ -56,12 +57,19 @@ class SingleChoiceRenderer extends FormElementRenderer<model.SingleSelectChoice>
               TabWidget.of(context).movePage(1);
             },
             child: Center(
-              child: Text(
-                element.label.toUpperCase(),
-                style: Theme.of(context).textTheme.bodyText1.copyWith(
-                    color: element.value == parent.value
-                        ? Theme.of(context).colorScheme.primaryVariant
-                        : Theme.of(context).colorScheme.onBackground),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  element.label.toUpperCase(),
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                      fontWeight: element.value == parent.value
+                          ? FontWeight.w800
+                          : FontWeight.w500,
+                      color: element.value == parent.value
+                          ? Theme.of(context).colorScheme.primaryVariant
+                          : Theme.of(context).colorScheme.onBackground),
+                ),
               ),
             ),
           ),

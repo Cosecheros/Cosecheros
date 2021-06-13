@@ -40,7 +40,6 @@ class TabWidgetState extends State<TabWidget> {
     controller.addListener(() {
       setState(() {
         userShowSummary = userShowSummary || isLast();
-        print(userShowSummary);
       });
     });
   }
@@ -85,8 +84,8 @@ class TabWidgetState extends State<TabWidget> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                icon: Icon(Icons.arrow_back),
-                label: Text("SALIR"),
+                icon: Icon(Icons.close_rounded),
+                label: Text("Descartar"),
               ),
             ),
           ),

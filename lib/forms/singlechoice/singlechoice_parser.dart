@@ -3,7 +3,7 @@ import 'package:dynamic_forms/dynamic_forms.dart';
 
 class SingleChoiceParser extends SingleSelectChoiceParser<SingleSelectChoice> {
   @override
-  String get name => 'choice';
+  String get name => 'single';
 
   @override
   void fillProperties(

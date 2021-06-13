@@ -1,21 +1,45 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:cosecheros/shared/extensions.dart';
 
 import 'model.dart';
 
-class CosechaMini extends StatelessWidget {
+class CosechaSummary extends StatelessWidget {
   final Cosecha model;
 
-  const CosechaMini(this.model);
+  const CosechaSummary(this.model);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: EdgeInsets.all(16),
-        child: Text(
-          timeago.format(model.timestamp).capitalize(),
-          style: TextStyle(fontWeight: FontWeight.w300, fontSize: 18),
+        padding: EdgeInsets.all(16),
+        child: Row(
+          children: [
+            // TODO: Un icono
+            Icon(Icons.keyboard_arrow_up_rounded),
+            SizedBox(width: 8),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  model.alias + " " + timeago.format(model.timestamp),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 12,
+                  ),
+                ),
+                SizedBox(height: 2),
+                Text(
+                  "Cosechado por " + model.username,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w300,
+                      fontSize: 12,
+                      color: Colors.black87),
+                ),
+              ],
+            ),
+          ],
         ));
   }
 

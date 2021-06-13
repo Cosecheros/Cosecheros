@@ -8,6 +8,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:dynamic_forms/dynamic_forms.dart';
 import 'package:cosecheros/forms/map/map.dart' as mapModel;
 import 'package:cosecheros/shared/extensions.dart';
+import 'package:flutter_dynamic_forms_components/flutter_dynamic_forms_components.dart';
 
 enum Mode { Uploading, Indeterminate, Done, Fail }
 
@@ -29,7 +30,7 @@ class SubmitFirestore {
 
   bool isPic(e) => e['formElement'].runtimeType == Picture;
 
-  Map<String, dynamic> _firestoreDoc(String id, List<FormElement> payload) {
+  Map<String, dynamic> _firestoreDoc(FormElement form, List<FormElement> payload) {
     var filtered = payload.where(
       // No subir las fotos a Firestore
       (e) => e.runtimeType != Picture,
@@ -38,6 +39,9 @@ class SubmitFirestore {
     serialize(FormElement e) {
       if (e.runtimeType == mapModel.Map) {
         return geoPoinFromGeoPos((e as mapModel.Map).point);
+      }
+      if (e.runtimeType == MultiSelectChoice) {
+        return e.isVisible;
       }
       print("serialize: get value prop: " + e.toString());
       return e.getProperty('value').value;
@@ -55,14 +59,17 @@ class SubmitFirestore {
       )
       ..addAll(
         {
-          "form": id,
+          "form": form.id,
+           // Sabemos que es un model.Form
+           // así que estamos casi seguros de que tiene ese property
+          "form_alias": form.getProperty("name").value,
           "timestamp": FieldValue.serverTimestamp(),
         },
       );
   }
 
   Stream<SubmitProgress> submit(
-      String idForm, List<FormElement> payload) async* {
+      FormElement form, List<FormElement> payload) async* {
     print("submit: Iniciando");
     print(payload);
     yield SubmitProgress("Cargando", Mode.Uploading);
@@ -72,7 +79,7 @@ class SubmitFirestore {
         .collection(Constants.collection)
         .doc(DateTime.now().toIso8601String());
 
-    await ref.set(_firestoreDoc(idForm, payload));
+    await ref.set(_firestoreDoc(form, payload));
 
     // Para actualizar los links de las imágenes
     Map<String, dynamic> updateDoc = {};

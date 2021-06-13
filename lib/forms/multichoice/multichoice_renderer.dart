@@ -3,8 +3,8 @@ import 'package:flutter_dynamic_forms/flutter_dynamic_forms.dart';
 import 'package:flutter_dynamic_forms_components/flutter_dynamic_forms_components.dart'
     as model;
 
-class CheckBoxRenderer extends FormElementRenderer<model.CheckBox> {
-  BoxDecoration getDecorationBox(context, value) {
+class MultiChoiceRenderer extends FormElementRenderer<model.MultiSelectChoice> {
+  BoxDecoration getDecorationBox(BuildContext context, bool value) {
     return value
         ? BoxDecoration(
             color: Theme.of(context).colorScheme.primaryVariant.withAlpha(12),
@@ -24,29 +24,31 @@ class CheckBoxRenderer extends FormElementRenderer<model.CheckBox> {
           );
   }
 
-  void changeValue(dispatcher, element) {
+  void changeValue(FormElementEventDispatcherFunction dispatcher,
+      model.MultiSelectChoice element) {
     dispatcher(
       ChangeValueEvent(
-        value: !element.value,
+        value: !element.isSelected,
         elementId: element.id,
+        propertyName: model.MultiSelectChoice.isSelectedPropertyName,
       ),
     );
   }
 
   @override
   Widget render(
-      model.CheckBox element,
+      model.MultiSelectChoice element,
       BuildContext context,
       FormElementEventDispatcherFunction dispatcher,
       FormElementRendererFunction renderer) {
     return StreamBuilder<bool>(
-        initialData: element.value,
-        stream: element.valueChanged,
+        initialData: element.isSelected,
+        stream: element.isSelectedChanged,
         builder: (context, snapshot) {
           return Container(
             padding: const EdgeInsets.symmetric(horizontal: 0.0),
             margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
-            decoration: getDecorationBox(context, element.value),
+            decoration: getDecorationBox(context, element.isSelected),
             clipBehavior: Clip.antiAlias,
             height: 80,
             child: InkWell(

@@ -1,12 +1,15 @@
+import 'package:cosecheros/widgets/label_widget.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_dynamic_forms/flutter_dynamic_forms.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:flutter_dynamic_forms_components/flutter_dynamic_forms_components.dart';
 
-class SingleChoiceGroupRenderer extends FormElementRenderer<SingleSelectGroup> {
+import 'singlechoice_group.dart';
+
+class SingleChoiceGroupRenderer extends FormElementRenderer<SingleChoiceGroup> {
   @override
   Widget render(
-      SingleSelectGroup element,
+      SingleChoiceGroup element,
       BuildContext context,
       FormElementEventDispatcherFunction dispatcher,
       FormElementRendererFunction renderer) {
@@ -20,6 +23,7 @@ class SingleChoiceGroupRenderer extends FormElementRenderer<SingleSelectGroup> {
           ),
           builder: (context, _) => Column(
             children: [
+              LabelWidget(element.label),
               SizedBox(height: 8),
               ...element.choices
                   .where((c) => c.isVisible)

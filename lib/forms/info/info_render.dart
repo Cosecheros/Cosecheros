@@ -17,7 +17,7 @@ class InfoRenderer extends FormElementRenderer<Info> {
       child: InfoItem(
         title: element.title,
         subtitle: element.subtitle,
-        img: element.img,
+        url: element.img,
       ),
     );
   }

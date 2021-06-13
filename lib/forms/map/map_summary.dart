@@ -68,7 +68,7 @@ class _MapInfoState extends State<MapInfo> {
     return InfoItem(
       title: "Ubicación.",
       subtitle: "${subtitle ?? ''}",
-      child: MiniMapWidget(latLngFromGeoPos(widget.element.point)),
+      childImage: MiniMapWidget(latLngFromGeoPos(widget.element.point)),
     );
   }
 }

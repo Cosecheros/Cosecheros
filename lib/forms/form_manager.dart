@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:dynamic_forms/dynamic_forms.dart';
 import 'package:expression_language/expression_language.dart';
 
@@ -12,7 +14,7 @@ class CustomFormManager extends JsonFormManager {
 
   List<Map<String, dynamic>> getFormData() {
     var result = <Map<String, dynamic>>[];
-    var formElements = getFormElementIterator<FormElement>(form).toList();
+    var formElements = getVisibleFormElementIterator<FormElement>(form).toList();
 
     formElements.forEach((fe) {
       var properties = fe.getProperties();
@@ -30,8 +32,54 @@ class CustomFormManager extends JsonFormManager {
     return result;
   }
 
-  bool isData(propVal) =>
+  static bool isData(propVal) =>
       propVal is MutableProperty &&
       !(propVal is Property<ExpressionProviderElement>) &&
       !(propVal is Property<List<ExpressionProviderElement>>);
+
+  Iterable<TFormElement> getVisibleFormElementIterator<TFormElement extends FormElement>(
+    FormElement formElement) sync* {
+  var stack = Queue<FormElement>.from([formElement]);
+  var visitedElements = {formElement};
+  while (stack.isNotEmpty) {
+    var formElement = stack.removeLast();
+    visitedElements.add(formElement);
+    if (formElement is TFormElement) {
+      yield formElement;
+    }
+    var formElements = formElement
+        .getProperties()
+        .values
+        .whereType<Property<FormElement>>()
+        .map((v) => v.value)
+        .where((element) => element.isVisible)
+        .toList();
+
+    var convertedNullableFormElements = formElement
+        .getProperties()
+        .values
+        .whereType<Property<FormElement>>()
+        .where((element) => element.value != null)
+        .map((v) => v.value)
+        .where((element) => element.isVisible)
+        .toList();
+
+    formElements.addAll(convertedNullableFormElements);
+
+    var formListElements = formElement
+        .getProperties()
+        .values
+        .whereType<Property<List<FormElement>>>()
+        .map((v) => v.value)
+        .expand((x) => x)
+        .where((element) => element.isVisible);
+    formElements.addAll(formListElements);
+
+    formElements.forEach((e) {
+      if (!visitedElements.contains(e)) {
+        stack.addLast(e);
+      }
+    });
+  }
+}
 }

@@ -5,15 +5,23 @@ class Cosecha {
   String id;
   DateTime timestamp;
   LatLng latLng;
+  String username;
+  String alias;
 
   static Cosecha fromSnapshot(QueryDocumentSnapshot doc) {
     Cosecha result = Cosecha();
 
-    result.id = doc.id;
-    result.timestamp = doc.data()['timestamp']?.toDate() ?? DateTime.now();
+    var data = doc.data();
 
-    GeoPoint geo = doc.data()['geo'];
+    result.id = doc.id;
+    result.timestamp = data['timestamp']?.toDate() ?? DateTime.now();
+
+    GeoPoint geo = data['geo'];
     result.latLng = LatLng(geo.latitude, geo.longitude);
+
+    result.username = data['username'] ?? "un héroe anónimo";
+
+    result.alias = data['form_alias'] ?? "Una cosecha";
     return result;
   }
 }

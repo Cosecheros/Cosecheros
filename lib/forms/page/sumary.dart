@@ -1,9 +1,13 @@
 import 'package:cosecheros/forms/checkbox/checkbox_summary.dart';
 import 'package:cosecheros/forms/form_manager.dart';
+import 'package:cosecheros/forms/info/info.dart';
 import 'package:cosecheros/forms/map/map_summary.dart';
 import 'package:cosecheros/forms/map/map.dart' as custom;
+import 'package:cosecheros/forms/multichoice/multichoice_group.dart';
+import 'package:cosecheros/forms/multichoice/multichoice_summary.dart';
 import 'package:cosecheros/forms/picture/pic.dart';
 import 'package:cosecheros/forms/picture/pic_summary.dart';
+import 'package:cosecheros/forms/singlechoice/singlechoice_group.dart';
 import 'package:cosecheros/forms/singlechoice/singlechoice_summary.dart';
 import 'package:cosecheros/forms/textfield/text_field_summary.dart';
 import 'package:flutter/material.dart';
@@ -21,11 +25,17 @@ abstract class SummaryWidget<T extends FormElement> {
   Widget render(BuildContext context, T element);
 }
 
+class NopeSummary extends SummaryWidget {
+  @override
+  Widget render(BuildContext context, FormElement element) {
+    return Container();
+  }
+}
+
 class SumaryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var manager = FormProvider.of<CustomFormManager>(context);
-    var data = manager.getFormData().reversed;
     return SafeArea(
       child: Container(
         margin: EdgeInsets.only(top: 56),
@@ -38,7 +48,13 @@ class SumaryPage extends StatelessWidget {
               style: Theme.of(context).textTheme.headline6,
             ),
             SizedBox(height: 16),
-            ...data.map((i) => _getSummary(context, i)).toList()
+            ...manager
+                .getVisibleFormElementIterator(manager.form)
+                .where((element) => element.isVisible)
+                .map((e) => _toSummary(context, e))
+                .where((element) => element != null)
+                .toList()
+                .reversed
           ],
         ),
       ),
@@ -47,16 +63,27 @@ class SumaryPage extends StatelessWidget {
 
   final Map<Type, SummaryWidget> summ = {
     Picture: PictureSummary(),
-    model.SingleSelectGroup: SingleChoiceSummary(),
+    SingleChoiceGroup: SingleChoiceSummary(),
+    MultiChoiceGroup: MultiChoiceSummary(),
     model.CheckBox: CheckBoxSummary(),
     custom.Map: MapSummary(),
     model.TextField: TextFieldSummary(),
+
+    model.SingleSelectChoice: NopeSummary(),
+    model.MultiSelectChoice: NopeSummary(),
+    model.Label: NopeSummary(),
+    model.FormGroup: NopeSummary(),
+    model.Form: NopeSummary(),
+    Info: NopeSummary(),
   };
 
-  Widget _getSummary(BuildContext context, Map<String, dynamic> input) {
-    print("summary: " + input.toString());
-    FormElement element = input['formElement'];
+  Widget _toSummary(BuildContext context, FormElement element) {
+    print("_toSummary: " + element.toString());
     SummaryWidget builder = summ[element.runtimeType];
+
+    if (builder is NopeSummary) {
+      return null;
+    }
 
     if (builder != null) {
       return InkWell(
@@ -82,6 +109,6 @@ class SumaryPage extends StatelessWidget {
       );
     }
     print("ERROR: No hay summary implementado: $element");
-    return Text("Otras opciones");
+    return Text("Otra opción: $element");
   }
 }

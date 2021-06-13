@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'cosecha_mini.dart';
+import 'cosecha_summary.dart';
 import 'model.dart';
 
 class HomeMap extends StatefulWidget {
@@ -20,6 +20,8 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
   Completer<GoogleMapController> _controller = Completer();
   String _mapStyle;
   BitmapDescriptor _markerIcon;
+
+  PersistentBottomSheetController _bottomSheetController;
 
   static CameraPosition initPos =
       CameraPosition(target: LatLng(-31.416998, -64.183657), zoom: 10);
@@ -90,6 +92,8 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
                 controller.setMapStyle(_mapStyle);
               },
               onTap: (e) {
+                if (_bottomSheetController != null)
+                  _bottomSheetController.close();
                 print(e);
               },
             );
@@ -164,18 +168,25 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
         markerId: MarkerId(model.id),
         position: model.latLng,
         icon: _markerIcon,
-        onTap: () => showModalBottomSheet(
-          context: context,
-          builder: (context) => ConstrainedBox(
-            constraints: BoxConstraints.loose(
-              Size(double.infinity, 230),
-            ),
-            child: Card(
-              margin: EdgeInsets.all(16),
-              child: CosechaMini(model),
+        onTap: () => {
+          _bottomSheetController = showBottomSheet(
+            context: context,
+            builder: (context) => ConstrainedBox(
+              constraints: BoxConstraints.tightFor(
+                width: double.infinity,
+              ),
+              child: Card(
+                margin: EdgeInsets.only(top: 36),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+                ),
+                child: CosechaSummary(model),
+              ),
             ),
           ),
-        ),
+          _bottomSheetController.closed
+              .then((_) => _bottomSheetController = null)
+        },
       );
     } else {
       return Marker(

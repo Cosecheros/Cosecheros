@@ -17,7 +17,7 @@ class PictureSummary extends SummaryWidget<Picture> {
         child: InfoItem(
           title: idToTitle(element.id),
           subtitle: "Sin foto.",
-          child: Padding(
+          childImage: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Icon(Icons.no_photography_rounded),
           ),

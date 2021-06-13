@@ -1,3 +1,7 @@
+import 'package:cosecheros/forms/multichoice/multichoice_group_parser.dart';
+import 'package:cosecheros/forms/multichoice/multichoice_group_renderer.dart';
+import 'package:cosecheros/forms/multichoice/multichoice_parser.dart';
+import 'package:cosecheros/forms/multichoice/multichoice_renderer.dart';
 import 'package:cosecheros/forms/submit_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dynamic_forms/flutter_dynamic_forms.dart';
@@ -47,8 +51,17 @@ class _BaseFormState extends State<BaseForm> {
     json = widget.content();
   }
 
+  void _onSubmit() {
+    setState(() {
+      upload = _submiter.submit(
+        _formManager.form,
+        _formManager.getElementsData(),
+      );
+    });
+  }
+
   void _onEvent(BuildContext context, FormElementEvent event) {
-    print(event);
+    print("_onEvent: $event");
 
     if (event is ChangeValueEvent) {
       _formManager.changeValue(
@@ -59,12 +72,7 @@ class _BaseFormState extends State<BaseForm> {
     }
 
     if (event is DoneEvent) {
-      setState(() {
-        upload = _submiter.submit(
-          _formManager.form.id,
-          _formManager.getElementsData(),
-        );
-      });
+      _onSubmit();
     }
   }
 
@@ -76,58 +84,39 @@ class _BaseFormState extends State<BaseForm> {
       children: [
         FutureBuilder(
           future: json,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState != ConnectionState.done) {
-              return Center(child: CircularProgressIndicator());
-            }
-            if (snapshot.hasError) {
-              return _buildError(context);
-            }
-            if (snapshot.hasData) {
-              return _buildData(context, snapshot.data);
-            }
-            return Container(); // No debería suceder
-          },
+          builder: _buildForm,
         ),
         if (upload != null)
-          WillPopScope(
-            onWillPop: () async => false, // Fixme: Prevenir retroceder el form
-            child: Container(
-              decoration: BoxDecoration(color: Colors.black45),
-              child: Center(
-                child: StreamBuilder(
-                    stream: upload,
-                    builder: (BuildContext context,
-                        AsyncSnapshot<SubmitProgress> event) {
-                      print(event);
-                      if (event.connectionState == ConnectionState.waiting) {
-                        return _circularProgress(null);
-                      }
-
-                      return Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            event.data?.task ?? "Error",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline4
-                                .copyWith(color: Colors.white),
-                          ),
-                          SizedBox(height: 10),
-                          if (event.connectionState == ConnectionState.done)
-                            _doneButton()
-                          else
-                            _circularProgress(event.data.progress)
-                        ],
-                      );
-                    }),
+          Container(
+            decoration: BoxDecoration(color: Colors.black45),
+            child: Center(
+              child: StreamBuilder(
+                stream: upload,
+                builder: _buildUpload,
               ),
             ),
           ),
       ],
     );
+  }
+
+  Widget _buildForm(context, snapshot) {
+    if (snapshot.connectionState != ConnectionState.done) {
+      return Center(child: CircularProgressIndicator());
+    }
+    if (snapshot.hasError) {
+      return _buildFormError(context, onRetry: () {
+        setState(() {
+          json = widget.content();
+        });
+      }, onBack: () {
+        Navigator.pop(context);
+      });
+    }
+    if (snapshot.hasData) {
+      return _buildFormData(context, snapshot.data);
+    }
+    return Container(); // No debería suceder
   }
 
   Widget _circularProgress(double value) {
@@ -160,7 +149,23 @@ class _BaseFormState extends State<BaseForm> {
     );
   }
 
-  Widget _buildError(BuildContext context) {
+  Widget _retryButton(VoidCallback onRetry) {
+    return RawMaterialButton(
+      onPressed: onRetry,
+      child: Icon(
+        Icons.refresh_rounded,
+        color: Colors.white,
+        size: 32.0,
+      ),
+      shape: CircleBorder(),
+      elevation: 2.0,
+      fillColor: Theme.of(context).colorScheme.primaryVariant,
+      padding: const EdgeInsets.all(16.0),
+    );
+  }
+
+  Widget _buildFormError(BuildContext context,
+      {VoidCallback onRetry, VoidCallback onBack}) {
     return Stack(
       children: [
         Positioned(
@@ -168,9 +173,7 @@ class _BaseFormState extends State<BaseForm> {
           left: 16,
           child: SafeArea(
             child: TextButton.icon(
-              onPressed: () {
-                Navigator.pop(context);
-              },
+              onPressed: onBack,
               icon: Icon(Icons.arrow_back_rounded),
               label: Text("Volver"),
             ),
@@ -183,11 +186,7 @@ class _BaseFormState extends State<BaseForm> {
               Text("Ocurrió un problema"),
               IconButton(
                 icon: Icon(Icons.refresh_rounded),
-                onPressed: () {
-                  setState(() {
-                    json = widget.content();
-                  });
-                },
+                onPressed: onRetry,
               ),
             ],
           ),
@@ -196,7 +195,64 @@ class _BaseFormState extends State<BaseForm> {
     );
   }
 
-  Widget _buildData(BuildContext context, String data) {
+  Widget _buildUpload(
+      BuildContext context, AsyncSnapshot<SubmitProgress> event) {
+    print("uploading: $event");
+    if (event.connectionState == ConnectionState.waiting) {
+      return _circularProgress(null);
+    }
+
+    if (event.hasError) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "Ocurrió un problema",
+              style: Theme.of(context)
+                  .textTheme
+                  .headline5
+                  .copyWith(color: Colors.white),
+            ),
+            SizedBox(height: 16),
+            _retryButton(_onSubmit),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  upload = null;
+                });
+              },
+              child: Text(
+                "Volver",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text(
+          event.data?.task ?? "Error",
+          style: Theme.of(context)
+              .textTheme
+              .headline4
+              .copyWith(color: Colors.white),
+        ),
+        SizedBox(height: 10),
+        if (event.connectionState == ConnectionState.done)
+          _doneButton()
+        else
+          _circularProgress(event.data.progress)
+      ],
+    );
+  }
+
+  Widget _buildFormData(BuildContext context, String data) {
     return ParsedFormProvider(
       create: (_) => _formManager,
       content: data,
@@ -204,6 +260,8 @@ class _BaseFormState extends State<BaseForm> {
           [
             SingleChoiceParser(),
             SingleChoiceGroupParser(),
+            MultiChoiceParser(),
+            MultiChoiceGroupParser(),
             MapParser(),
             PictureParser(),
             InfoParser(),
@@ -221,6 +279,8 @@ class _BaseFormState extends State<BaseForm> {
               CheckBoxRenderer(),
               SingleChoiceRenderer(),
               SingleChoiceGroupRenderer(),
+              MultiChoiceRenderer(),
+              MultiChoiceGroupRenderer(),
               MapRenderer(),
               PictureRenderer(),
               InfoRenderer(),

@@ -1,3 +1,4 @@
+import 'package:cosecheros/widgets/label_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_dynamic_forms/flutter_dynamic_forms.dart';
@@ -18,14 +19,7 @@ class LabelRenderer extends FormElementRenderer<model.Label> {
             initialData: element.value,
             stream: element.valueChanged,
             builder: (context, snapshot) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  snapshot.data,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headline6,
-                ),
-              );
+              return LabelWidget(snapshot.data);
             }),
       ),
     );

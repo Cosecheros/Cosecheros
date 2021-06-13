@@ -6,7 +6,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dynamic_forms/flutter_dynamic_forms.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'map.dart';
@@ -39,8 +38,6 @@ class MapWidgetState extends State<MapWidget>
         propertyName: Map.pointPropName,
       ),
     );
-    // TODO: Sacar un screenshot y reusarlo en summary
-    // controller.takeSnapshot();
   }
 
   void updateByCurrentPos() async {

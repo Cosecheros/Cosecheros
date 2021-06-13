@@ -10,7 +10,7 @@ class LocalForm extends StatelessWidget {
       backgroundColor: Theme.of(context).backgroundColor,
       resizeToAvoidBottomInset: false,
       body: BaseForm(
-        content: () => rootBundle.loadString('firebase/hosting/forms/dañosgranizo.1.json'),
+        content: () => rootBundle.loadString('firebase/hosting/forms/sequia.2.json'),
       ),
     );
   }

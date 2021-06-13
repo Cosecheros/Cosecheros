@@ -7,16 +7,18 @@ import 'package:flutter/widgets.dart';
 class InfoItem extends StatelessWidget {
   final String title;
   final String subtitle;
-  final String img;
+  final String url;
   final File file;
-  final Widget child;
+  final Widget childImage;
+  final Widget childSubtitle;
 
   InfoItem({
     @required this.title,
     this.subtitle,
-    this.img,
+    this.url,
     this.file,
-    this.child,
+    this.childImage,
+    this.childSubtitle,
   });
 
   @override
@@ -25,7 +27,7 @@ class InfoItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          flex: (img ?? file ?? child) == null ? 0 : 8,
+          flex: (url ?? file ?? childImage) == null ? 0 : 8,
           child: ConstrainedBox(
             constraints: BoxConstraints.loose(
               Size(double.infinity, 96),
@@ -46,18 +48,7 @@ class InfoItem extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              if (subtitle != null) SizedBox(height: 8),
-              if (subtitle != null)
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onBackground
-                        .withOpacity(0.8),
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
+              ..._getSubtitle(context),
             ],
           ),
         ),
@@ -65,10 +56,25 @@ class InfoItem extends StatelessWidget {
     );
   }
 
+  List<Widget> _getSubtitle(BuildContext context) {
+    return [
+      if (subtitle != null || childSubtitle != null) SizedBox(height: 8),
+      if (subtitle != null)
+        Text(
+          subtitle,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+      if (childSubtitle != null) childSubtitle
+    ];
+  }
+
   Widget getPicture() {
-    if (img != null) {
+    if (url != null) {
       return CachedNetworkImage(
-        imageUrl: img,
+        imageUrl: url,
         placeholder: (context, url) => Center(
           child: CircularProgressIndicator(),
         ),
@@ -85,8 +91,8 @@ class InfoItem extends StatelessWidget {
         fit: BoxFit.cover,
       );
     }
-    if (child != null) {
-      return child;
+    if (childImage != null) {
+      return childImage;
     }
     return SizedBox.shrink();
   }

@@ -38,6 +38,7 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.light(
               primary: primary,
               primaryVariant: secondary,
+              background: background,
               onBackground: Color(0xFF103940),
             ),
             primaryColor: primary,
@@ -68,11 +69,11 @@ class MyApp extends StatelessWidget {
               backgroundColor: secondary,
             ),
             cardTheme: CardTheme(
-              elevation: 1,
-              color: Colors.white,
+              elevation: 24,
+              color: background,
               clipBehavior: Clip.antiAliasWithSaveLayer,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                borderRadius: BorderRadius.all(Radius.circular(12.0)),
               ),
             ),
             bottomSheetTheme: BottomSheetThemeData(

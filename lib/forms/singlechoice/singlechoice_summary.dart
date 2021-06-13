@@ -1,14 +1,13 @@
 import 'package:cosecheros/forms/page/sumary.dart';
+import 'package:cosecheros/forms/singlechoice/singlechoice_group.dart';
 import 'package:cosecheros/widgets/info_item.dart';
 import 'package:cosecheros/shared/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_dynamic_forms_components/flutter_dynamic_forms_components.dart'
-    as model;
 
-class SingleChoiceSummary extends SummaryWidget<model.SingleSelectGroup> {
+class SingleChoiceSummary extends SummaryWidget<SingleChoiceGroup> {
   @override
-  Widget render(BuildContext context, model.SingleSelectGroup element) {
+  Widget render(BuildContext context, SingleChoiceGroup element) {
     var selected = element.choices.singleWhere(
       (choice) => choice.value == element.value,
       orElse: () => null,
@@ -17,13 +16,9 @@ class SingleChoiceSummary extends SummaryWidget<model.SingleSelectGroup> {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: InfoItem(
-        title: idToTitle(element.id),
+        title: element.label,
         subtitle: selected.label,
       ),
     );
-  }
-
-  String idToTitle(String id) {
-    return id.replaceAll('_', ' ').capitalize() + ".";
   }
 }

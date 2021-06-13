@@ -13,36 +13,33 @@ class MapRenderer extends FormElementRenderer<Map> {
       FormElementEventDispatcherFunction dispatcher,
       FormElementRendererFunction renderer) {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: StreamBuilder<GeoPos>(
-            initialData: element.point,
-            stream: element.pointChanged,
-            builder: (context, snapshot) {
-              return Column(
-                children: [
-                  Text(
-                    "¿Donde ocurrió?",
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headline6,
+      child: StreamBuilder<GeoPos>(
+          initialData: element.point,
+          stream: element.pointChanged,
+          builder: (context, snapshot) {
+            return Column(
+              children: [
+                Text(
+                  "¿Donde ocurrió?",
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+                SizedBox(height: 16),
+                Text(
+                  snapshot.data.toString(),
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.caption,
+                ),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.65,
+                  child: MapWidget(
+                    element: element,
+                    dispatcher: dispatcher,
                   ),
-                  SizedBox(height: 16),
-                  Text(
-                    snapshot.data.toString(),
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.caption,
-                  ),
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.6,
-                    child: MapWidget(
-                      element: element,
-                      dispatcher: dispatcher,
-                    ),
-                  )
-                ],
-              );
-            }),
-      ),
+                )
+              ],
+            );
+          }),
     );
   }
 }
