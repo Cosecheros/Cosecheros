@@ -1,4 +1,5 @@
 import 'package:cosecheros/forms/checkbox/checkbox_summary.dart';
+import 'package:cosecheros/forms/datetime/datetime_summary.dart';
 import 'package:cosecheros/forms/form_manager.dart';
 import 'package:cosecheros/forms/info/info.dart';
 import 'package:cosecheros/forms/map/map_summary.dart';
@@ -68,6 +69,7 @@ class SumaryPage extends StatelessWidget {
     model.CheckBox: CheckBoxSummary(),
     custom.Map: MapSummary(),
     model.TextField: TextFieldSummary(),
+    model.Date: DateTimeSummary(),
 
     model.SingleSelectChoice: NopeSummary(),
     model.MultiSelectChoice: NopeSummary(),

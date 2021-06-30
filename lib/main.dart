@@ -8,8 +8,8 @@ import 'package:cosecheros/cosechar/online.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:firebase_remote_config/firebase_remote_config.dart';
@@ -18,7 +18,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Intl.defaultLocale = 'es';
   timeago.setDefaultLocale('es');
-  await initializeDateFormatting('es', null);
+  // await initializeDateFormatting('es', null);
   runApp(MyApp());
 }
 
@@ -27,6 +27,7 @@ enum Cosecha { test, granizo, helada }
 final Color primary = Color(0xFF5C92FF);
 final Color secondary = Color(0xFF32559B);
 final Color background = Color(0xFFEDF4F5);
+final Color black = Color(0xFF103940);
 
 class MyApp extends StatelessWidget {
   @override
@@ -34,57 +35,72 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Cosecheros',
         debugShowCheckedModeBanner: false,
+        localizationsDelegates: [GlobalMaterialLocalizations.delegate],
+        supportedLocales: [const Locale('es')],
+        themeMode: ThemeMode.light,
         theme: ThemeData(
-            colorScheme: ColorScheme.light(
-              primary: primary,
-              primaryVariant: secondary,
-              background: background,
-              onBackground: Color(0xFF103940),
+          colorScheme: ColorScheme.light(
+            primary: primary,
+            primaryVariant: secondary,
+            background: background,
+            onBackground: black,
+          ),
+          splashColor: secondary.withOpacity(0.05),
+          highlightColor: secondary.withOpacity(0.05),
+          primaryColor: primary,
+          accentColor: secondary,
+          backgroundColor: background,
+          buttonTheme: ButtonThemeData(
+            buttonColor: Colors.white,
+            padding: const EdgeInsets.all(8.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30.0),
             ),
-            primaryColor: primary,
-            accentColor: secondary,
-            backgroundColor: background,
-            buttonTheme: ButtonThemeData(
-              buttonColor: Colors.white,
-              padding: const EdgeInsets.all(8.0),
+          ),
+          scaffoldBackgroundColor: background,
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              primary: secondary,
+              elevation: 4,
+              shadowColor: secondary.withOpacity(.4),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30.0),
               ),
             ),
-            scaffoldBackgroundColor: background,
-            elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ElevatedButton.styleFrom(
-                primary: secondary,
-                elevation: 4,
-                shadowColor: secondary.withOpacity(.4),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-              ),
+          ),
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(
+              primary: secondary,
             ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(primary: Colors.black),
+          ),
+          floatingActionButtonTheme: FloatingActionButtonThemeData(
+            backgroundColor: secondary,
+          ),
+          cardTheme: CardTheme(
+            elevation: 24,
+            color: background,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(12.0)),
             ),
-            floatingActionButtonTheme: FloatingActionButtonThemeData(
-              backgroundColor: secondary,
-            ),
-            cardTheme: CardTheme(
-              elevation: 24,
-              color: background,
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(12.0)),
-              ),
-            ),
-            bottomSheetTheme: BottomSheetThemeData(
-              backgroundColor: Colors.transparent,
-              modalBackgroundColor: Colors.transparent,
-            ),
-            textTheme: GoogleFonts.interTextTheme(),
-            dialogTheme: DialogTheme(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(12.0))),
-            )),
+          ),
+          bottomSheetTheme: BottomSheetThemeData(
+            backgroundColor: Colors.transparent,
+            modalBackgroundColor: Colors.transparent,
+          ),
+          textTheme: GoogleFonts.interTextTheme().apply(
+            bodyColor: black,
+            displayColor: black,
+          ),
+          iconTheme: IconThemeData(
+            color: primary,
+            opacity: 1,
+          ),
+          dialogTheme: DialogTheme(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12.0))),
+          ),
+        ),
         home: FutureBuilder<FirebaseApp>(
           future: setupFirebase(),
           builder: (BuildContext context, AsyncSnapshot<FirebaseApp> snapshot) {

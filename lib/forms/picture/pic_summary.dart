@@ -19,7 +19,10 @@ class PictureSummary extends SummaryWidget<Picture> {
           subtitle: "Sin foto.",
           childImage: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Icon(Icons.no_photography_rounded),
+            child: Icon(
+              Icons.no_photography_rounded,
+              color: Theme.of(context).colorScheme.onBackground.withOpacity(0.7),
+            ),
           ),
         ),
       );

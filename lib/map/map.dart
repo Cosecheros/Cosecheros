@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'cosecha_summary.dart';
+import 'cosecha_preview.dart';
 import 'model.dart';
 
 class HomeMap extends StatefulWidget {
@@ -172,16 +172,14 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
           _bottomSheetController = showBottomSheet(
             context: context,
             builder: (context) => ConstrainedBox(
-              constraints: BoxConstraints.tightFor(
-                width: double.infinity,
-              ),
+              constraints: BoxConstraints.tightFor(width: double.infinity),
               child: Card(
                 margin: EdgeInsets.only(top: 36),
                 shape: RoundedRectangleBorder(
                   borderRadius:
                       BorderRadius.vertical(top: Radius.circular(16.0)),
                 ),
-                child: CosechaSummary(model),
+                child: CosechaPreview(model),
               ),
             ),
           ),

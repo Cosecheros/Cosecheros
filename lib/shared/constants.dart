@@ -6,5 +6,5 @@ class Constants {
   static const Duration formsFetchInterval =
       kReleaseMode ? Duration(hours: 1) : Duration(seconds: 5);
   static const Duration formsFetchTimeout = Duration(seconds: 10);
-  static const String localForm = "dañosgranizo.2";
+  static const String localForm = "helada.1";
 }

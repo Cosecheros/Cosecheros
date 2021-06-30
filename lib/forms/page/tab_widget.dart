@@ -81,11 +81,15 @@ class TabWidgetState extends State<TabWidget> {
             left: 4,
             child: SafeArea(
               child: TextButton.icon(
+                style: Theme.of(context).textButtonTheme.style,
                 onPressed: () {
                   Navigator.pop(context);
                 },
                 icon: Icon(Icons.close_rounded),
-                label: Text("Descartar"),
+                label: Text(
+                  "Descartar",
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
               ),
             ),
           ),
@@ -108,7 +112,10 @@ class TabWidgetState extends State<TabWidget> {
                     moveToPage(widget.children.length - 1);
                   },
                   child: Row(children: [
-                    Text("Resumen"),
+                    Text(
+                      "Resumen",
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
                     SizedBox(width: 8),
                     Icon(Icons.arrow_forward),
                   ]),

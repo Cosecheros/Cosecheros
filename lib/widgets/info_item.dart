@@ -43,8 +43,7 @@ class InfoItem extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onBackground,
+                style: Theme.of(context).textTheme.bodyText2.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -60,13 +59,14 @@ class InfoItem extends StatelessWidget {
     return [
       if (subtitle != null || childSubtitle != null) SizedBox(height: 8),
       if (subtitle != null)
-        Text(
-          subtitle,
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
-            fontWeight: FontWeight.normal,
-          ),
-        ),
+        Text(subtitle,
+            style: Theme.of(context).textTheme.bodyText1.copyWith(
+                  color: Theme.of(context)
+                      .textTheme
+                      .bodyText1
+                      .color
+                      .withOpacity(0.8),
+                )),
       if (childSubtitle != null) childSubtitle
     ];
   }

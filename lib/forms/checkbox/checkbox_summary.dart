@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dynamic_forms_components/flutter_dynamic_forms_components.dart'
     as model;
 
+@Deprecated("usar multichoice")
 class CheckBoxSummary extends SummaryWidget<model.CheckBox> {
   @override
   Widget render(BuildContext context, model.CheckBox element) {

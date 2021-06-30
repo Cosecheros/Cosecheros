@@ -3,10 +3,12 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Cosecha {
   String id;
+  String form;
   DateTime timestamp;
   LatLng latLng;
   String username;
   String alias;
+  Map<String, dynamic> raw;
 
   static Cosecha fromSnapshot(QueryDocumentSnapshot doc) {
     Cosecha result = Cosecha();
@@ -14,6 +16,7 @@ class Cosecha {
     var data = doc.data();
 
     result.id = doc.id;
+    result.form = data['form'];
     result.timestamp = data['timestamp']?.toDate() ?? DateTime.now();
 
     GeoPoint geo = data['geo'];
@@ -22,6 +25,8 @@ class Cosecha {
     result.username = data['username'] ?? "un héroe anónimo";
 
     result.alias = data['form_alias'] ?? "Una cosecha";
+
+    result.raw = data;
     return result;
   }
 }

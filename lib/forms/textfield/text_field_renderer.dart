@@ -20,7 +20,7 @@ class TextFieldRenderer extends FormElementRenderer<model.TextField> {
             .firstWhere((v) => !v.isValid, orElse: () => null)
             ?.message;
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 28.0),
           child: TextFieldWidget(
             text: element.value,
             id: element.id,

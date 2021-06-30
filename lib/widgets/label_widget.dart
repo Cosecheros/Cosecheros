@@ -12,7 +12,10 @@ class LabelWidget extends StatelessWidget {
       child: Text(
         text,
         textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.headline6,
+        style: Theme.of(context).textTheme.subtitle1.copyWith(
+          fontWeight: FontWeight.bold,
+          color: Theme.of(context).textTheme.subtitle1.color.withOpacity(0.8)
+        ),
       ),
     );
   }

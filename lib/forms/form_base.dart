@@ -1,3 +1,4 @@
+import 'package:cosecheros/forms/datetime/datetime_renderer.dart';
 import 'package:cosecheros/forms/multichoice/multichoice_group_parser.dart';
 import 'package:cosecheros/forms/multichoice/multichoice_group_renderer.dart';
 import 'package:cosecheros/forms/multichoice/multichoice_parser.dart';
@@ -285,6 +286,7 @@ class _BaseFormState extends State<BaseForm> {
               MapRenderer(),
               PictureRenderer(),
               InfoRenderer(),
+              DateTimeRenderer(),
             ],
       ),
       expressionFactories: [ToUpperCaseExpression.get()],
