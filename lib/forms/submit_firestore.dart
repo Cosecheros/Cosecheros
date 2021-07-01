@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosecheros/forms/form_manager.dart';
 import 'package:cosecheros/forms/picture/pic.dart';
 import 'package:cosecheros/forms/serializers.dart';
+import 'package:cosecheros/models/response_item.dart';
 import 'package:cosecheros/shared/constants.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:dynamic_forms/dynamic_forms.dart';
@@ -27,53 +28,9 @@ class SubmitFirestore {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final Reference rootRef = FirebaseStorage.instance.ref();
 
-  // dynamic parseForm(dynamic element) {
-  //   // print(element);
-  //   if (element is List<FormElement>) {
-  //     print("List: $element");
-  //     return element
-  //         .map((e) => parseForm(e))
-  //         .where((element) => element != null);
-  //   }
-  //   if (element is FormElement) {
-  //     if (!element.isVisible) {
-  //       return null;
-  //     }
-  //     print("FormElement: $element");
-  //     return Map.fromEntries(element
-  //             .getProperties()
-  //             .entries
-  //             .where((e) => e.key != FormElement.parentPropertyName)
-  //             .where((e) => e.key != FormElement.isVisiblePropertyName)
-  //             .map((e) => MapEntry(e.key, parseForm(e.value)))
-  //         // .where((element) => element.value != null),
-  //         );
-  //   }
-  //   if (element == mapModel.GeoPos) {
-  //     var model = element as mapModel.Map;
-  //     print("Map: $model");
-  //     return geoPoinFromGeoPos(model.point);
-  //   }
-  //   if (element is MultiSelectChoice) {
-  //     var model = element as MultiSelectChoice;
-  //     print("MultiSelectChoice: $model");
-  //     return model.isSelected;
-  //   }
-  //   if (element is MutableProperty) {
-  //     print("MutableProperty: $element");
-  //     return parseForm(element.value);
-  //   }
-  //   if (element is ImmutableProperty) {
-  //     print("ImmutableProperty: $element");
-  //     return parseForm(element.value);
-  //   }
-  //   print("serialize: get value prop: " + element.toString());
-  //   return element;
-  // }
-
-  Stream<SubmitProgress> submit2(CustomFormManager manager) async* {
+  Stream<SubmitProgress> submit(CustomFormManager manager) async* {
     final String id = DateTime.now().toIso8601String();
-    final elements = manager.getVisibleFormElementIterator().toList();
+    final elements = manager.getVisibleFormElementIterator().toList().reversed;
 
     print("submit: Iniciando");
     yield SubmitProgress("Cargando", Mode.Uploading);

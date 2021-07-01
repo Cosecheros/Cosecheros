@@ -1,9 +1,8 @@
 import 'package:cosecheros/map/cosecha_detail.dart';
+import 'package:cosecheros/models/cosecha.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:timeago/timeago.dart' as timeago;
-
-import 'model.dart';
 
 class CosechaPreview extends StatelessWidget {
   final Cosecha model;
@@ -15,8 +14,18 @@ class CosechaPreview extends StatelessWidget {
       onTap: () {
         showModalBottomSheet(
           context: context,
+          isScrollControlled: true,
+          backgroundColor: Theme.of(context).colorScheme.background,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(12.0)),
+          ),
           builder: (BuildContext builder) {
-            return CosechaDetail(this.model);
+            return DraggableScrollableSheet(
+              expand: false,
+              builder: (context, scrollController) {
+                return CosechaDetail(this.model, scrollController);
+              },
+            );
           },
         );
       },

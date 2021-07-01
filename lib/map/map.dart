@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cosecheros/models/cosecha.dart';
 import 'package:cosecheros/shared/constants.dart';
 import 'package:cosecheros/shared/helpers.dart';
 import 'package:cosecheros/shared/marker_icon_generator.dart';
@@ -9,7 +10,6 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'cosecha_preview.dart';
-import 'model.dart';
 
 class HomeMap extends StatefulWidget {
   @override
@@ -68,13 +68,10 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
 
             if (snapshot.connectionState != ConnectionState.waiting) {
               _markers.addAll(
-                snapshot.data.docs.map(
-                  (QueryDocumentSnapshot doc) {
-                    print(doc.data());
-                    Cosecha model = Cosecha.fromSnapshot(doc);
-                    return _createMarker(model);
-                  },
-                ),
+                snapshot.data.docs
+                    .map((doc) => Cosecha.fromSnapshot(doc))
+                    .where((element) => element.latLng != null)
+                    .map((e) => _createMarker(e)),
               );
             }
             return GoogleMap(
