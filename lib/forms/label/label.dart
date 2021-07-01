@@ -13,15 +13,12 @@ class LabelRenderer extends FormElementRenderer<model.Label> {
       FormElementEventDispatcherFunction dispatcher,
       FormElementRendererFunction renderer) {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 48.0),
-        child: StreamBuilder<String>(
-            initialData: element.value,
-            stream: element.valueChanged,
-            builder: (context, snapshot) {
-              return LabelWidget(snapshot.data);
-            }),
-      ),
+      child: StreamBuilder<String>(
+          initialData: element.value,
+          stream: element.valueChanged,
+          builder: (context, snapshot) {
+            return LabelWidget(snapshot.data);
+          }),
     );
   }
 }

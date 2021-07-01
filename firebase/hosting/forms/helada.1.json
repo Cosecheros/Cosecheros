@@ -213,7 +213,8 @@
           "choices": [
             {
               "@name": "single",
-              "label": "Siembra/transplante"
+              "label": "Siembra/transplante",
+              "id": "siembra_transplante"
             },
             {
               "@name": "single",
@@ -241,47 +242,38 @@
           "choices": [
             {
               "@name": "multi",
-              "id": "horticola_acelga",
               "label": "Acelga"
             },
             {
               "@name": "multi",
-              "id": "horticola_achicoria",
               "label": "Achicoria"
             },
             {
               "@name": "multi",
-              "id": "horticola_apio",
               "label": "Apio"
             },
             {
               "@name": "multi",
-              "id": "horticola_espinaca",
               "label": "Espinaca"
             },
             {
               "@name": "multi",
-              "id": "horticola_lechuga",
               "label": "Lechuga"
             },
             {
               "@name": "multi",
-              "id": "horticola_perejil",
               "label": "Perejil"
             },
             {
               "@name": "multi",
-              "id": "horticola_puerro",
               "label": "Puerro"
             },
             {
               "@name": "multi",
-              "id": "horticola_rucula",
               "label": "Rucula"
             },
             {
               "@name": "multi",
-              "id": "horticola_otro",
               "label": "Otro"
             }
           ]
@@ -301,87 +293,70 @@
           "choices": [
             {
               "@name": "multi",
-              "id": "horticola_arveja",
               "label": "Arveja"
             },
             {
               "@name": "multi",
-              "id": "horticola_berenjena",
               "label": "Berenjena"
             },
             {
               "@name": "multi",
-              "id": "horticola_brocoli",
               "label": "Brocoli"
             },
             {
               "@name": "multi",
-              "id": "horticola_calabaza",
               "label": "Calabaza"
             },
             {
               "@name": "multi",
-              "id": "horticola_chaucha",
               "label": "Chaucha"
             },
             {
               "@name": "multi",
-              "id": "horticola_choclo",
               "label": "Choclo"
             },
             {
               "@name": "multi",
-              "id": "horticola_coliflor",
               "label": "Coliflor"
             },
             {
               "@name": "multi",
-              "id": "horticola_haba",
               "label": "Haba"
             },
             {
               "@name": "multi",
-              "id": "horticola_melon",
               "label": "Melon"
             },
             {
               "@name": "multi",
-              "id": "horticola_pepino",
               "label": "Pepino"
             },
             {
               "@name": "multi",
-              "id": "horticola_pimiento",
               "label": "Pimiento"
             },
             {
               "@name": "multi",
-              "id": "horticola_repollo",
               "label": "Repollo"
             },
             {
               "@name": "multi",
-              "id": "horticola_sandia",
               "label": "Sandia"
             },
             {
               "@name": "multi",
-              "id": "horticola_tomate",
               "label": "Tomate"
             },
             {
               "@name": "multi",
-              "id": "horticola_zapallo",
               "label": "Zapallo"
             },
             {
               "@name": "multi",
-              "id": "horticola_zapallito",
               "label": "Zapallito"
             },
             {
               "@name": "multi",
-              "id": "horticola_otro",
               "label": "Otro"
             }
           ]
@@ -402,12 +377,10 @@
           "choices": [
             {
               "@name": "multi",
-              "id": "horticola_ajo",
               "label": "Ajo"
             },
             {
               "@name": "multi",
-              "id": "horticola_batata",
               "label": "Batata"
             },
             {
@@ -422,22 +395,18 @@
             },
             {
               "@name": "multi",
-              "id": "horticola_papa",
               "label": "Papa"
             },
             {
               "@name": "multi",
-              "id": "horticola_remolacha",
               "label": "Remolacha"
             },
             {
               "@name": "multi",
-              "id": "horticola_zanahoria",
               "label": "Zanahoria"
             },
             {
               "@name": "multi",
-              "id": "horticola_otro",
               "label": "Otro"
             }
           ]
@@ -455,38 +424,43 @@
       "children": [
         {
           "@name": "multiChoice",
-          "id": "cultivo",
-          "label": "Cultivo de frutales",
+          "id": "tipo_frutales",
+          "label": "Tipo frutales",
           "choices": [
             {
               "@name": "multi",
-              "id": "cultivo_durazno",
-              "label": "Durazno"
+              "id": "berries",
+              "label": "Berries"
             },
             {
               "@name": "multi",
-              "id": "cultivo_manzana",
-              "label": "Manzana"
+              "id": "citricos",
+              "label": "Citricos"
             },
             {
               "@name": "multi",
-              "id": "cultivo_damasco",
-              "label": "Damasco"
+              "id": "carozo",
+              "label": "Frutales de Carozo"
             },
             {
               "@name": "multi",
-              "id": "cultivo_higo",
-              "label": "Higo"
+              "id": "pepita",
+              "label": "Frutales de Pepita"
             },
             {
               "@name": "multi",
-              "id": "cultivo_ciruela",
-              "label": "Ciruela"
+              "id": "secos",
+              "label": "Frutos secos"
             },
             {
               "@name": "multi",
-              "id": "cultivo_olivo",
-              "label": "Olivo"
+              "id": "tropicales",
+              "label": "Frutos Tropicales"
+            },
+            {
+              "@name": "multi",
+              "id": "otros",
+              "label": "Otros frutos"
             }
           ]
         }
@@ -496,25 +470,149 @@
     {
       "@name": "formGroup",
       "isVisible": {
-        "expression": "@tipo_cultivo == \"pasturas\""
+        "expression": "@tipo_cultivo == \"frutales\" && @tipo_frutales_berries.isSelected"
+      },
+      "children": [
+        {
+          "@name": "multiChoice",
+          "id": "cultivo_berries",
+          "label": "Berries",
+          "choices": [
+            {
+              "@name": "multi",
+              "id": "arandano",
+              "label": "Arandano"
+            },
+            {
+              "@name": "multi",
+              "id": "blueberry",
+              "label": "Blueberry"
+            },
+            {
+              "@name": "multi",
+              "id": "frambuesa",
+              "label": "Frambuesa"
+            },
+            {
+              "@name": "multi",
+              "id": "frutilla",
+              "label": "Frutilla"
+            },
+            {
+              "@name": "multi",
+              "id": "mora",
+              "label": "Mora"
+            }
+          ]
+        }
+
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_cultivo == \"frutales\" && @tipo_frutales_citricos.isSelected"
+      },
+      "children": [
+        {
+          "@name": "multiChoice",
+          "id": "cultivo_citricos",
+          "label": "Citricos",
+          "choices": [
+            {
+              "@name": "multi",
+              "label": "Limon"
+            },
+            {
+              "@name": "multi",
+              "label": "Mandarina"
+            },
+            {
+              "@name": "multi",
+              "label": "Naranja"
+            },
+            {
+              "@name": "multi",
+              "label": "Pomelo"
+            }
+          ]
+        }
+
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_cultivo == \"frutales\" && @tipo_frutales_citricos.isSelected"
       },
       "children": [
         {
           "@name": "singleChoice",
-          "id": "cultivo_pasturas",
-          "label": "Cultivo de pasturas",
+          "id": "estado_fenologico_citricos",
+          "label": "Estado Fenologico Citricos",
           "choices": [
             {
               "@name": "single",
-              "label": "Pasturas megatermicas implantadas"
+              "label": "Fruto cuajado"
             },
             {
               "@name": "single",
-              "label": "Alfalfa/Melilotus"
+              "label": "Fruto rodeado de sépalos con corona",
+              "id": "fruto_rodeado_sepalos_corona"
             },
             {
               "@name": "single",
-              "label": "Pastizal natural"
+              "label": "Fruto con el 40 % de su tamaño final",
+              "id": "fruto_40_tamano"
+            },
+            {
+              "@name": "single",
+              "label": "Fruto con el 90 % de su tamaño final",
+              "id": "fruto_90_tamano"
+            },
+            {
+              "@name": "single",
+              "label": "Fruto maduro"
+            }
+          ]
+        }
+
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_cultivo == \"frutales\" && @tipo_frutales_carozo.isSelected"
+      },
+      "children": [
+        {
+          "@name": "multiChoice",
+          "id": "cultivo_carozo",
+          "label": "Frutales de carozo",
+          "choices": [
+            {
+              "@name": "multi",
+              "label": "Cereza"
+            },
+            {
+              "@name": "multi",
+              "label": "Ciruela"
+            },
+            {
+              "@name": "multi",
+              "label": "Damasco"
+            },
+            {
+              "@name": "multi",
+              "label": "Durazno"
+            },
+            {
+              "@name": "multi",
+              "label": "Guindas"
+            },
+            {
+              "@name": "multi",
+              "label": "Palto"
             }
           ]
         }
@@ -522,91 +620,264 @@
     },
     {
       "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_cultivo == \"frutales\" && @tipo_frutales_carozo.isSelected && @cultivo_carozo_durazno.isSelected"
+      },
       "children": [
         {
           "@name": "multiChoice",
-          "id": "situacion_vegetal",
-          "label": "¿Cual de las siguientes opciones se asemeja a tu situación?",
+          "id": "estado_fenologico_durazno",
+          "label": "Estado Fenologico Durazno",
           "choices": [
             {
               "@name": "multi",
-              "id": "situacion_actual_año",
-              "label": "¿La situación actual es la que se espera para la epoca del año?"
+              "label": "Yema hinchada, cáliz y corona visible",
+              "id": "yema_hinchada_caliz_corona_visible"
             },
             {
               "@name": "multi",
-              "id": "cultivos_crecen_restricciones",
-              "label": "¿Los cultivos crecen cercano a su potencial sin sustanciales restricciones?"
+              "label": "Estambres visibles"
             },
             {
               "@name": "multi",
-              "id": "cultivos_merma_crecimiento",
-              "label": "¿Los cultivos presentan mermas en su crecimiento?"
+              "label": "Flor abierta"
             },
             {
               "@name": "multi",
-              "id": "cultivos_lotes_amarillamientos",
-              "label": "Existen lotes de cultivos con amarillamientos generalizados"
+              "label": "Caída de pétalos y cuaje de fruto",
+              "id": "caida_petalos_cuaje_fruto"
             },
             {
               "@name": "multi",
-              "id": "cultivos_sufren_defoliación",
-              "label": "Los cultivos sufren defoliación (pierden hojas secas)"
-            },
-            {
-              "@name": "multi",
-              "id": "lotes_enfermedades_generalizdas",
-              "label": "Existen lotes con enfermedades generalizadas"
-            },
-            {
-              "@name": "multi",
-              "id": "presencia_plagas_generalizadas",
-              "label": "Presencia de plagas generalizadas"
-            },
-            {
-              "@name": "multi",
-              "id": "rendimiento_debajo_esperado",
-              "label": "El rendimiento se encontrará por debajo de lo esperado"
-            },
-            {
-              "@name": "multi",
-              "id": "rendimiento_debajo_historico",
-              "label": "El rendimiento se encontrará por debajo del promedio historico"
-            },
-            {
-              "@name": "multi",
-              "id": "abandono_redestino_lotes",
-              "label": "Hay abandono o redestino de lotes"
-            },
-            {
-              "@name": "multi",
-              "id": "merma_agua_calidad",
-              "label": "Merma en abastecimiento de agua de calidad para riego"
-            },
-            {
-              "@name": "multi",
-              "id": "pedididas_fuentes_agua",
-              "label": "Perdidas de fuentes de agua para riego"
-            },
-            {
-              "@name": "multi",
-              "id": "pedidas_consecuencia_evidente",
-              "label": "Las perdidas económicas son consecuencia evidente"
+              "label": "Fruto pequeño (desde cuaje a 2 cm de diámetro)",
+              "id": "fruto_pequeno"
             }
           ]
-        },
+        }
+
+      ]
+    },
+
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_cultivo == \"frutales\" && @tipo_frutales_pepita.isSelected"
+      },
+      "children": [
         {
-          "@name": "label",
-          "value": "¿Alguna cosa más?"
-        },
-        {
-          "@name": "textField",
-          "id": "situacion_vegetal_obs",
-          "label": "Observaciones"
+          "@name": "multiChoice",
+          "id": "cultivo_pepita",
+          "label": "Frutales de Pepita",
+          "choices": [
+            {
+              "@name": "multi",
+              "label": "Manzana"
+            },
+            {
+              "@name": "multi",
+              "label": "Pera"
+            }
+          ]
         }
       ]
     },
 
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_cultivo == \"frutales\" && @tipo_frutales_pepita.isSelected"
+      },
+      "children": [
+        {
+          "@name": "singleChoice",
+          "id": "estado_fenologico_pepita",
+          "label": "Estado Fenologico Frutales Pepita",
+          "choices": [
+            {
+              "@name": "single",
+              "label": "Yema cerrada/reposo invernal",
+              "id": "yema_cerrada_reposo_invernal"
+            },
+            {
+              "@name": "single",
+              "label": "Yema hinchada/desaclimatación",
+              "id": "yema_hinchada_desaclimatacion"
+            },
+            {
+              "@name": "single",
+              "label": "Desborre/desarrollo fenologico visible",
+              "id": "desborre_desarrollo_fenologico_visible"
+            },
+            {
+              "@name": "single",
+              "label": "Inicio de floración"
+            },
+            {
+              "@name": "single",
+              "label": "Plena floración (septiembre-1ºsemana octubre)",
+              "id": "plena_floracion"
+            },
+            {
+              "@name": "single",
+              "label": "Caida de petalos"
+            },
+            {
+              "@name": "single",
+              "label": "Cuaje de frutos (septiembre-octubre)",
+              "id": "cuaje_de_frutos"
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_cultivo == \"frutales\" && @tipo_frutales_secos.isSelected"
+      },
+      "children": [
+        {
+          "@name": "multiChoice",
+          "id": "cultivo_secos",
+          "label": "Frutos secos",
+          "choices": [
+            {
+              "@name": "multi",
+              "label": "Avellana"
+            },
+            {
+              "@name": "multi",
+              "label": "Almendra"
+            },
+            {
+              "@name": "multi",
+              "label": "Nogal"
+            },
+            {
+              "@name": "multi",
+              "label": "Pecan"
+            },
+            {
+              "@name": "multi",
+              "label": "Pistacho"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_cultivo == \"frutales\" && @tipo_frutales_tropicales.isSelected"
+      },
+      "children": [
+        {
+          "@name": "multiChoice",
+          "id": "cultivo_tropicales",
+          "label": "Frutos tropicales",
+          "choices": [
+            {
+              "@name": "multi",
+              "label": "Anana"
+            },
+            {
+              "@name": "multi",
+              "label": "Banana"
+            },
+            {
+              "@name": "multi",
+              "label": "Mango"
+            },
+            {
+              "@name": "multi",
+              "label": "Maracuya"
+            },
+            {
+              "@name": "multi",
+              "label": "Papaya"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_cultivo == \"frutales\" && @tipo_frutales_otros.isSelected"
+      },
+      "children": [
+        {
+          "@name": "multiChoice",
+          "id": "cultivo_otros",
+          "label": "Otros frutos",
+          "choices": [
+            {
+              "@name": "multi",
+              "label": "Granada"
+            },
+            {
+              "@name": "multi",
+              "label": "Kiwi"
+            },
+            {
+              "@name": "multi",
+              "label": "Higos"
+            },
+            {
+              "@name": "multi",
+              "label": "Membrillo"
+            },
+            {
+              "@name": "multi",
+              "label": "Olivo"
+            },
+            {
+              "@name": "multi",
+              "label": "Vid"
+            }
+          ]
+        }
+      ]
+    },
+
+
+
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_cultivo == \"pasturas\""
+      },
+      "children": [
+        {
+          "@name": "singleChoice",
+          "id": "pasturas_implantadas",
+          "label": "Pasturas implantadas",
+          "choices": [
+            {
+              "@name": "single",
+              "label": "Buffel grass"
+            },
+            {
+              "@name": "single",
+              "label": "Panicum"
+            },
+            {
+              "@name": "single",
+              "label": "Cenchrum"
+            },
+            {
+              "@name": "single",
+              "label": "Alfalfa"
+            },
+            {
+              "@name": "single",
+              "label": "Melilotus"
+            }
+          ]
+        }
+      ]
+    },
 
 
     {
@@ -646,74 +917,61 @@
       ]
     },
 
+    {
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "singleChoice",
+					"id": "estado_cultivo",
+					"label": "Estado de cultivo",
+					"choices": [
+						{
+							"@name": "single",
+							"label": "Muy bueno"
+						},
+						{
+							"@name": "single",
+							"label": "Bueno"
+						},
+						{
+							"@name": "single",
+							"label": "Regular"
+						},
+						{
+							"@name": "single",
+							"label": "Malo"
+						}
+					]
+				}
+			]
+    },
 
 
     {
-      "@name": "formGroup",
-      "children": [
-        {
-          "@name": "singleChoice",
-          "id": "rendimiento_estimado",
-          "label": "Rendimiento de cultivos estimado en relación a la media historica.",
-          "choices": [
-            {
-              "@name": "single",
-              "label": "100%"
-            },
-            {
-              "@name": "single",
-              "label": "90%"
-            },
-            {
-              "@name": "single",
-              "label": "80%"
-            },
-            {
-              "@name": "single",
-              "label": "70%"
-            },
-            {
-              "@name": "single",
-              "label": "60%"
-            },
-            {
-              "@name": "single",
-              "label": "50%"
-            },
-            {
-              "@name": "single",
-              "label": "40%"
-            },
-            {
-              "@name": "single",
-              "label": "30%"
-            },
-            {
-              "@name": "single",
-              "label": "20%"
-            },
-            {
-              "@name": "single",
-              "label": "10%"
-            },
-            {
-              "@name": "single",
-              "label": "0%"
-            }
-          ]
-        }
-      ]
-    },
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "label",
+					"value": "¿Alguna observación final?"
+				},
+				{
+					"@name": "textField",
+					"id": "observacion",
+					"label": "Observaciones"
+				}
+			]
+		},
+
     {
       "@name": "formGroup",
       "children": [
         {
           "@name": "label",
-          "value": "Sácale una foto."
+          "value": "Foto de la helada"
         },
         {
           "@name": "pic",
-          "id": "sequia_pic"
+          "id": "helada_pic"
         },
         {
           "@name": "label",
@@ -721,11 +979,13 @@
         },
         {
           "@name": "info",
-          "title": "Titulo recomendación.",
-          "subtitle": "sobre como sacarle foto a la sequía.",
+          "title": "Titulo recomendación",
+          "subtitle": "sobre como sacar fotos",
           "img": "https://cosecheros.web.app/info/photographer.png"
         }
       ]
     }
+
+
   ]
 }

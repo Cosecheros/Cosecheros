@@ -53,12 +53,15 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
       _controller.text = widget.text;
     }
 
-    return TextField(
-      decoration: InputDecoration(
-          labelText: widget.label, errorText: widget.errorText),
-      keyboardType: getTextInputType(widget.textInputType),
-      controller: _controller,
-      maxLines: getMaxLines(widget.textInputType),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 48.0),
+      child: TextField(
+        decoration: InputDecoration(
+            labelText: widget.label, errorText: widget.errorText),
+        keyboardType: getTextInputType(widget.textInputType),
+        controller: _controller,
+        maxLines: getMaxLines(widget.textInputType),
+      ),
     );
   }
 

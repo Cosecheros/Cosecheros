@@ -11,6 +11,7 @@ import 'package:cosecheros/forms/picture/pic_summary.dart';
 import 'package:cosecheros/forms/singlechoice/singlechoice_group.dart';
 import 'package:cosecheros/forms/singlechoice/singlechoice_summary.dart';
 import 'package:cosecheros/forms/textfield/text_field_summary.dart';
+import 'package:cosecheros/widgets/label_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dynamic_forms/flutter_dynamic_forms.dart';
 import 'package:dynamic_forms/dynamic_forms.dart';
@@ -43,11 +44,7 @@ class SumaryPage extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.only(top: 8, bottom: 96.0),
           children: [
-            Text(
-              "¿Todo listo?",
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headline6,
-            ),
+            LabelWidget("¿Todo listo?"),
             SizedBox(height: 16),
             ...manager
                 .getVisibleFormElementIterator(manager.form)

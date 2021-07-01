@@ -98,7 +98,9 @@ class TabWidgetState extends State<TabWidget> {
             child: SafeArea(
               child: Text(
                 widget.header,
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.headline6.copyWith(
+                  color: Theme.of(context).textTheme.headline6.color.withOpacity(0.7)
+                ),
               ),
             ),
           ),

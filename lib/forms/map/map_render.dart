@@ -1,4 +1,5 @@
 import 'package:cosecheros/forms/map/map_widget.dart';
+import 'package:cosecheros/widgets/label_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_dynamic_forms/flutter_dynamic_forms.dart';
@@ -19,11 +20,7 @@ class MapRenderer extends FormElementRenderer<Map> {
           builder: (context, snapshot) {
             return Column(
               children: [
-                Text(
-                  "¿Donde ocurrió?",
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headline6,
-                ),
+                LabelWidget("¿Donde ocurrió?"),
                 SizedBox(height: 16),
                 Text(
                   snapshot.data.toString(),
