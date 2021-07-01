@@ -2,6 +2,7 @@ import 'package:dynamic_forms/dynamic_forms.dart';
 
 class Picture extends FormElement {
   static const String pathPropName = 'path';
+  String url;
 
   Property<String> get pathProperty => properties[pathPropName];
 

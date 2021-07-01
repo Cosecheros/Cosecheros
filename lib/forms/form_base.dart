@@ -54,10 +54,7 @@ class _BaseFormState extends State<BaseForm> {
 
   void _onSubmit() {
     setState(() {
-      upload = _submiter.submit(
-        _formManager.form,
-        _formManager.getElementsData(),
-      );
+      upload = _submiter.submit2(_formManager);
     });
   }
 

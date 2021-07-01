@@ -1,14 +1,13 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cosecheros/forms/form_manager.dart';
 import 'package:cosecheros/forms/picture/pic.dart';
+import 'package:cosecheros/forms/serializers.dart';
 import 'package:cosecheros/shared/constants.dart';
-import 'package:cosecheros/shared/helpers.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:dynamic_forms/dynamic_forms.dart';
-import 'package:cosecheros/forms/map/map.dart' as mapModel;
 import 'package:cosecheros/shared/extensions.dart';
-import 'package:flutter_dynamic_forms_components/flutter_dynamic_forms_components.dart';
 
 enum Mode { Uploading, Indeterminate, Done, Fail }
 
@@ -28,63 +27,58 @@ class SubmitFirestore {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final Reference rootRef = FirebaseStorage.instance.ref();
 
-  bool isPic(e) => e['formElement'].runtimeType == Picture;
+  // dynamic parseForm(dynamic element) {
+  //   // print(element);
+  //   if (element is List<FormElement>) {
+  //     print("List: $element");
+  //     return element
+  //         .map((e) => parseForm(e))
+  //         .where((element) => element != null);
+  //   }
+  //   if (element is FormElement) {
+  //     if (!element.isVisible) {
+  //       return null;
+  //     }
+  //     print("FormElement: $element");
+  //     return Map.fromEntries(element
+  //             .getProperties()
+  //             .entries
+  //             .where((e) => e.key != FormElement.parentPropertyName)
+  //             .where((e) => e.key != FormElement.isVisiblePropertyName)
+  //             .map((e) => MapEntry(e.key, parseForm(e.value)))
+  //         // .where((element) => element.value != null),
+  //         );
+  //   }
+  //   if (element == mapModel.GeoPos) {
+  //     var model = element as mapModel.Map;
+  //     print("Map: $model");
+  //     return geoPoinFromGeoPos(model.point);
+  //   }
+  //   if (element is MultiSelectChoice) {
+  //     var model = element as MultiSelectChoice;
+  //     print("MultiSelectChoice: $model");
+  //     return model.isSelected;
+  //   }
+  //   if (element is MutableProperty) {
+  //     print("MutableProperty: $element");
+  //     return parseForm(element.value);
+  //   }
+  //   if (element is ImmutableProperty) {
+  //     print("ImmutableProperty: $element");
+  //     return parseForm(element.value);
+  //   }
+  //   print("serialize: get value prop: " + element.toString());
+  //   return element;
+  // }
 
-  Map<String, dynamic> _firestoreDoc(FormElement form, List<FormElement> payload) {
-    var filtered = payload.where(
-      // No subir las fotos a Firestore
-      (e) => e.runtimeType != Picture,
-    );
+  Stream<SubmitProgress> submit2(CustomFormManager manager) async* {
+    final String id = DateTime.now().toIso8601String();
+    final elements = manager.getVisibleFormElementIterator().toList();
 
-    serialize(FormElement e) {
-      if (e.runtimeType == mapModel.Map) {
-        return geoPoinFromGeoPos((e as mapModel.Map).point);
-      }
-      if (e.runtimeType == MultiSelectChoice) {
-        return e.isVisible;
-      }
-      print("serialize: get value prop: " + e.toString());
-      return e.getProperty('value').value;
-    }
-
-    return Map.fromIterable(
-      filtered,
-      key: (e) => e.id,
-      value: (e) => serialize(e),
-    )
-      ..removeWhere(
-        // Quitar nulls o falses o textos vacios
-        (key, value) =>
-            value == null || value == false || value.toString().isEmpty,
-      )
-      ..addAll(
-        {
-          "form": form.id,
-           // Sabemos que es un model.Form
-           // así que estamos casi seguros de que tiene ese property
-          "form_alias": form.getProperty("name").value,
-          "timestamp": FieldValue.serverTimestamp(),
-        },
-      );
-  }
-
-  Stream<SubmitProgress> submit(
-      FormElement form, List<FormElement> payload) async* {
     print("submit: Iniciando");
-    print(payload);
     yield SubmitProgress("Cargando", Mode.Uploading);
 
-    // Subir documento inicial
-    DocumentReference ref = firestore
-        .collection(Constants.collection)
-        .doc(DateTime.now().toIso8601String());
-
-    await ref.set(_firestoreDoc(form, payload));
-
-    // Para actualizar los links de las imágenes
-    Map<String, dynamic> updateDoc = {};
-
-    Iterable<Picture> pictures = payload.whereType();
+    Iterable<Picture> pictures = elements.whereType();
     print("submit: pics: " + pictures.toString());
 
     // Subir a Storage las fotos
@@ -96,15 +90,17 @@ class SubmitFirestore {
       yield SubmitProgress("Subiendo foto", Mode.Indeterminate);
 
       UploadTask uploadTask = rootRef
-          .child("dev/${ref.id}-${element.id}.jpg")
+          .child("dev/$id-${element.id}.jpg")
           .putFile(File(element.path));
 
       try {
         await for (TaskSnapshot event in uploadTask.snapshotEvents) {
           print("submit: await for: " + event.toString());
+
           if (event.state == TaskState.running) {
             var percent = event.bytesTransferred / event.totalBytes;
             percent = percent > 0 ? percent : null;
+
             yield SubmitProgress(
               "Subiendo ${element.id.human()}",
               Mode.Uploading,
@@ -113,7 +109,7 @@ class SubmitFirestore {
           } else if (event.state == TaskState.success) {
             String url = await event.ref.getDownloadURL();
             print("submit: pic url: " + url);
-            updateDoc[element.id] = url;
+            element.url = url;
             break;
           } else {
             yield SubmitProgress("Error", Mode.Fail);
@@ -126,10 +122,42 @@ class SubmitFirestore {
 
     yield SubmitProgress("Verificando", Mode.Indeterminate);
 
-    // Actualizar documento con la url de las fotos
-    print("submit: updateDoc: " + updateDoc.toString());
-    await ref.update(updateDoc);
+    var responses = elements
+        .map((e) => _toResponse(e))
+        .where((element) => element != null)
+        .toList();
+
+    var out = {
+      'form_id': manager.form.id,
+      // Sabemos que es un model.Form
+      // así que estamos casi seguros de que tiene ese property
+      'form_alias': manager.form.getProperty("name").value,
+      'timestamp': FieldValue.serverTimestamp(),
+      // 'user' proximamente
+      'payload': responses.map((e) => e.toJson()).toList(),
+    };
+
+    DocumentReference ref = firestore.collection(Constants.collection).doc(id);
+
+    print(out);
+    await ref.set(out);
 
     yield SubmitProgress("Cosechado", Mode.Done);
+  }
+
+  ResponseItem _toResponse(FormElement element) {
+    print("_toResponse: " + element.toString());
+    Serializer builder = serializers[element.runtimeType];
+
+    if (builder is NopeSerializer) {
+      return null;
+    }
+
+    if (builder != null) {
+      return builder.serialize(element);
+    }
+
+    print("ERROR: No hay serializer implementado: $element");
+    return null;
   }
 }

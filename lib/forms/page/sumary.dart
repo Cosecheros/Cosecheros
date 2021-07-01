@@ -47,8 +47,7 @@ class SumaryPage extends StatelessWidget {
             LabelWidget("¿Todo listo?"),
             SizedBox(height: 16),
             ...manager
-                .getVisibleFormElementIterator(manager.form)
-                .where((element) => element.isVisible)
+                .getVisibleFormElementIterator()
                 .map((e) => _toSummary(context, e))
                 .where((element) => element != null)
                 .toList()
@@ -68,6 +67,7 @@ class SumaryPage extends StatelessWidget {
     model.TextField: TextFieldSummary(),
     model.Date: DateTimeSummary(),
 
+    //Ignore
     model.SingleSelectChoice: NopeSummary(),
     model.MultiSelectChoice: NopeSummary(),
     model.Label: NopeSummary(),
