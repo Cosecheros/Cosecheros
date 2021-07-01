@@ -1,0 +1,122 @@
+{
+	"@name": "form",
+	"id": "granizo_v2",
+	"name": "Granizada",
+	"children": [
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "map",
+					"id": "geo"
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "date",
+					"id": "fecha_hora",
+					"label": "¿Cuando pasó?"
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "multiChoice",
+					"id": "cuando_llovio",
+					"label": "¿Cuando llovió?",
+					"choices": [
+						{
+							"@name": "multi",
+							"label": "Antes de granizar",
+							"id": "antes"
+						},
+						{
+							"@name": "multi",
+							"label": "Mientras granizaba",
+							"id": "mientras"
+						},
+						{
+							"@name": "multi",
+							"label": "Después que granizó",
+							"id": "despues"
+						},
+						{
+							"@name": "multi",
+							"label": "No llovió",
+							"id": "no"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "label",
+					"value": "Sácale una foto a la granizada."
+				},
+				{
+					"@name": "pic",
+					"id": "granizada_pic"
+				},
+				{
+					"@name": "label",
+					"value": "Recuerda:"
+				},
+				{
+					"@name": "info",
+					"title": "Busca un lugar abierto lejos de paredes.",
+					"subtitle": "Queremos que el granizo esté sano y distribuido uniformemente.",
+					"img": "https://cosecheros.web.app/info/photographer.png"
+				},
+				{
+					"@name": "info",
+					"title": "Ubica la regla de cosecheros.",
+					"subtitle": "También puedes usar alguna tarjeta, como la del colectivo.",
+					"img": "https://cosecheros.web.app/info/photographer.png"
+				},
+				{
+					"@name": "info",
+					"title": "Saca la foto lo más vertical que puedas.",
+					"subtitle": "Así será más fácil de analizar para los científicos.",
+					"img": "https://cosecheros.web.app/info/photographer.png"
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "label",
+					"value": "Sácale una foto al granizo que elegiste."
+				},
+				{
+					"@name": "pic",
+					"id": "granizo_pic"
+				},
+				{
+					"@name": "label",
+					"value": "Recuerda:"
+				},
+				{
+					"@name": "info",
+					"title": "Ponlo cerca de la regla de cosecheros.",
+					"subtitle": "También puedes usar alguna tarjeta, como la del colectivo.",
+					"img": "https://cosecheros.web.app/info/photographer.png"
+				},
+				{
+					"@name": "info",
+					"title": "Debe estar 30 minutos en el congelador.",
+					"subtitle": "No queremos que se descongele mientras tomas la foto.",
+					"img": "https://cosecheros.web.app/info/photographer.png"
+				}
+			]
+		}
+	]
+}

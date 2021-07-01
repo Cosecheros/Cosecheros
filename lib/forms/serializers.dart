@@ -63,7 +63,7 @@ class MultiChoiceSerializer extends Serializer<MultiChoiceGroup> {
             'id': e.id,
             'label': e.label,
           },
-        );
+        ).toList();
     if (selected == null) return null;
     return ResponseItem(
       id: element.id,
