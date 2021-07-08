@@ -27,13 +27,13 @@
       "children": [
         {
           "@name": "label",
-          "value": "Area afectada"
+          "value": "Área afectada"
         },
         {
           "@name": "textField",
-          "id": "hectarias_afectada",
+          "id": "hectareas_afectada",
           "inputType": "number",
-          "label": "Hectarias aproximadas"
+          "label": "Hectáreas aproximadas"
         },
         {
           "@name": "label",
@@ -43,7 +43,7 @@
           "@name": "textField",
           "id": "temperatura_minima",
           "inputType": "number",
-          "label": "En grados celsius (C°)"
+          "label": "En grados celsius (°C)"
         },
         {
           "@name": "label",
@@ -51,7 +51,7 @@
         },
         {
           "@name": "textField",
-          "id": "temperatura_minima",
+          "id": "cm_sobre_suelo",
           "inputType": "number",
           "label": "Centímetros sobre suelo"
         }
@@ -923,7 +923,7 @@
 				{
 					"@name": "singleChoice",
 					"id": "estado_cultivo",
-					"label": "Estado de cultivo",
+					"label": "Estado del cultivo después de la helada",
 					"choices": [
 						{
 							"@name": "single",
