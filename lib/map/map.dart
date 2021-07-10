@@ -138,7 +138,8 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
   }
 
   showProfile() async {
-    String name = FirebaseAuth.instance.currentUser.displayName ?? "";
+    String name = FirebaseAuth.instance.currentUser.displayName.trim() ?? "";
+    String photoURL = FirebaseAuth.instance.currentUser.photoURL;
 
     await showDialog<String>(
       context: context,
@@ -154,7 +155,9 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
                   backgroundColor:
                       Theme.of(context).colorScheme.primary.withOpacity(0.2),
                   foregroundColor: Theme.of(context).colorScheme.primary,
-                  child: const Text('A'),
+                  foregroundImage:
+                      photoURL == null ? null : NetworkImage(photoURL),
+                  child: Text(name.isEmpty ? 'A' : getInitials(name)),
                 ),
                 SizedBox(height: 16),
                 Text(
@@ -188,6 +191,9 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
       },
     );
   }
+
+  String getInitials(String input) =>
+      input.split(' ').map((e) => e[0]).take(2).join();
 
   void updateByCurrentPos() async {
     final pos = await getCurrentPosition();
