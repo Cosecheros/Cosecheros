@@ -5,6 +5,7 @@ import 'package:cosecheros/models/cosecha.dart';
 import 'package:cosecheros/shared/constants.dart';
 import 'package:cosecheros/shared/helpers.dart';
 import 'package:cosecheros/shared/marker_icon_generator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -96,25 +97,95 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
           },
         ),
         SafeArea(
-          child: Align(
-            alignment: Alignment.topRight,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: FloatingActionButton(
-                mini: true,
-                backgroundColor: Colors.white,
-                child: Icon(
-                  Icons.gps_fixed,
-                  color: Theme.of(context).accentColor,
-                ),
-                onPressed: () {
-                  updateByCurrentPos();
-                },
-              ),
-            ),
-          ),
+          child: Align(alignment: Alignment.topRight, child: topButtons()),
         )
       ],
+    );
+  }
+
+  Widget topButtons() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton(
+            mini: true,
+            backgroundColor: Colors.white,
+            child: Icon(
+              Icons.gps_fixed,
+              color: Theme.of(context).accentColor,
+            ),
+            onPressed: () {
+              updateByCurrentPos();
+            },
+          ),
+          SizedBox(width: 4),
+          FloatingActionButton(
+            mini: true,
+            backgroundColor: Colors.white,
+            child: Icon(
+              Icons.face_rounded,
+              color: Theme.of(context).colorScheme.onBackground,
+            ),
+            onPressed: () {
+              showProfile();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  showProfile() async {
+    String name = FirebaseAuth.instance.currentUser.displayName ?? "";
+
+    await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Container(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircleAvatar(
+                  radius: 56,
+                  backgroundColor:
+                      Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                  foregroundColor: Theme.of(context).colorScheme.primary,
+                  child: const Text('A'),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  name.isEmpty ? "Anónimo" : name,
+                  style: Theme.of(context).textTheme.headline6.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                Text(
+                  "Cosechero aprendiz",
+                  style: Theme.of(context).textTheme.caption,
+                ),
+                SizedBox(height: 16),
+                TextButton(
+                  child: Text(
+                    "cerrar sesión".toUpperCase(),
+                    style: Theme.of(context)
+                        .textTheme
+                        .button
+                        .copyWith(color: Colors.red[600]),
+                  ),
+                  onPressed: () async {
+                    await FirebaseAuth.instance.signOut();
+                    Navigator.pop(context);
+                  },
+                )
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -180,7 +251,6 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
               ),
             ),
           );
-
         },
       );
     } else {

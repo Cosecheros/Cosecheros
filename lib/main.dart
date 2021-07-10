@@ -1,10 +1,13 @@
 import 'dart:convert';
 
+import 'package:cosecheros/home.dart';
+import 'package:cosecheros/intro.dart';
 import 'package:cosecheros/map/map.dart';
 import 'package:cosecheros/shared/constants.dart';
 import 'package:cosecheros/widgets/grid_icon_button.dart';
 import 'package:cosecheros/cosechar/local.dart';
 import 'package:cosecheros/cosechar/online.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +31,7 @@ final Color primary = Color(0xFF5C92FF);
 final Color secondary = Color(0xFF32559B);
 final Color background = Color(0xFFEDF4F5);
 final Color black = Color(0xFF103940);
+final Color red = Color(0xFFFC6063);
 
 class MyApp extends StatelessWidget {
   @override
@@ -42,6 +46,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.light(
             primary: primary,
             primaryVariant: secondary,
+            secondary: red,
             background: background,
             onBackground: black,
           ),
@@ -71,6 +76,9 @@ class MyApp extends StatelessWidget {
           textButtonTheme: TextButtonThemeData(
             style: TextButton.styleFrom(
               primary: secondary,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ),
             ),
           ),
           floatingActionButtonTheme: FloatingActionButtonThemeData(
@@ -108,190 +116,45 @@ class MyApp extends StatelessWidget {
               return Center(child: Text('Ocurrió un error!'));
             }
             if (snapshot.hasData) {
-              return MainPage();
+              return onFirebaseUp();
             }
-            return Container(
-              color: background,
-            );
+            return Container(color: background);
           },
         ));
   }
-}
 
-Future<FirebaseApp> setupFirebase() async {
-  var app = await Firebase.initializeApp();
-  final RemoteConfig remoteConfig = RemoteConfig.instance;
-  await remoteConfig.setConfigSettings(RemoteConfigSettings(
-    fetchTimeout: Constants.formsFetchTimeout,
-    minimumFetchInterval: Constants.formsFetchInterval,
-  ));
-  await remoteConfig.setDefaults(<String, dynamic>{
-    Constants.formsSource: '[]',
-  });
-  remoteConfig.fetchAndActivate();
-  RemoteConfigValue(null, ValueSource.valueStatic);
-  return app;
-}
-
-class MainPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton.extended(
-        heroTag: null,
-        onPressed: () {
-          _onNuevaCosecha(context);
-        },
-        label: Text(
-          'Cosechar',
-          style: TextStyle(color: Colors.white),
-        ),
-        icon: Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-      ),
-      extendBody: true,
-      body: Stack(
-        children: [
-          HomeMap(),
-          SafeArea(
-            child: Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: getLogo(context),
-              ),
-            ),
-          )
-        ],
-      ),
-      // bottomNavigationBar: GestureDetector(
-      //   onTap: () {
-      //     showMaterialModalBottomSheet(
-      //       expand: true,
-      //       context: context,
-      //       builder: (context) => Container(
-      //         color: Colors.green,
-      //       ),
-      //     );
-      //   },
-      //   child: Container(
-      //     width: double.infinity,
-      //     padding: EdgeInsets.all(16),
-      //     child: AlertsBottom(),
-      //     decoration: BoxDecoration(
-      //       color: Theme.of(context).backgroundColor,
-      //       borderRadius: BorderRadius.only(
-      //         topLeft: Radius.circular(10),
-      //         topRight: Radius.circular(10),
-      //       ),
-      //       boxShadow: [
-      //         BoxShadow(
-      //           color: Colors.grey.withOpacity(0.4),
-      //           blurRadius: 16,
-      //         ),
-      //       ],
-      //     ),
-      //   ),
-      // ),
-    );
+  Future<FirebaseApp> setupFirebase() async {
+    var app = await Firebase.initializeApp();
+    final RemoteConfig remoteConfig = RemoteConfig.instance;
+    await remoteConfig.setConfigSettings(RemoteConfigSettings(
+      fetchTimeout: Constants.formsFetchTimeout,
+      minimumFetchInterval: Constants.formsFetchInterval,
+    ));
+    await remoteConfig.setDefaults(<String, dynamic>{
+      Constants.formsSource: '[]',
+    });
+    remoteConfig.fetchAndActivate();
+    RemoteConfigValue(null, ValueSource.valueStatic);
+    return app;
   }
 
-  Widget getLogo(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        // Stroked text as border.
-        Text(
-          'Cosecheros',
-          style: GoogleFonts.inter(
-            fontSize: 32,
-            fontWeight: FontWeight.w900,
-            foreground: Paint()
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = 4
-              ..color = Color(0xFFF5F5F5),
-          ),
-        ),
-        // Solid text as fill.
-        Text(
-          'Cosecheros',
-          style: GoogleFonts.inter(
-            fontSize: 32,
-            fontWeight: FontWeight.w900,
-            color: Theme.of(context).colorScheme.onBackground,
-          ),
-        ),
-      ],
+  Widget onFirebaseUp() {
+    return StreamBuilder(
+      stream: FirebaseAuth.instance.userChanges(),
+      builder: (BuildContext context, AsyncSnapshot<User> shot) {
+        print(shot);
+        if (shot.connectionState == ConnectionState.active) {
+          if (shot.data == null) {
+            print('Main >>> Usuario NO registrado!');
+            return Intro();
+          } else {
+            print('Main >>> Usuario registado');
+            return MainPage();
+          }
+        }
+        print('Main >>> Cargando~');
+        return Container(color: background);
+      },
     );
-  }
-
-  Future<void> _onNuevaCosecha(BuildContext context) async {
-    var forms = RemoteConfig.instance.getString(Constants.formsSource);
-    print(forms);
-
-    Iterable list = json.decode(forms);
-
-    var selected = await showDialog<String>(
-        context: context,
-        builder: (BuildContext context) {
-          return Dialog(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  margin: EdgeInsets.only(top: 24),
-                  child: Text(
-                    '¿Qué vas a cosechar?',
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                ),
-                GridView.count(
-                  shrinkWrap: true,
-                  crossAxisCount: 2,
-                  padding: const EdgeInsets.all(16),
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                  children: [
-                    ...list.map(
-                      (e) => GridIconButton(
-                        title: e['label'],
-                        background: e['color'],
-                        onPressed: () => Navigator.pop(context, e['url']),
-                      ),
-                    ),
-                    if (kDebugMode)
-                      GridIconButton(
-                        title: "Local",
-                        background: Colors.black87,
-                        onPressed: () => Navigator.pop(context, "local"),
-                      ),
-                    //   title: "Sequía",
-                    //   background: Color(0xFFF9787A),
-                    //   title: "Helada",
-                    //   background: Color(0xFF58D5E8),
-                    //   title: "Daños por granizo",
-                    //   background: Colors.green[300],
-                    //   title: "Lluvias",
-                    //   background: Color(0xFF80A5EE),
-                  ],
-                ),
-              ],
-            ),
-          );
-        });
-
-    if (selected == "local") {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => LocalForm()),
-      );
-    } else if (selected != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => OnlineForm(selected)),
-      );
-    }
   }
 }
