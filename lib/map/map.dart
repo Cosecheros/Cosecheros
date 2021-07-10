@@ -89,8 +89,7 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
                 controller.setMapStyle(_mapStyle);
               },
               onTap: (e) {
-                if (_bottomSheetController != null)
-                  _bottomSheetController.close();
+                hideBottomSheet();
                 print(e);
               },
             );
@@ -165,7 +164,8 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
         markerId: MarkerId(model.id),
         position: model.latLng,
         icon: _markerIcon,
-        onTap: () => {
+        onTap: () {
+          hideBottomSheet();
           _bottomSheetController = showBottomSheet(
             context: context,
             builder: (context) => ConstrainedBox(
@@ -179,9 +179,8 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
                 child: CosechaPreview(model),
               ),
             ),
-          ),
-          _bottomSheetController.closed
-              .then((_) => _bottomSheetController = null)
+          );
+
         },
       );
     } else {
@@ -189,6 +188,13 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
         markerId: MarkerId(model.id),
         position: model.latLng,
       );
+    }
+  }
+
+  void hideBottomSheet() {
+    if (_bottomSheetController != null) {
+      Navigator.of(context).pop();
+      _bottomSheetController = null;
     }
   }
 }
