@@ -8,6 +8,7 @@ import 'package:cosecheros/shared/marker_icon_generator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'cosecha_preview.dart';
@@ -97,8 +98,45 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
           },
         ),
         SafeArea(
+          child: Align(
+            alignment: Alignment.topLeft,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: getLogo(context),
+            ),
+          ),
+        ),
+        SafeArea(
           child: Align(alignment: Alignment.topRight, child: topButtons()),
         )
+      ],
+    );
+  }
+
+  Widget getLogo(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        // Stroked text as border.
+        Text(
+          'Cosecheros',
+          style: GoogleFonts.inter(
+            fontSize: 32,
+            fontWeight: FontWeight.w900,
+            foreground: Paint()
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 4
+              ..color = Color(0xFFF5F5F5),
+          ),
+        ),
+        // Solid text as fill.
+        Text(
+          'Cosecheros',
+          style: GoogleFonts.inter(
+            fontSize: 32,
+            fontWeight: FontWeight.w900,
+            color: Theme.of(context).colorScheme.onBackground,
+          ),
+        ),
       ],
     );
   }

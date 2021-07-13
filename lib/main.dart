@@ -1,19 +1,13 @@
-import 'dart:convert';
-
 import 'package:cosecheros/home.dart';
 import 'package:cosecheros/intro.dart';
-import 'package:cosecheros/map/map.dart';
 import 'package:cosecheros/shared/constants.dart';
-import 'package:cosecheros/widgets/grid_icon_button.dart';
-import 'package:cosecheros/cosechar/local.dart';
-import 'package:cosecheros/cosechar/online.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 
@@ -21,6 +15,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Intl.defaultLocale = 'es';
   timeago.setDefaultLocale('es');
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  Constants.buildVersion = int.tryParse(packageInfo.buildNumber);
   // await initializeDateFormatting('es', null);
   runApp(MyApp());
 }
@@ -125,13 +121,18 @@ class MyApp extends StatelessWidget {
 
   Future<FirebaseApp> setupFirebase() async {
     var app = await Firebase.initializeApp();
+
+    // En un momento se usó remote config
+    // Para guardar los formularios
+    // Se dejó de usar, pero aún así voy a dejar esto configurado
+    // Por si hay ganas de usarlo para otra cosa más adelante
     final RemoteConfig remoteConfig = RemoteConfig.instance;
     await remoteConfig.setConfigSettings(RemoteConfigSettings(
-      fetchTimeout: Constants.formsFetchTimeout,
-      minimumFetchInterval: Constants.formsFetchInterval,
+      fetchTimeout: Constants.fetchTimeout,
+      minimumFetchInterval: Constants.minimumFetchInterval,
     ));
     await remoteConfig.setDefaults(<String, dynamic>{
-      Constants.formsSource: '[]',
+      'param': '[]',
     });
     remoteConfig.fetchAndActivate();
     RemoteConfigValue(null, ValueSource.valueStatic);

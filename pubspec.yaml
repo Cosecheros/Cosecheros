@@ -26,6 +26,7 @@ dependencies:
   url_launcher: ^6.0.3
   provider: ^5.0.0
   image_picker: ^0.7.4
+  package_info_plus: ^1.0.3
 
   # caches
   cached_network_image: ^3.0.0

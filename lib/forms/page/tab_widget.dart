@@ -114,6 +114,7 @@ class TabWidgetState extends State<TabWidget> {
                     moveToPage(widget.children.length - 1);
                   },
                   child: Row(children: [
+                    SizedBox(width: 4),
                     Text(
                       "Resumen",
                       style: Theme.of(context).textTheme.bodyText1,

@@ -13,9 +13,9 @@ class Cosecha {
 
   static Cosecha fromSnapshot(QueryDocumentSnapshot doc) {
     Cosecha result = Cosecha();
-    print("fromSnapshot =====");
-    print(doc.data());
-    print("fromSnapshot ^^^^^");
+    // print("Cosecha: fromSnapshot >>>
+    // print(doc.data());
+    // print("Cosecha: fromSnapshot <<<");
 
     var data = doc.data();
 
@@ -29,7 +29,7 @@ class Cosecha {
     if (payload is List) {
       result.payload = payload.map((e) => ResponseItem.fromJson(e)).toList();
 
-      print("payload: " + result.payload.length.toString());
+      print("Cosecha: payload: " + result.payload.length.toString());
 
       final geo = result.payload.singleWhere(
         (element) => element.type == 'geo_point',

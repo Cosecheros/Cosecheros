@@ -1,50 +1,20 @@
-
-import 'dart:convert';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosecheros/cosechar/local.dart';
 import 'package:cosecheros/cosechar/online.dart';
 import 'package:cosecheros/map/map.dart';
-import 'package:cosecheros/shared/constants.dart';
+import 'package:cosecheros/models/form_spec.dart';
 import 'package:cosecheros/widgets/grid_icon_button.dart';
-import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton.extended(
-        heroTag: null,
-        onPressed: () {
-          _onNuevaCosecha(context);
-        },
-        label: Text(
-          'Cosechar',
-          style: TextStyle(color: Colors.white),
-        ),
-        icon: Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-      ),
+      floatingActionButton: _asyncCosecharButton(context),
       extendBody: true,
-      body: Stack(
-        children: [
-          HomeMap(),
-          SafeArea(
-            child: Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: getLogo(context),
-              ),
-            ),
-          )
-        ],
-      ),
+      body: HomeMap(),
       // bottomNavigationBar: GestureDetector(
       //   onTap: () {
       //     showMaterialModalBottomSheet(
@@ -77,40 +47,55 @@ class MainPage extends StatelessWidget {
     );
   }
 
-  Widget getLogo(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        // Stroked text as border.
-        Text(
-          'Cosecheros',
-          style: GoogleFonts.inter(
-            fontSize: 32,
-            fontWeight: FontWeight.w900,
-            foreground: Paint()
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = 4
-              ..color = Color(0xFFF5F5F5),
-          ),
-        ),
-        // Solid text as fill.
-        Text(
-          'Cosecheros',
-          style: GoogleFonts.inter(
-            fontSize: 32,
-            fontWeight: FontWeight.w900,
-            color: Theme.of(context).colorScheme.onBackground,
-          ),
-        ),
-      ],
-    );
+  Widget _asyncCosecharButton(BuildContext context) {
+    return FutureBuilder<QuerySnapshot>(
+        future: getFormSpecs().get(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          List<FormSpec> forms;
+          print(snapshot);
+
+          if (snapshot.hasError) {
+            return Text(snapshot.error.toString());
+          }
+
+          if (snapshot.connectionState != ConnectionState.waiting) {
+            forms = snapshot.data.docs
+                .map((doc) => FormSpec.fromMap(doc.data()))
+                .where((e) => e.getUrl() != null)
+                .toList();
+          }
+          print("Home: CosecharButton: forms: $forms");
+
+          return FloatingActionButton.extended(
+            heroTag: null,
+            onPressed: forms == null
+                ? null
+                : () {
+                    _onCosechar(context, forms);
+                  },
+            label: Text(
+              'Cosechar',
+              style: TextStyle(color: Colors.white),
+            ),
+            icon: Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
+          );
+        });
   }
 
-  Future<void> _onNuevaCosecha(BuildContext context) async {
-    var forms = RemoteConfig.instance.getString(Constants.formsSource);
-    print(forms);
+  Query getFormSpecs() {
+    var query = FirebaseFirestore.instance.collection("forms");
 
-    Iterable list = json.decode(forms);
+    if (kReleaseMode) {
+      return query.where("users." + "ciudadano", isEqualTo: true);
+    }
 
+    return query;
+  }
+
+  _onCosechar(BuildContext context, List<FormSpec> forms) async {
     var selected = await showDialog<String>(
         context: context,
         builder: (BuildContext context) {
@@ -132,11 +117,11 @@ class MainPage extends StatelessWidget {
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
                   children: [
-                    ...list.map(
+                    ...forms.map(
                       (e) => GridIconButton(
-                        title: e['label'],
-                        background: e['color'],
-                        onPressed: () => Navigator.pop(context, e['url']),
+                        title: e.label,
+                        background: e.color,
+                        onPressed: () => Navigator.pop(context, e.getUrl()),
                       ),
                     ),
                     if (kDebugMode)
@@ -145,14 +130,6 @@ class MainPage extends StatelessWidget {
                         background: Colors.black87,
                         onPressed: () => Navigator.pop(context, "local"),
                       ),
-                    //   title: "Sequía",
-                    //   background: Color(0xFFF9787A),
-                    //   title: "Helada",
-                    //   background: Color(0xFF58D5E8),
-                    //   title: "Daños por granizo",
-                    //   background: Colors.green[300],
-                    //   title: "Lluvias",
-                    //   background: Color(0xFF80A5EE),
                   ],
                 ),
               ],
