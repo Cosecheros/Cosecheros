@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosecheros/home.dart';
-import 'package:cosecheros/intro.dart';
+import 'package:cosecheros/login/before_start.dart';
+import 'package:cosecheros/login/intro.dart';
 import 'package:cosecheros/shared/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -150,12 +152,36 @@ class MyApp extends StatelessWidget {
             return Intro();
           } else {
             print('Main >>> Usuario registado');
-            return MainPage();
+            return onLogin(shot.data);
           }
         }
         print('Main >>> Cargando~');
         return Container(color: background);
       },
     );
+  }
+
+  Widget onLogin(User user) {
+    return StreamBuilder<DocumentSnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection("users")
+            .doc(user.uid)
+            .snapshots(),
+        builder: (BuildContext context, snapshot) {
+          print(snapshot);
+          if (snapshot.hasError) {
+            return Text(snapshot.error.toString());
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Container(color: background);
+          }
+
+          if (!snapshot.data.exists) {
+            return BeforeStart();
+          }
+
+          return MainPage();
+        });
   }
 }
