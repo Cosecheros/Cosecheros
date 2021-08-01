@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cosecheros/login/current_user.dart';
 import 'package:cosecheros/models/cosecha.dart';
 import 'package:cosecheros/shared/constants.dart';
 import 'package:cosecheros/shared/helpers.dart';
@@ -176,8 +177,8 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
   }
 
   showProfile() async {
-    String name = FirebaseAuth.instance.currentUser.displayName.trim() ?? "";
-    String photoURL = FirebaseAuth.instance.currentUser.photoURL;
+    String name = CurrentUser.instance.data.name?.trim() ?? "";
+    String photoURL = CurrentUser.instance.data.photo;
 
     await showDialog<String>(
       context: context,

@@ -86,9 +86,7 @@ class _IntroState extends State<Intro> {
 
     UserCredential userCredential =
         await FirebaseAuth.instance.signInAnonymously();
-    print(">>> UserCredential:");
-    print(userCredential);
-    print("<<<");
+    print("signInAnon: userCredential: $userCredential");
 
     setState(() {
       _loading = false;
@@ -117,9 +115,7 @@ class _IntroState extends State<Intro> {
       // Once signed in, return the UserCredential
       UserCredential userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
-      print(">>> UserCredential:");
-      print(userCredential);
-      print("<<<");
+      print("signInWithGoogle: userCredential: $userCredential");
 
       // Actualizar la foto de perfil, por una url con mejor resolución
       // Re hack esto

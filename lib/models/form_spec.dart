@@ -19,9 +19,7 @@ class FormSpec {
   Map<String, bool> users;
 
   FormSpec.fromMap(Map map) {
-    print("FormSpec: fromMap >>>");
-    print(map);
-    print("FormSpec: fromMap <<<");
+    print("FormSpec: map: $map");
 
     color = HexColor.fromHex(map['color'] ?? '#FF2196F3');
     label = map['label'];

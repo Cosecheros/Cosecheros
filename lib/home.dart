@@ -52,7 +52,7 @@ class MainPage extends StatelessWidget {
         future: getFormSpecs().get(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           List<FormSpec> forms;
-          print(snapshot);
+          print("getFormSpecs: $snapshot");
 
           if (snapshot.hasError) {
             return Text(snapshot.error.toString());
@@ -64,7 +64,7 @@ class MainPage extends StatelessWidget {
                 .where((e) => e.getUrl() != null)
                 .toList();
           }
-          print("Home: CosecharButton: forms: $forms");
+          print("Home: CosecharButton: forms len: ${forms?.length}");
 
           return FloatingActionButton.extended(
             heroTag: null,

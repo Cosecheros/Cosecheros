@@ -1,9 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosecheros/home.dart';
-import 'package:cosecheros/login/before_start.dart';
+import 'package:cosecheros/login/setup_user.dart';
+import 'package:cosecheros/login/current_user.dart';
 import 'package:cosecheros/login/intro.dart';
 import 'package:cosecheros/shared/constants.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -110,10 +109,11 @@ class MyApp extends StatelessWidget {
         home: FutureBuilder<FirebaseApp>(
           future: setupFirebase(),
           builder: (BuildContext context, AsyncSnapshot<FirebaseApp> snapshot) {
+            print("onSetupFirebase: $snapshot");
             if (snapshot.hasError) {
               return Center(child: Text('Ocurrió un error!'));
             }
-            if (snapshot.hasData) {
+            if (snapshot.connectionState == ConnectionState.done) {
               return onFirebaseUp();
             }
             return Container(color: background);
@@ -143,45 +143,28 @@ class MyApp extends StatelessWidget {
 
   Widget onFirebaseUp() {
     return StreamBuilder(
-      stream: FirebaseAuth.instance.userChanges(),
-      builder: (BuildContext context, AsyncSnapshot<User> shot) {
-        print(shot);
+      stream: CurrentUser.instance.updates(),
+      builder: (BuildContext context, AsyncSnapshot<UserStatus> shot) {
+        print("CurrentUser update: $shot");
         if (shot.connectionState == ConnectionState.active) {
-          if (shot.data == null) {
-            print('Main >>> Usuario NO registrado!');
-            return Intro();
-          } else {
-            print('Main >>> Usuario registado');
-            return onLogin(shot.data);
+          switch (shot.data) {
+            case UserStatus.unlogged:
+              return Intro();
+              break;
+            case UserStatus.without_type:
+              return BeforeStart();
+              break;
+            case UserStatus.ready:
+              return MainPage();
+              break;
+            default:
+              return MainPage();
+              break;
           }
         }
         print('Main >>> Cargando~');
         return Container(color: background);
       },
     );
-  }
-
-  Widget onLogin(User user) {
-    return StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection("users")
-            .doc(user.uid)
-            .snapshots(),
-        builder: (BuildContext context, snapshot) {
-          print(snapshot);
-          if (snapshot.hasError) {
-            return Text(snapshot.error.toString());
-          }
-
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Container(color: background);
-          }
-
-          if (!snapshot.data.exists) {
-            return BeforeStart();
-          }
-
-          return MainPage();
-        });
   }
 }
