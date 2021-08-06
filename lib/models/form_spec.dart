@@ -15,6 +15,7 @@ class FormUrl {
 class FormSpec {
   Color color;
   String label;
+  String icon;
   List<FormUrl> urls;
   Map<String, bool> users;
 
@@ -23,13 +24,12 @@ class FormSpec {
 
     color = HexColor.fromHex(map['color'] ?? '#FF2196F3');
     label = map['label'];
+    icon = map['icon'];
 
     final unparsedUrls = map['urls'];
     urls = unparsedUrls is List
         ? unparsedUrls.map((e) => FormUrl.fromMap(e)).toList()
         : List.empty();
-
-    // users = Map<String, bool>.from(map['users']);
   }
 
   /*

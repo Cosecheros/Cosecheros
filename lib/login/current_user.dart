@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 enum UserStatus { unlogged, without_type, ready }
-enum UserType { ciudadano, agricultor }
+enum UserType { ciudadano, productor }
 
 class UserData {
   final String name;

@@ -22,17 +22,18 @@ class HomeMap extends StatefulWidget {
 class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
   Completer<GoogleMapController> _controller = Completer();
   String _mapStyle;
-  BitmapDescriptor _markerIcon;
+  BitmapDescriptor _markerDefault;
+  Map<String, BitmapDescriptor> _markerIcons;
 
   PersistentBottomSheetController _bottomSheetController;
 
   static CameraPosition initPos =
       CameraPosition(target: LatLng(-31.416998, -64.183657), zoom: 10);
 
-  void initMarkerIcon() async {
-    _markerIcon = await MarkerGenerator(96.0).bitmapDescriptorFrom(
-        Icons.place, Colors.black, Colors.transparent, Colors.transparent);
-  }
+  // void initMarkerIcon() async {
+  //   _markerIcon = await MarkerGenerator(96.0).bitmapDescriptorFrom(
+  //       Icons.place, Colors.black, Colors.transparent, Colors.transparent);
+  // }
 
   @override
   void initState() {
@@ -263,23 +264,35 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
   }
 
   Future<void> _createMarkerImageFromAsset(BuildContext context) async {
-    if (_markerIcon == null) {
+    if (_markerIcons == null) {
       final ImageConfiguration imageConfiguration =
-          createLocalImageConfiguration(context, size: Size.square(48));
+          createLocalImageConfiguration(context, size: Size.square(32));
+
+      // Nota: debí haber puesto otro id en los forms, que no dependa de la versión
+      // por eso terminé usando el alias
+      var icons = {
+        'granizada': await BitmapDescriptor.fromAssetImage(imageConfiguration, 'assets/app/granizo.png'),
+        'daños por granizo': await BitmapDescriptor.fromAssetImage(imageConfiguration, 'assets/app/granizo.png'),
+        'helada': await BitmapDescriptor.fromAssetImage(imageConfiguration, 'assets/app/helada.png'),
+        'inundacion': await BitmapDescriptor.fromAssetImage(imageConfiguration, 'assets/app/inundacion.png'),
+        'sequía': await BitmapDescriptor.fromAssetImage(imageConfiguration, 'assets/app/sequia.png'),
+      };
+
       final bitmap = await BitmapDescriptor.fromAssetImage(
-          imageConfiguration, 'assets/app/plant_1.png');
+          imageConfiguration, 'assets/app/pin.png');
       setState(() {
-        _markerIcon = bitmap;
+        _markerDefault = bitmap;
+        _markerIcons = icons;
       });
     }
   }
 
   Marker _createMarker(Cosecha model) {
-    if (_markerIcon != null) {
+    if (_markerIcons != null) {
       return Marker(
         markerId: MarkerId(model.id),
         position: model.latLng,
-        icon: _markerIcon,
+        icon: _markerIcons[model.alias.toLowerCase()] ?? _markerDefault,
         onTap: () {
           hideBottomSheet();
           _bottomSheetController = showBottomSheet(

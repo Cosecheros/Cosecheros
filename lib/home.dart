@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosecheros/cosechar/local.dart';
 import 'package:cosecheros/cosechar/online.dart';
+import 'package:cosecheros/login/current_user.dart';
 import 'package:cosecheros/map/map.dart';
 import 'package:cosecheros/models/form_spec.dart';
 import 'package:cosecheros/widgets/grid_icon_button.dart';
@@ -88,9 +89,10 @@ class MainPage extends StatelessWidget {
   Query getFormSpecs() {
     var query = FirebaseFirestore.instance.collection("forms");
 
-    if (kReleaseMode) {
-      return query.where("users." + "ciudadano", isEqualTo: true);
-    }
+    if (kReleaseMode)
+      return query.where(
+          "users." + CurrentUser.instance.data.type.toString().split('.').last,
+          isEqualTo: true);
 
     return query;
   }
@@ -121,6 +123,12 @@ class MainPage extends StatelessWidget {
                       (e) => GridIconButton(
                         title: e.label,
                         background: e.color,
+                        icon: e.icon == null
+                            ? null
+                            : Image.asset(
+                                "assets/app/${e.icon}.png",
+                                fit: BoxFit.cover,
+                              ),
                         onPressed: () => Navigator.pop(context, e.getUrl()),
                       ),
                     ),

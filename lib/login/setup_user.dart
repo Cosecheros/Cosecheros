@@ -4,7 +4,7 @@ import 'package:cosecheros/widgets/choice_button.dart';
 import 'package:cosecheros/widgets/label_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_svg/svg.dart';
 
 class BeforeStart extends StatefulWidget {
   @override
@@ -24,18 +24,30 @@ class _BeforeStartState extends State<BeforeStart> {
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 32),
-              Text("Antes de empezar,"),
-              SizedBox(height: 32),
-              Expanded(
-                flex: 1,
-                child: LabelWidget("¿Qué tipo de cosechero eres?"),
+              SizedBox(height: 16),
+              Text(
+                "Antes de empezar,",
+                style: Theme.of(context).textTheme.subtitle1,
               ),
               Expanded(
-                flex: 2,
+                flex: 1,
+                child: Container(),
+              ),
+              Center(
+                child: LabelWidget("¿Qué tipo de cosechero eres?"),
+              ),
+              SizedBox(height: 32),
+              Expanded(
+                flex: 3,
                 child: ChoiceButton(
                   value: selected == UserType.ciudadano,
                   label: "Ciudadano",
+                  icon: SvgPicture.asset(
+                    "assets/app/woman.svg",
+                    semanticsLabel: "ciudadana o ciudadano",
+                    fit: BoxFit.contain,
+                  ),
+                  subtitle: "Colabora por amor a la ciencia",
                   onTap: () {
                     setState(() {
                       selected = UserType.ciudadano;
@@ -45,13 +57,19 @@ class _BeforeStartState extends State<BeforeStart> {
               ),
               SizedBox(height: 16),
               Expanded(
-                flex: 2,
+                flex: 3,
                 child: ChoiceButton(
-                  value: selected == UserType.agricultor,
-                  label: "Agricultor",
+                  value: selected == UserType.productor,
+                  label: "Productor",
+                  icon: SvgPicture.asset(
+                    "assets/app/farmer.svg",
+                    semanticsLabel: "productor o productora",
+                    fit: BoxFit.contain,
+                  ),
+                  subtitle: "Reporta eventos para el INTA",
                   onTap: () {
                     setState(() {
-                      selected = UserType.agricultor;
+                      selected = UserType.productor;
                     });
                   },
                 ),
@@ -78,7 +96,9 @@ class _BeforeStartState extends State<BeforeStart> {
                           await FirebaseFirestore.instance
                               .collection("users")
                               .doc(FirebaseAuth.instance.currentUser.uid)
-                              .set({"type": selected.toString().split('.').last});
+                              .set({
+                            "type": selected.toString().split('.').last
+                          });
                         },
                   child: Text(
                     "CONFIRMAR",
