@@ -46,6 +46,7 @@ class _BeforeStartState extends State<BeforeStart> {
                     "assets/app/woman.svg",
                     semanticsLabel: "ciudadana o ciudadano",
                     fit: BoxFit.contain,
+                    height: double.infinity,
                   ),
                   subtitle: "Colabora por amor a la ciencia",
                   onTap: () {
@@ -65,6 +66,7 @@ class _BeforeStartState extends State<BeforeStart> {
                     "assets/app/farmer.svg",
                     semanticsLabel: "productor o productora",
                     fit: BoxFit.contain,
+                    height: double.infinity,
                   ),
                   subtitle: "Reporta eventos para el INTA",
                   onTap: () {

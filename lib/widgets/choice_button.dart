@@ -49,15 +49,11 @@ class ChoiceButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Flexible(child: Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: icon,
+            )),
             Expanded(
-              flex: 10,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: icon,
-              ),
-            ),
-            Expanded(
-              flex: 12,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
