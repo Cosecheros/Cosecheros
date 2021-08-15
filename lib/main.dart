@@ -103,7 +103,8 @@ class MyApp extends StatelessWidget {
           ),
           dialogTheme: DialogTheme(
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(12.0))),
+              borderRadius: BorderRadius.all(Radius.circular(12.0)),
+            ),
           ),
         ),
         home: FutureBuilder<FirebaseApp>(

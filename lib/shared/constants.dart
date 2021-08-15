@@ -7,6 +7,6 @@ class Constants {
       kReleaseMode ? Duration(hours: 1) : Duration(seconds: 5);
   static const Duration fetchTimeout = Duration(seconds: 10);
 
-  static const String localForm = "deriva.1";
+  static const String localForm = "inundacion.1";
   static int buildVersion;
 }

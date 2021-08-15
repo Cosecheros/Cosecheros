@@ -4,6 +4,22 @@ import 'package:dynamic_forms/dynamic_forms.dart';
 import 'package:expression_language/expression_language.dart';
 
 class CustomFormManager extends JsonFormManager {
+  @override
+  void init({
+    String content,
+    List<FormElementParser<FormElement>> parsers,
+    List<FunctionExpressionFactory> expressionFactories = const [],
+  }) {
+    try {
+      super.init(
+          content: content,
+          parsers: parsers,
+          expressionFactories: expressionFactories);
+    } catch (e) {
+      print(e);
+    }
+  }
+
   List<FormElement> getElementsData() {
     return getFormElementIterator<FormElement>(form)
         .where(

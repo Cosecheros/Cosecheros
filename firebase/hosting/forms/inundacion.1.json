@@ -1,0 +1,1453 @@
+{
+  "@name": "form",
+  "id": "inundacion",
+  "name": "Inundación",
+  "children": [
+    {
+      "@name": "formGroup",
+      "children": [
+        {
+          "@name": "label",
+          "value": "Sácale una foto."
+        },
+        {
+          "@name": "pic",
+          "id": "sequia_pic"
+        },
+        {
+          "@name": "label",
+          "value": "Recuerda:"
+        },
+        {
+          "@name": "info",
+          "title": "Titulo recomendación.",
+          "subtitle": "sobre como sacarle foto a la sequía.",
+          "img": "https://cosecheros.web.app/info/photographer.png"
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "children": [
+        {
+          "@name": "map",
+          "id": "geo"
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "children": [
+        {
+          "@name": "date",
+          "id": "fecha_hora",
+          "label": "¿Cuando pasó?"
+        },
+        {
+          "@name": "textField",
+          "id": "localidad_mas_cercana",
+          "label": "Localidad más cercana"
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "children": [
+        {
+          "@name": "singleChoice",
+          "id": "tipo_establecimiento",
+          "label": "Tipo establecimiento productivo",
+          "choices": [
+            {
+              "@name": "single",
+              "label": "Agricultura"
+            },
+            {
+              "@name": "single",
+              "label": "Ganaderia"
+            },
+            {
+              "@name": "single",
+              "label": "Forestal"
+            },
+            {
+              "@name": "single",
+              "label": "Urbano"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_establecimiento == \"agricultura\""
+      },
+      "children": [
+        {
+          "@name": "singleChoice",
+          "id": "tipo_cultivo",
+          "label": "Tipo de cultivo",
+          "choices": [
+            {
+              "@name": "single",
+              "label": "Estival"
+            },
+            {
+              "@name": "single",
+              "label": "Invernal"
+            },
+            {
+              "@name": "single",
+              "label": "Horticolas"
+            },
+            {
+              "@name": "single",
+              "label": "Frutales"
+            },
+            {
+              "@name": "single",
+              "label": "Pasturas"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_establecimiento == \"agricultura\" && @tipo_cultivo == \"estival\""
+      },
+      "children": [
+        {
+          "@name": "singleChoice",
+          "id": "cultivo_estival",
+          "label": "Cultivo estival",
+          "choices": [
+            {
+              "@name": "single",
+              "label": "Maiz"
+            },
+            {
+              "@name": "single",
+              "label": "Sorgo"
+            },
+            {
+              "@name": "single",
+              "label": "Soja"
+            },
+            {
+              "@name": "single",
+              "label": "Maní"
+            },
+            {
+              "@name": "single",
+              "label": "Girasol"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_establecimiento == \"agricultura\" && @tipo_cultivo == \"invernal\""
+      },
+      "children": [
+        {
+          "@name": "singleChoice",
+          "id": "cultivo_invernal",
+          "label": "Cultivo invernal",
+          "choices": [
+            {
+              "@name": "single",
+              "label": "Trigo"
+            },
+            {
+              "@name": "single",
+              "label": "Garbanzo"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_establecimiento == \"agricultura\" && @tipo_cultivo == \"horticolas\""
+      },
+      "children": [
+        {
+          "@name": "multiChoice",
+          "id": "horticolas",
+          "label": "Horticolas: Hojas",
+          "choices": [
+            {
+              "@name": "multi",
+              "id": "horticola_acelga",
+              "label": "Acelga"
+            },
+            {
+              "@name": "multi",
+              "id": "horticola_achicoria",
+              "label": "Achicoria"
+            },
+            {
+              "@name": "multi",
+              "id": "horticola_apio",
+              "label": "Apio"
+            },
+            {
+              "@name": "multi",
+              "id": "horticola_espinaca",
+              "label": "Espinaca"
+            },
+            {
+              "@name": "multi",
+              "id": "horticola_lechuga",
+              "label": "Lechuga"
+            },
+            {
+              "@name": "multi",
+              "id": "horticola_perejil",
+              "label": "Perejil"
+            },
+            {
+              "@name": "multi",
+              "id": "horticola_puerro",
+              "label": "Puerro"
+            },
+            {
+              "@name": "multi",
+              "id": "horticola_rucula",
+              "label": "Rucula"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_establecimiento == \"agricultura\" && @tipo_cultivo == \"horticolas\""
+      },
+      "children": [
+        {
+          "@name": "multiChoice",
+          "id": "Horticolas",
+          "label": "Horticolas: Frutas",
+          "choices": [
+            {
+              "@name": "multi",
+              "id": "horticola_arveja",
+              "label": "Arveja"
+            },
+            {
+              "@name": "multi",
+              "id": "horticola_berenjena",
+              "label": "Berenjena"
+            },
+            {
+              "@name": "multi",
+              "id": "horticola_brocoli",
+              "label": "Brocoli"
+            },
+            {
+              "@name": "multi",
+              "id": "horticola_calabaza",
+              "label": "Calabaza"
+            },
+            {
+              "@name": "multi",
+              "id": "horticola_chaucha",
+              "label": "Chaucha"
+            },
+            {
+              "@name": "multi",
+              "id": "horticola_choclo",
+              "label": "Choclo"
+            },
+            {
+              "@name": "multi",
+              "id": "horticola_coliflor",
+              "label": "Coliflor"
+            },
+            {
+              "@name": "multi",
+              "id": "horticola_haba",
+              "label": "Haba"
+            },
+            {
+              "@name": "multi",
+              "id": "horticola_melon",
+              "label": "Melon"
+            },
+            {
+              "@name": "multi",
+              "id": "horticola_pepino",
+              "label": "Pepino"
+            },
+            {
+              "@name": "multi",
+              "id": "horticola_pimiento",
+              "label": "Pimiento"
+            },
+            {
+              "@name": "multi",
+              "id": "horticola_repollo",
+              "label": "Repollo"
+            },
+            {
+              "@name": "multi",
+              "id": "horticola_sandia",
+              "label": "Sandia"
+            },
+            {
+              "@name": "multi",
+              "id": "horticola_tomate",
+              "label": "Tomate"
+            },
+            {
+              "@name": "multi",
+              "id": "horticola_zapallo",
+              "label": "Zapallo"
+            },
+            {
+              "@name": "multi",
+              "id": "horticola_zapallito",
+              "label": "Zapallito"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_establecimiento == \"agricultura\" && @tipo_cultivo == \"horticolas\""
+      },
+      "children": [
+        {
+          "@name": "multiChoice",
+          "id": "horticolas",
+          "label": "Horticolas: Raíces y tubérculos",
+          "choices": [
+            {
+              "@name": "multi",
+              "id": "horticola_ajo",
+              "label": "Ajo"
+            },
+            {
+              "@name": "multi",
+              "id": "horticola_batata",
+              "label": "Batata"
+            },
+            {
+              "@name": "multi",
+              "id": "horticola_cebolla_bulbo",
+              "label": "Cebolla de bulbo"
+            },
+            {
+              "@name": "multi",
+              "id": "horticola_cebolla_verdeo",
+              "label": "Cebolla de verdeo"
+            },
+            {
+              "@name": "multi",
+              "id": "horticola_papa",
+              "label": "Papa"
+            },
+            {
+              "@name": "multi",
+              "id": "horticola_remolacha",
+              "label": "Remolacha"
+            },
+            {
+              "@name": "multi",
+              "id": "horticola_zanahoria",
+              "label": "Zanahoria"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_establecimiento == \"agricultura\" && @tipo_cultivo == \"frutales\""
+      },
+      "children": [
+        {
+          "@name": "multiChoice",
+          "id": "cultivo",
+          "label": "Cultivo de frutales",
+          "choices": [
+            {
+              "@name": "multi",
+              "id": "cultivo_durazno",
+              "label": "Durazno"
+            },
+            {
+              "@name": "multi",
+              "id": "cultivo_manzana",
+              "label": "Manzana"
+            },
+            {
+              "@name": "multi",
+              "id": "cultivo_damasco",
+              "label": "Damasco"
+            },
+            {
+              "@name": "multi",
+              "id": "cultivo_higo",
+              "label": "Higo"
+            },
+            {
+              "@name": "multi",
+              "id": "cultivo_ciruela",
+              "label": "Ciruela"
+            },
+            {
+              "@name": "multi",
+              "id": "cultivo_olivo",
+              "label": "Olivo"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_establecimiento == \"agricultura\" && @tipo_cultivo == \"pasturas\""
+      },
+      "children": [
+        {
+          "@name": "singleChoice",
+          "id": "cultivo_pasturas",
+          "label": "Cultivo de pasturas",
+          "choices": [
+            {
+              "@name": "single",
+              "label": "Pasturas megatermicas implantadas"
+            },
+            {
+              "@name": "single",
+              "label": "Alfalfa/Melilotus"
+            },
+            {
+              "@name": "single",
+              "label": "Pastizal natural"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_establecimiento == \"agricultura\""
+      },
+      "children": [
+        {
+          "@name": "singleChoice",
+          "id": "estado_cultivo",
+          "label": "Estado del cultivo después de la inundación",
+          "choices": [
+            {
+              "@name": "single",
+              "label": "Muy bueno"
+            },
+            {
+              "@name": "single",
+              "label": "Bueno"
+            },
+            {
+              "@name": "single",
+              "label": "Regular"
+            },
+            {
+              "@name": "single",
+              "label": "Malo"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_establecimiento == \"ganaderia\""
+      },
+      "children": [
+        {
+          "@name": "multiChoice",
+          "id": "tipo_ganado",
+          "label": "Tipo de ganado",
+          "choices": [
+            {
+              "@name": "multi",
+              "label": "Bovino"
+            },
+            {
+              "@name": "multi",
+              "label": "Caprino"
+            },
+            {
+              "@name": "multi",
+              "label": "Ovino"
+            },
+            {
+              "@name": "multi",
+              "label": "Aviar"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_establecimiento == \"ganaderia\" && @tipo_ganado_aviar.isSelected"
+      },
+      "children": [
+        {
+          "@name": "singleChoice",
+          "id": "problemas_aves",
+          "label": "¿Problemas con las aves?",
+          "choices": [
+            {
+              "@name": "single",
+              "label": "SI"
+            },
+            {
+              "@name": "single",
+              "label": "NO"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_establecimiento == \"ganaderia\" && @tipo_ganado_aviar.isSelected && @problemas_aves == \"si\""
+      },
+      "children": [
+        {
+          "@name": "multiChoice",
+          "id": "tipo_problemas_aves",
+          "label": "Tipo de problema con las aves",
+          "choices": [
+            {
+              "@name": "multi",
+              "label": "Diarrea"
+            },
+            {
+              "@name": "multi",
+              "label": "Moquillo"
+            },
+            {
+              "@name": "multi",
+              "label": "Sarna"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_establecimiento == \"ganaderia\""
+      },
+      "children": [
+        {
+          "@name": "singleChoice",
+          "id": "disminucion_pariciones",
+          "label": "Disminución considerable de preñeces/pariciones",
+          "choices": [
+            {
+              "@name": "single",
+              "label": "SI"
+            },
+            {
+              "@name": "single",
+              "label": "NO"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_establecimiento == \"ganaderia\""
+      },
+      "children": [
+        {
+          "@name": "singleChoice",
+          "id": "perdida_fuente_agua",
+          "label": "Perdidas de fuentes de agua para bebida/riego",
+          "choices": [
+            {
+              "@name": "single",
+              "label": "SI"
+            },
+            {
+              "@name": "single",
+              "label": "NO"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_establecimiento == \"ganaderia\""
+      },
+      "children": [
+        {
+          "@name": "singleChoice",
+          "id": "animales_crecen_sin_restricciones",
+          "label": "¿Los animales crecen cercano a su potencial sin sustanciales restricciones?",
+          "choices": [
+            {
+              "@name": "single",
+              "label": "SI"
+            },
+            {
+              "@name": "single",
+              "label": "NO"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_establecimiento == \"ganaderia\""
+      },
+      "children": [
+        {
+          "@name": "singleChoice",
+          "id": "perdida_peso_animal",
+          "label": "Perdida considerable de peso Animal",
+          "choices": [
+            {
+              "@name": "single",
+              "label": "SI"
+            },
+            {
+              "@name": "single",
+              "label": "NO"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_establecimiento == \"ganaderia\""
+      },
+      "children": [
+        {
+          "@name": "singleChoice",
+          "id": "realiza_suplantacion_alimenticia",
+          "label": "Se realiza suplementación alimenticia estratégica",
+          "choices": [
+            {
+              "@name": "single",
+              "label": "SI"
+            },
+            {
+              "@name": "single",
+              "label": "NO"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_establecimiento == \"ganaderia\""
+      },
+      "children": [
+        {
+          "@name": "singleChoice",
+          "id": "animales_enfermedades_generalizadas",
+          "label": "Existen lotes (rodeos animales) con enfermedades generalizadas",
+          "choices": [
+            {
+              "@name": "single",
+              "label": "SI"
+            },
+            {
+              "@name": "single",
+              "label": "NO"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_establecimiento == \"ganaderia\""
+      },
+      "children": [
+        {
+          "@name": "label",
+          "value": "Perdidas por ahogamiento"
+        },
+        {
+          "@name": "textField",
+          "id": "perdidas_por_ahogamiento",
+          "inputType": "number",
+          "label": "Número de cabezas"
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@tipo_establecimiento == \"forestal\""
+      },
+      "children": [
+        {
+          "@name": "singleChoice",
+          "id": "plantacion_forestal_maderable",
+          "label": "Plantacion forestal maderable",
+          "choices": [
+            {
+              "@name": "single",
+              "label": "Pino"
+            },
+            {
+              "@name": "single",
+              "label": "Sauce"
+            },
+            {
+              "@name": "single",
+              "label": "Eucalipto"
+            },
+            {
+              "@name": "single",
+              "label": "Roble"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "children": [
+        {
+          "@name": "label",
+          "value": "Área afectada"
+        },
+        {
+          "@name": "textField",
+          "id": "hectareas_afectada",
+          "inputType": "number",
+          "label": "Hectáreas aproximadas"
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "children": [
+        {
+          "@name": "multiChoice",
+          "id": "danos_infraestructura",
+          "label": "Daños en infraestructura",
+          "choices": [
+            {
+              "@name": "multi",
+              "label": "Rotura de media sombras",
+              "id": "media_sombra"
+            },
+            {
+              "@name": "multi",
+              "label": "Rotura de mallas antigranizo",
+              "id": "antigranizo"
+            },
+            {
+              "@name": "multi",
+              "label": "Caida de postes",
+              "id": "postes"
+            },
+            {
+              "@name": "multi",
+              "label": "Rotura de invernaderos",
+              "id": "invernaderos"
+            },
+            {
+              "@name": "multi",
+              "label": "Afeccion de tendido electrico",
+              "id": "tendido_electrico"
+            },
+            {
+              "@name": "multi",
+              "label": "Voladura de techos/chapas",
+              "id": "voladura_techos_chapas"
+            },
+            {
+              "@name": "multi",
+              "label": "Caminos cortados por agua",
+              "id": "caminos_agua"
+            },
+            {
+              "@name": "multi",
+              "label": "Silo bolsa inundado",
+              "id": "silo_bolsa"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@danos_infraestructura_media_sombra.isSelected"
+      },
+      "children": [
+        {
+          "@name": "singleChoice",
+          "id": "dano_media_sombra",
+          "label": "Daño en la media sombra (%)",
+          "choices": [
+            {
+              "@name": "single",
+              "label": "100%"
+            },
+            {
+              "@name": "single",
+              "label": "90%"
+            },
+            {
+              "@name": "single",
+              "label": "80%"
+            },
+            {
+              "@name": "single",
+              "label": "70%"
+            },
+            {
+              "@name": "single",
+              "label": "60%"
+            },
+            {
+              "@name": "single",
+              "label": "50%"
+            },
+            {
+              "@name": "single",
+              "label": "40%"
+            },
+            {
+              "@name": "single",
+              "label": "30%"
+            },
+            {
+              "@name": "single",
+              "label": "20%"
+            },
+            {
+              "@name": "single",
+              "label": "10%"
+            },
+            {
+              "@name": "single",
+              "label": "0%"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@danos_infraestructura_antigranizo.isSelected"
+      },
+      "children": [
+        {
+          "@name": "singleChoice",
+          "id": "dano_antigranizo",
+          "label": "Daño en antigranizo (%)",
+          "choices": [
+            {
+              "@name": "single",
+              "label": "100%"
+            },
+            {
+              "@name": "single",
+              "label": "90%"
+            },
+            {
+              "@name": "single",
+              "label": "80%"
+            },
+            {
+              "@name": "single",
+              "label": "70%"
+            },
+            {
+              "@name": "single",
+              "label": "60%"
+            },
+            {
+              "@name": "single",
+              "label": "50%"
+            },
+            {
+              "@name": "single",
+              "label": "40%"
+            },
+            {
+              "@name": "single",
+              "label": "30%"
+            },
+            {
+              "@name": "single",
+              "label": "20%"
+            },
+            {
+              "@name": "single",
+              "label": "10%"
+            },
+            {
+              "@name": "single",
+              "label": "0%"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "children": [
+        {
+          "@name": "singleChoice",
+          "id": "dano_postes_alambrados",
+          "label": "Daño en postes y alambrados (%)",
+          "choices": [
+            {
+              "@name": "single",
+              "label": "100%"
+            },
+            {
+              "@name": "single",
+              "label": "90%"
+            },
+            {
+              "@name": "single",
+              "label": "80%"
+            },
+            {
+              "@name": "single",
+              "label": "70%"
+            },
+            {
+              "@name": "single",
+              "label": "60%"
+            },
+            {
+              "@name": "single",
+              "label": "50%"
+            },
+            {
+              "@name": "single",
+              "label": "40%"
+            },
+            {
+              "@name": "single",
+              "label": "30%"
+            },
+            {
+              "@name": "single",
+              "label": "20%"
+            },
+            {
+              "@name": "single",
+              "label": "10%"
+            },
+            {
+              "@name": "single",
+              "label": "0%"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@danos_infraestructura_invernaderos.isSelected"
+      },
+      "children": [
+        {
+          "@name": "singleChoice",
+          "id": "dano_invernaderos",
+          "label": "Daño en invernaderos (%)",
+          "choices": [
+            {
+              "@name": "single",
+              "label": "100%"
+            },
+            {
+              "@name": "single",
+              "label": "90%"
+            },
+            {
+              "@name": "single",
+              "label": "80%"
+            },
+            {
+              "@name": "single",
+              "label": "70%"
+            },
+            {
+              "@name": "single",
+              "label": "60%"
+            },
+            {
+              "@name": "single",
+              "label": "50%"
+            },
+            {
+              "@name": "single",
+              "label": "40%"
+            },
+            {
+              "@name": "single",
+              "label": "30%"
+            },
+            {
+              "@name": "single",
+              "label": "20%"
+            },
+            {
+              "@name": "single",
+              "label": "10%"
+            },
+            {
+              "@name": "single",
+              "label": "0%"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "isVisible": {
+        "expression": "@danos_infraestructura_tendido_electrico.isSelected"
+      },
+      "children": [
+        {
+          "@name": "singleChoice",
+          "id": "dano_red_electrica",
+          "label": "Daño en la red eléctrica (%)",
+          "choices": [
+            {
+              "@name": "single",
+              "label": "100%"
+            },
+            {
+              "@name": "single",
+              "label": "90%"
+            },
+            {
+              "@name": "single",
+              "label": "80%"
+            },
+            {
+              "@name": "single",
+              "label": "70%"
+            },
+            {
+              "@name": "single",
+              "label": "60%"
+            },
+            {
+              "@name": "single",
+              "label": "50%"
+            },
+            {
+              "@name": "single",
+              "label": "40%"
+            },
+            {
+              "@name": "single",
+              "label": "30%"
+            },
+            {
+              "@name": "single",
+              "label": "20%"
+            },
+            {
+              "@name": "single",
+              "label": "10%"
+            },
+            {
+              "@name": "single",
+              "label": "0%"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "children": [
+        {
+          "@name": "singleChoice",
+          "id": "dano_galpones_depositos",
+          "label": "Daño en galpones y depósitos (%)",
+          "choices": [
+            {
+              "@name": "single",
+              "label": "100%"
+            },
+            {
+              "@name": "single",
+              "label": "90%"
+            },
+            {
+              "@name": "single",
+              "label": "80%"
+            },
+            {
+              "@name": "single",
+              "label": "70%"
+            },
+            {
+              "@name": "single",
+              "label": "60%"
+            },
+            {
+              "@name": "single",
+              "label": "50%"
+            },
+            {
+              "@name": "single",
+              "label": "40%"
+            },
+            {
+              "@name": "single",
+              "label": "30%"
+            },
+            {
+              "@name": "single",
+              "label": "20%"
+            },
+            {
+              "@name": "single",
+              "label": "10%"
+            },
+            {
+              "@name": "single",
+              "label": "0%"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "children": [
+        {
+          "@name": "singleChoice",
+          "id": "dano_viviendas",
+          "label": "Daño en viviendas (%)",
+          "choices": [
+            {
+              "@name": "single",
+              "label": "100%"
+            },
+            {
+              "@name": "single",
+              "label": "90%"
+            },
+            {
+              "@name": "single",
+              "label": "80%"
+            },
+            {
+              "@name": "single",
+              "label": "70%"
+            },
+            {
+              "@name": "single",
+              "label": "60%"
+            },
+            {
+              "@name": "single",
+              "label": "50%"
+            },
+            {
+              "@name": "single",
+              "label": "40%"
+            },
+            {
+              "@name": "single",
+              "label": "30%"
+            },
+            {
+              "@name": "single",
+              "label": "20%"
+            },
+            {
+              "@name": "single",
+              "label": "10%"
+            },
+            {
+              "@name": "single",
+              "label": "0%"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "children": [
+        {
+          "@name": "singleChoice",
+          "id": "dano_caminos_internos",
+          "label": "Daño en caminos internos (%)",
+          "choices": [
+            {
+              "@name": "single",
+              "label": "100%"
+            },
+            {
+              "@name": "single",
+              "label": "90%"
+            },
+            {
+              "@name": "single",
+              "label": "80%"
+            },
+            {
+              "@name": "single",
+              "label": "70%"
+            },
+            {
+              "@name": "single",
+              "label": "60%"
+            },
+            {
+              "@name": "single",
+              "label": "50%"
+            },
+            {
+              "@name": "single",
+              "label": "40%"
+            },
+            {
+              "@name": "single",
+              "label": "30%"
+            },
+            {
+              "@name": "single",
+              "label": "20%"
+            },
+            {
+              "@name": "single",
+              "label": "10%"
+            },
+            {
+              "@name": "single",
+              "label": "0%"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "children": [
+        {
+          "@name": "singleChoice",
+          "id": "insumos_afectados",
+          "label": "Insumos afectados",
+          "choices": [
+            {
+              "@name": "single",
+              "label": "Herbicidas"
+            },
+            {
+              "@name": "single",
+              "label": "Insecticidas"
+            },
+            {
+              "@name": "single",
+              "label": "Fertilizantes"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "children": [
+        {
+          "@name": "label",
+          "value": "Foto de caminos"
+        },
+        {
+          "@name": "pic",
+          "id": "pic_caminos"
+        },
+        {
+          "@name": "label",
+          "value": "Galpones y viviendas"
+        },
+        {
+          "@name": "pic",
+          "id": "pic_galpones_viviendas"
+        },
+        {
+          "@name": "label",
+          "value": "Alambrados, postes o tendido electrico"
+        },
+        {
+          "@name": "pic",
+          "id": "pic_alambrados_postes"
+        },
+        {
+          "@name": "label",
+          "value": "Recuerda:"
+        },
+        {
+          "@name": "info",
+          "title": "Titulo recomendación.",
+          "subtitle": "sobre como sacarle foto a la sequía.",
+          "img": "https://cosecheros.web.app/info/photographer.png"
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "children": [
+        {
+          "@name": "label",
+          "value": "Precipitación acumulada"
+        },
+        {
+          "@name": "textField",
+          "id": "precipitacion_acumulada",
+          "inputType": "number",
+          "label": "En milímetros, últimos 7 días"
+        },
+        {
+          "@name": "label",
+          "value": "Profundidad de napas"
+        },
+        {
+          "@name": "textField",
+          "inputType": "number",
+          "id": "profundidad_napas",
+          "label": "En centímetros"
+        },
+        {
+          "@name": "label",
+          "value": "Duracion anegamiento"
+        },
+        {
+          "@name": "textField",
+          "inputType": "number",
+          "id": "duracion_anegamiento",
+          "label": "En días"
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "children": [
+        {
+          "@name": "singleChoice",
+          "id": "condicion_suelos",
+          "label": "Condicion de suelos",
+          "choices": [
+            {
+              "@name": "single",
+              "label": "Situacion normal"
+            },
+            {
+              "@name": "single",
+              "label": "Saturados"
+            },
+            {
+              "@name": "single",
+              "label": "Agua en superficie"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "children": [
+        {
+          "@name": "multiChoice",
+          "id": "agua_en_lote",
+          "label": "Agua en lote",
+          "choices": [
+            {
+              "@name": "multi",
+              "label": "Sin agua visible"
+            },
+            {
+              "@name": "multi",
+              "label": "Charcos dispersos"
+            },
+            {
+              "@name": "multi",
+              "label": "Cubre suela calzado"
+            },
+            {
+              "@name": "multi",
+              "label": "Cubre hasta mitad calzado"
+            },
+            {
+              "@name": "multi",
+              "label": "Hasta el tobillo"
+            },
+            {
+              "@name": "multi",
+              "label": "Hasta mitad de pantorrilla"
+            },
+            {
+              "@name": "multi",
+              "label": "A la rodilla"
+            },
+            {
+              "@name": "multi",
+              "label": "Entre cintura y rodilla"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@name": "formGroup",
+      "children": [
+        {
+          "@name": "label",
+          "value": "¿Alguna cosa más?"
+        },
+        {
+          "@name": "textField",
+          "id": "observacion",
+          "label": "Observaciones"
+        }
+      ]
+    }
+  ]
+}

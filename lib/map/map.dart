@@ -30,16 +30,10 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
   static CameraPosition initPos =
       CameraPosition(target: LatLng(-31.416998, -64.183657), zoom: 10);
 
-  // void initMarkerIcon() async {
-  //   _markerIcon = await MarkerGenerator(96.0).bitmapDescriptorFrom(
-  //       Icons.place, Colors.black, Colors.transparent, Colors.transparent);
-  // }
-
   @override
   void initState() {
     super.initState();
     initPosition();
-    // initMarkerIcon();
 
     rootBundle.loadString('assets/app/map_style.json').then((string) {
       _mapStyle = string;
@@ -150,6 +144,7 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
         mainAxisSize: MainAxisSize.min,
         children: [
           FloatingActionButton(
+            heroTag: null,
             mini: true,
             backgroundColor: Colors.white,
             child: Icon(
@@ -162,6 +157,7 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
           ),
           SizedBox(width: 4),
           FloatingActionButton(
+            heroTag: null,
             mini: true,
             backgroundColor: Colors.white,
             child: Icon(

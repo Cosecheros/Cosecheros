@@ -28,13 +28,13 @@ class GridIconButton extends StatelessWidget {
         children: [
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(16),
               child: icon ?? Icon(Icons.help_outline_rounded),
             ),
           ),
           Padding(
             padding:
-                const EdgeInsets.only(left: 8, right: 8, bottom: 16),
+                const EdgeInsets.only(bottom: 16),
             child: Text(
               title.toUpperCase(),
               textAlign: TextAlign.center,

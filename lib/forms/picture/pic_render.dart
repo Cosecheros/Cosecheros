@@ -63,15 +63,17 @@ class PictureRenderer extends FormElementRenderer<Picture> {
         color: Theme.of(context).colorScheme.primaryVariant.withAlpha(12),
         borderRadius: BorderRadius.circular(12),
       ),
-      child: TextButton(
-        onPressed: () async {
+      child: InkWell(
+        borderRadius: BorderRadius.circular(10),
+        onTap: () async {
           String path = await _showDialog(context);
           if (path != null) {
             onPicked(path);
           }
         },
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               Icons.crop_original_rounded,
