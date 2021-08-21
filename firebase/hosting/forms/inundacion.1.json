@@ -7,12 +7,9 @@
       "@name": "formGroup",
       "children": [
         {
-          "@name": "label",
-          "value": "Sácale una foto."
-        },
-        {
           "@name": "pic",
-          "id": "sequia_pic"
+          "id": "pic_inundacion",
+          "label": "Foto de la inundación"
         },
         {
           "@name": "label",
@@ -42,11 +39,6 @@
           "@name": "date",
           "id": "fecha_hora",
           "label": "¿Cuando pasó?"
-        },
-        {
-          "@name": "textField",
-          "id": "localidad_mas_cercana",
-          "label": "Localidad más cercana"
         }
       ]
     },
@@ -700,14 +692,11 @@
       },
       "children": [
         {
-          "@name": "label",
-          "value": "Perdidas por ahogamiento"
-        },
-        {
           "@name": "textField",
           "id": "perdidas_por_ahogamiento",
           "inputType": "number",
-          "label": "Número de cabezas"
+          "label": "Perdidas por ahogamiento",
+          "inputLabel": "Número de cabezas"
         }
       ]
     },
@@ -746,14 +735,12 @@
       "@name": "formGroup",
       "children": [
         {
-          "@name": "label",
-          "value": "Área afectada"
-        },
-        {
           "@name": "textField",
           "id": "hectareas_afectada",
           "inputType": "number",
-          "label": "Hectáreas aproximadas"
+          "label": "Área afectada",
+          "inputLabel": "Hectáreas aproximadas",
+          "hint": ""
         }
       ]
     },
@@ -1297,28 +1284,20 @@
       "@name": "formGroup",
       "children": [
         {
-          "@name": "label",
-          "value": "Foto de caminos"
+          "@name": "pic",
+          "id": "pic_caminos",
+          "label": "Foto de caminos"
         },
         {
           "@name": "pic",
-          "id": "pic_caminos"
-        },
-        {
-          "@name": "label",
-          "value": "Galpones y viviendas"
-        },
-        {
-          "@name": "pic",
-          "id": "pic_galpones_viviendas"
-        },
-        {
-          "@name": "label",
-          "value": "Alambrados, postes o tendido electrico"
+          "id": "pic_galpones_viviendas",
+          "label": "Galpones y viviendas"
+
         },
         {
           "@name": "pic",
-          "id": "pic_alambrados_postes"
+          "id": "pic_alambrados_postes",
+          "label": "Alambrados, postes o tendido electrico"
         },
         {
           "@name": "label",
@@ -1336,34 +1315,26 @@
       "@name": "formGroup",
       "children": [
         {
-          "@name": "label",
-          "value": "Precipitación acumulada"
-        },
-        {
           "@name": "textField",
           "id": "precipitacion_acumulada",
           "inputType": "number",
-          "label": "En milímetros, últimos 7 días"
-        },
-        {
-          "@name": "label",
-          "value": "Profundidad de napas"
+          "label": "Precipitación acumulada",
+          "inputLabel": "En milímetros, últimos 7 días",
+          "hint": ""
         },
         {
           "@name": "textField",
           "inputType": "number",
           "id": "profundidad_napas",
-          "label": "En centímetros"
-        },
-        {
-          "@name": "label",
-          "value": "Duracion anegamiento"
+          "label": "Profundidad de napas",
+          "inputLabel": "En centímetros"
         },
         {
           "@name": "textField",
           "inputType": "number",
           "id": "duracion_anegamiento",
-          "label": "En días"
+          "label": "Duracion anegamiento",
+          "inputLabel": "En días"
         }
       ]
     },
@@ -1439,13 +1410,10 @@
       "@name": "formGroup",
       "children": [
         {
-          "@name": "label",
-          "value": "¿Alguna cosa más?"
-        },
-        {
           "@name": "textField",
           "id": "observacion",
-          "label": "Observaciones"
+          "label": "¿Alguna cosa más?",
+          "inputLabel": "Observaciones"
         }
       ]
     }

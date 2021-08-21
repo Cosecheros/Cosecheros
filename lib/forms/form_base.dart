@@ -4,6 +4,7 @@ import 'package:cosecheros/forms/multichoice/multichoice_group_renderer.dart';
 import 'package:cosecheros/forms/multichoice/multichoice_parser.dart';
 import 'package:cosecheros/forms/multichoice/multichoice_renderer.dart';
 import 'package:cosecheros/forms/submit_firestore.dart';
+import 'package:cosecheros/forms/text/text_parser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dynamic_forms/flutter_dynamic_forms.dart';
 import 'package:flutter_dynamic_forms_components/flutter_dynamic_forms_components.dart'
@@ -21,7 +22,7 @@ import 'page/page.dart';
 import 'page/tab.dart';
 import 'picture/pic_parser.dart';
 import 'picture/pic_render.dart';
-import 'textfield/text_field_renderer.dart';
+import 'text/text_renderer.dart';
 import 'checkbox/checkbox_renderer.dart';
 import 'singlechoice/singlechoice_group_parser.dart';
 import 'singlechoice/singlechoice_group_renderer.dart';
@@ -264,6 +265,7 @@ class _BaseFormState extends State<BaseForm> {
             MapParser(),
             PictureParser(),
             InfoParser(),
+            TextParser(),
           ],
       child: FormRenderer<CustomFormManager>(
         dispatcher: (event) {
@@ -271,7 +273,7 @@ class _BaseFormState extends State<BaseForm> {
         },
         renderers: components.getRenderers() +
             [
-              TextFieldRenderer(),
+              TextRenderer(),
               LabelRenderer(),
               TabRenderer(),
               PageRenderer(),

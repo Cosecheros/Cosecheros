@@ -1,15 +1,13 @@
+import 'package:cosecheros/forms/text/text.dart';
+import 'package:cosecheros/forms/text/text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_dynamic_forms/flutter_dynamic_forms.dart';
 
-import 'package:flutter_dynamic_forms_components/flutter_dynamic_forms_components.dart'
-    as model;
-import 'text_field_widget.dart';
-
-class TextFieldRenderer extends FormElementRenderer<model.TextField> {
+class TextRenderer extends FormElementRenderer<TextElement> {
   @override
   Widget render(
-      model.TextField element,
+      TextElement element,
       BuildContext context,
       FormElementEventDispatcherFunction dispatcher,
       FormElementRendererFunction renderer) {
@@ -21,12 +19,9 @@ class TextFieldRenderer extends FormElementRenderer<model.TextField> {
             ?.message;
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 28.0),
-          child: TextFieldWidget(
-            text: element.value,
-            id: element.id,
+          child: TextWidget(
+            element: element,
             errorText: errorText,
-            label: element.label,
-            textInputType: element.inputType,
             dispatcher: dispatcher,
           ),
         );

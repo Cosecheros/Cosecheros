@@ -16,7 +16,14 @@ class PictureParser extends FormElementParser<Picture> {
     ElementParserFunction parser,
   ) {
     super.fillProperties(pic, parserNode, parent, parser);
-
-    pic.pathProperty = parserNode.getNullableStringProperty('path', isImmutable: false);
+    pic.pathProperty = parserNode.getNullableStringProperty(
+      'path',
+      isImmutable: false,
+    );
+    pic.labelProperty = parserNode.getStringProperty(
+      'label',
+      defaultValue: () => 'Foto de la cosecha',
+      isImmutable: true,
+    );
   }
 }

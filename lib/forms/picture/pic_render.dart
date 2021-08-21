@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cosecheros/forms/picture/pic.dart';
+import 'package:cosecheros/widgets/label_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_dynamic_forms/flutter_dynamic_forms.dart';
@@ -35,22 +36,29 @@ class PictureRenderer extends FormElementRenderer<Picture> {
       initialData: element.path,
       stream: element.pathChanged,
       builder: (context, snapshot) {
-        if (snapshot.data == null) {
-          return pickerPicWidget(
-            context: context,
-            onPicked: (value) {
-              changeValue(element, dispatcher, value);
-            },
-          );
-        } else {
-          return showPicWidget(
-            context: context,
-            img: File(snapshot.data),
-            onRemove: () {
-              changeValue(element, dispatcher, null);
-            },
-          );
-        }
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            LabelWidget(element.label),
+            if (snapshot.data == null)
+              pickerPicWidget(
+                context: context,
+                onPicked: (value) {
+                  changeValue(element, dispatcher, value);
+                },
+              )
+            else
+              showPicWidget(
+                context: context,
+                img: File(snapshot.data),
+                onRemove: () {
+                  changeValue(element, dispatcher, null);
+                },
+              ),
+            SizedBox(height: 24),
+
+          ],
+        );
       },
     );
   }
@@ -78,7 +86,8 @@ class PictureRenderer extends FormElementRenderer<Picture> {
             Icon(
               Icons.crop_original_rounded,
               size: 32,
-              color: Theme.of(context).colorScheme.primaryVariant.withOpacity(0.7),
+              color:
+                  Theme.of(context).colorScheme.primaryVariant.withOpacity(0.7),
             ),
             SizedBox(height: 8),
             Text(
@@ -94,34 +103,41 @@ class PictureRenderer extends FormElementRenderer<Picture> {
   }
 
   Widget showPicWidget({BuildContext context, File img, Function onRemove}) {
-    return Stack(
-      children: [
-        Container(
-          height: 264,
-          width: double.infinity,
-          child: Image.file(
-            img,
-            fit: BoxFit.cover,
-          ),
-        ),
-        Align(
-          alignment: Alignment.topRight,
-          child: Container(
-            margin: EdgeInsets.all(8),
-            child: RawMaterialButton(
-              onPressed: onRemove,
-              child: Icon(
-                Icons.close_rounded,
-                color: Colors.black,
-              ),
-              shape: CircleBorder(),
-              elevation: 2.0,
-              fillColor: Colors.white,
-              constraints: BoxConstraints.tight(Size(36, 36)),
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Stack(
+        children: [
+          Container(
+            height: 264,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: Image.file(
+              img,
+              fit: BoxFit.cover,
             ),
           ),
-        ),
-      ],
+          Align(
+            alignment: Alignment.topRight,
+            child: Container(
+              margin: EdgeInsets.all(8),
+              child: RawMaterialButton(
+                onPressed: onRemove,
+                child: Icon(
+                  Icons.close_rounded,
+                  color: Colors.black,
+                ),
+                shape: CircleBorder(),
+                elevation: 2.0,
+                fillColor: Colors.white,
+                constraints: BoxConstraints.tight(Size(36, 36)),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

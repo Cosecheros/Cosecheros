@@ -7,6 +7,8 @@ import 'package:flutter_dynamic_forms_components/flutter_dynamic_forms_component
 class MultiChoiceSummary extends SummaryWidget<MultiChoiceGroup> {
   @override
   Widget render(BuildContext context, MultiChoiceGroup element) {
+    if (!needShow(element)) return Container();
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: InfoItem(
@@ -20,6 +22,10 @@ class MultiChoiceSummary extends SummaryWidget<MultiChoiceGroup> {
         ),
       ),
     );
+  }
+
+  bool needShow(MultiChoiceGroup element) {
+    return element.choices.any((element) => element.isSelected);
   }
 
   Widget getItem(BuildContext context, MultiSelectChoice element) {

@@ -10,7 +10,8 @@ import 'package:cosecheros/forms/picture/pic.dart';
 import 'package:cosecheros/forms/picture/pic_summary.dart';
 import 'package:cosecheros/forms/singlechoice/singlechoice_group.dart';
 import 'package:cosecheros/forms/singlechoice/singlechoice_summary.dart';
-import 'package:cosecheros/forms/textfield/text_field_summary.dart';
+import 'package:cosecheros/forms/text/text.dart';
+import 'package:cosecheros/forms/text/text_summary.dart';
 import 'package:cosecheros/widgets/label_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dynamic_forms/flutter_dynamic_forms.dart';
@@ -64,7 +65,7 @@ class SumaryPage extends StatelessWidget {
     MultiChoiceGroup: MultiChoiceSummary(),
     model.CheckBox: CheckBoxSummary(),
     custom.Map: MapSummary(),
-    model.TextField: TextFieldSummary(),
+    TextElement: TextSummary(),
     model.Date: DateTimeSummary(),
 
     //Ignore
