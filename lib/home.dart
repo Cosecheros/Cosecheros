@@ -4,6 +4,7 @@ import 'package:cosecheros/cosechar/online.dart';
 import 'package:cosecheros/login/current_user.dart';
 import 'package:cosecheros/map/map.dart';
 import 'package:cosecheros/models/form_spec.dart';
+import 'package:cosecheros/shared/constants.dart';
 import 'package:cosecheros/widgets/grid_icon_button.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -88,12 +89,6 @@ class MainPage extends StatelessWidget {
 
   Query getFormSpecs() {
     var query = FirebaseFirestore.instance.collection("forms");
-
-    if (kReleaseMode)
-      return query.where(
-          "users." + CurrentUser.instance.data.type.toString().split('.').last,
-          isEqualTo: true);
-
     return query;
   }
 
@@ -118,6 +113,7 @@ class MainPage extends StatelessWidget {
                   padding: const EdgeInsets.all(16),
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
+                  scrollDirection: Axis.vertical,
                   children: [
                     ...forms.map(
                       (e) => GridIconButton(
@@ -125,11 +121,14 @@ class MainPage extends StatelessWidget {
                         background: e.color,
                         icon: e.icon == null
                             ? null
-                            : Image.asset(
-                                "assets/app/${e.icon}.png",
-                                fit: BoxFit.cover,
+                            : Image.network(
+                                e.icon,
+                                fit: BoxFit.contain,
+                                // En caso de no existir, fallback a este icono
+                                errorBuilder: (_, __, ___) =>
+                                    Icon(Icons.report_rounded, size: 48),
                               ),
-                        onPressed: () => Navigator.pop(context, e.getUrl()),
+                        onPressed: () => Navigator.pop(context, e.getUrl().href,),
                       ),
                     ),
                     if (kDebugMode)

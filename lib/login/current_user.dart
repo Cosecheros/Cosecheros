@@ -75,4 +75,6 @@ class CurrentUser {
       isAnonymous: user?.isAnonymous,
     );
   }
+
+  String get type => data.type.toString().split('.').last;
 }

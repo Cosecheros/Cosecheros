@@ -209,6 +209,19 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
                 SizedBox(height: 16),
                 TextButton(
                   child: Text(
+                    "cambiar tipo de usuario".toUpperCase(),
+                    style: Theme.of(context).textTheme.button,
+                  ),
+                  onPressed: () async {
+                    await FirebaseFirestore.instance
+                        .collection("users")
+                        .doc(FirebaseAuth.instance.currentUser.uid)
+                        .set({"type": null});
+                    Navigator.pop(context);
+                  },
+                ),
+                TextButton(
+                  child: Text(
                     "cerrar sesión".toUpperCase(),
                     style: Theme.of(context)
                         .textTheme
@@ -264,14 +277,17 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
       final ImageConfiguration imageConfiguration =
           createLocalImageConfiguration(context, size: Size.square(32));
 
-      // Nota: debí haber puesto otro id en los forms, que no dependa de la versión
-      // por eso terminé usando el alias
       var icons = {
-        'granizada': await BitmapDescriptor.fromAssetImage(imageConfiguration, 'assets/app/granizo.png'),
-        'daños por granizo': await BitmapDescriptor.fromAssetImage(imageConfiguration, 'assets/app/granizo.png'),
-        'helada': await BitmapDescriptor.fromAssetImage(imageConfiguration, 'assets/app/helada.png'),
-        'inundacion': await BitmapDescriptor.fromAssetImage(imageConfiguration, 'assets/app/inundacion.png'),
-        'sequía': await BitmapDescriptor.fromAssetImage(imageConfiguration, 'assets/app/sequia.png'),
+        'granizada': await BitmapDescriptor.fromAssetImage(
+            imageConfiguration, 'assets/app/granizo.png'),
+        'helada': await BitmapDescriptor.fromAssetImage(
+            imageConfiguration, 'assets/app/helada.png'),
+        'inundacion': await BitmapDescriptor.fromAssetImage(
+            imageConfiguration, 'assets/app/inundacion.png'),
+        'sequia': await BitmapDescriptor.fromAssetImage(
+            imageConfiguration, 'assets/app/sequia.png'),
+        'deriva': await BitmapDescriptor.fromAssetImage(
+            imageConfiguration, 'assets/app/deriva.png'),
       };
 
       final bitmap = await BitmapDescriptor.fromAssetImage(
@@ -288,7 +304,7 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
       return Marker(
         markerId: MarkerId(model.id),
         position: model.latLng,
-        icon: _markerIcons[model.alias.toLowerCase()] ?? _markerDefault,
+        icon: _markerIcons[model.form.toLowerCase()] ?? _markerDefault,
         onTap: () {
           hideBottomSheet();
           _bottomSheetController = showBottomSheet(

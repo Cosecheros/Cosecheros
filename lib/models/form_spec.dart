@@ -1,3 +1,4 @@
+import 'package:cosecheros/login/current_user.dart';
 import 'package:cosecheros/shared/constants.dart';
 import 'package:cosecheros/shared/extensions.dart';
 import 'package:flutter/widgets.dart';
@@ -5,10 +6,16 @@ import 'package:flutter/widgets.dart';
 class FormUrl {
   String href;
   int min;
+  Map<String, bool> users;
 
   FormUrl.fromMap(Map map) {
     href = map['href'];
     min = map['min'] as int;
+    users = {
+      'ciudadano': map['ciudadano'],
+      'productor': map['productor'],
+      'centinela': map['centinela'],
+    };
   }
 }
 
@@ -34,8 +41,8 @@ class FormSpec {
 
   /*
    * Busca la mejor url del formulario.
-   * Tiene en cuenta la version minima requerida por el formulario
-   * y la version actual de la app.
+   * Tiene en cuenta la version minima requerida por el formulario,
+   * la version actual de la app, y el tipo de usuario.
    *
    * El algoritmo es el siguiente:
    *
@@ -45,7 +52,7 @@ class FormSpec {
    * 2. Si es si, la devuelvo
    * 2. Si hay muchas, elijo la última. Ya que
    *    como firebase sólo permite agregar items al final,
-   *     la última siempre va a ser la más nueva.
+   *    la última siempre va a ser la más nueva.
    * 3. Si no hay, pregunto por 4, y repito 2.
    * 4. Itero hasta la 1, si no se encontró ninguna,
    *    devuelvo null.
@@ -63,11 +70,11 @@ class FormSpec {
    * buildNumber = 1
    * min = 1? -> [] -> return null
    */
-  String getUrl() {
+  FormUrl getUrl() {
     for (int v = Constants.buildVersion; 0 < v; v--) {
-      final a = urls.where((e) => e.min == v);
+      final a = urls.where((e) => e.min == v && e.users[CurrentUser.instance.type] == true);
       if (a.isNotEmpty) {
-        return a.last.href;
+        return a.last;
       }
     }
     return null;

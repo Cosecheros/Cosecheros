@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosecheros/forms/form_manager.dart';
 import 'package:cosecheros/forms/picture/pic.dart';
 import 'package:cosecheros/forms/serializers.dart';
+import 'package:cosecheros/login/current_user.dart';
 import 'package:cosecheros/models/response_item.dart';
 import 'package:cosecheros/shared/constants.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -90,7 +91,9 @@ class SubmitFirestore {
       // así que estamos casi seguros de que tiene ese property
       'form_alias': manager.form.getProperty("name").value,
       'timestamp': FieldValue.serverTimestamp(),
-      // 'user' proximamente
+      'username': CurrentUser.instance.data.isAnonymous
+          ? null
+          : CurrentUser.instance.data.name,
       'payload': responses.map((e) => e.toJson()).toList(),
     };
 

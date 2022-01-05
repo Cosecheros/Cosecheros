@@ -1,0 +1,951 @@
+{
+	"@name": "form",
+	"id": "helada",
+	"name": "Helada",
+	"children": [
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "map",
+					"id": "geo"
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "date",
+					"id": "fecha_hora",
+					"label": "¿Cuando pasó?"
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "textField",
+					"id": "hectareas_afectada",
+					"inputType": "number",
+					"label": "Área afectada",
+					"inputLabel": "Hectáreas aproximadas"
+				},
+				{
+					"@name": "textField",
+					"id": "temperatura_minima",
+					"inputType": "number",
+					"label": "Temperatura mínima registrada",
+					"inputLabel": "En grados celsius (°C)"
+				},
+				{
+					"@name": "textField",
+					"id": "cm_sobre_suelo",
+					"inputType": "number",
+					"label": "Altura de termómetro",
+					"inputLabel": "Centímetros sobre suelo"
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "singleChoice",
+					"id": "abrigo_metereologico",
+					"label": "Abrigo metereologico",
+					"choices": [
+						{
+							"@name": "single",
+							"label": "SI"
+						},
+						{
+							"@name": "single",
+							"label": "NO"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "singleChoice",
+					"id": "tipo_cultivo",
+					"label": "Tipo de cultivo",
+					"choices": [
+						{
+							"@name": "single",
+							"label": "Extensivos"
+						},
+						{
+							"@name": "single",
+							"label": "Horticolas"
+						},
+						{
+							"@name": "single",
+							"label": "Frutales"
+						},
+						{
+							"@name": "single",
+							"label": "Pasturas"
+						},
+						{
+							"@name": "single",
+							"label": "Pastizal natural",
+							"id": "pastizal_natural"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@tipo_cultivo == \"extensivos\""
+			},
+			"children": [
+				{
+					"@name": "singleChoice",
+					"id": "cultivo_extensivos",
+					"label": "Cultivo Extensivo",
+					"choices": [
+						{
+							"@name": "single",
+							"label": "Trigo"
+						},
+						{
+							"@name": "single",
+							"label": "Garbanzo"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@tipo_cultivo == \"extensivos\""
+			},
+			"children": [
+				{
+					"@name": "singleChoice",
+					"id": "fecha_siembra_extensivos",
+					"label": "Fecha de siembra",
+					"choices": [
+						{
+							"@name": "single",
+							"label": "Temprana"
+						},
+						{
+							"@name": "single",
+							"label": "Tardía"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@tipo_cultivo == \"extensivos\""
+			},
+			"children": [
+				{
+					"@name": "singleChoice",
+					"id": "estado_fenologico_extensivo",
+					"label": "Estado fenologico cultivo extensivo",
+					"choices": [
+						{
+							"@name": "single",
+							"label": "Siembra"
+						},
+						{
+							"@name": "single",
+							"label": "Emergente"
+						},
+						{
+							"@name": "single",
+							"label": "Vegetativo"
+						},
+						{
+							"@name": "single",
+							"label": "Floración"
+						},
+						{
+							"@name": "single",
+							"label": "Llenado de grano"
+						},
+						{
+							"@name": "single",
+							"label": "Maduro"
+						},
+						{
+							"@name": "single",
+							"label": "Cosecha"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@tipo_cultivo == \"horticolas\""
+			},
+			"children": [
+				{
+					"@name": "singleChoice",
+					"id": "estado_fenologico_horticolas",
+					"label": "Estado fenologico horticolas",
+					"choices": [
+						{
+							"@name": "single",
+							"label": "Siembra/transplante",
+							"id": "siembra_transplante"
+						},
+						{
+							"@name": "single",
+							"label": "Cultivo en crecimiento"
+						},
+						{
+							"@name": "single",
+							"label": "Cultivo listo para cosecha",
+							"id": "listo_para_cosechar"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@tipo_cultivo == \"horticolas\""
+			},
+			"children": [
+				{
+					"@name": "multiChoice",
+					"id": "horticolas",
+					"label": "Horticolas: Hojas",
+					"choices": [
+						{
+							"@name": "multi",
+							"label": "Acelga"
+						},
+						{
+							"@name": "multi",
+							"label": "Achicoria"
+						},
+						{
+							"@name": "multi",
+							"label": "Apio"
+						},
+						{
+							"@name": "multi",
+							"label": "Espinaca"
+						},
+						{
+							"@name": "multi",
+							"label": "Lechuga"
+						},
+						{
+							"@name": "multi",
+							"label": "Perejil"
+						},
+						{
+							"@name": "multi",
+							"label": "Puerro"
+						},
+						{
+							"@name": "multi",
+							"label": "Rucula"
+						},
+						{
+							"@name": "multi",
+							"label": "Otro"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@tipo_cultivo == \"horticolas\""
+			},
+			"children": [
+				{
+					"@name": "multiChoice",
+					"id": "Horticolas",
+					"label": "Horticolas: Frutas",
+					"choices": [
+						{
+							"@name": "multi",
+							"label": "Arveja"
+						},
+						{
+							"@name": "multi",
+							"label": "Berenjena"
+						},
+						{
+							"@name": "multi",
+							"label": "Brocoli"
+						},
+						{
+							"@name": "multi",
+							"label": "Calabaza"
+						},
+						{
+							"@name": "multi",
+							"label": "Chaucha"
+						},
+						{
+							"@name": "multi",
+							"label": "Choclo"
+						},
+						{
+							"@name": "multi",
+							"label": "Coliflor"
+						},
+						{
+							"@name": "multi",
+							"label": "Haba"
+						},
+						{
+							"@name": "multi",
+							"label": "Melon"
+						},
+						{
+							"@name": "multi",
+							"label": "Pepino"
+						},
+						{
+							"@name": "multi",
+							"label": "Pimiento"
+						},
+						{
+							"@name": "multi",
+							"label": "Repollo"
+						},
+						{
+							"@name": "multi",
+							"label": "Sandia"
+						},
+						{
+							"@name": "multi",
+							"label": "Tomate"
+						},
+						{
+							"@name": "multi",
+							"label": "Zapallo"
+						},
+						{
+							"@name": "multi",
+							"label": "Zapallito"
+						},
+						{
+							"@name": "multi",
+							"label": "Otro"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@tipo_cultivo == \"horticolas\""
+			},
+			"children": [
+				{
+					"@name": "multiChoice",
+					"id": "horticolas",
+					"label": "Horticolas: Raíces y tubérculos",
+					"choices": [
+						{
+							"@name": "multi",
+							"label": "Ajo"
+						},
+						{
+							"@name": "multi",
+							"label": "Batata"
+						},
+						{
+							"@name": "multi",
+							"id": "horticola_cebolla_bulbo",
+							"label": "Cebolla de bulbo"
+						},
+						{
+							"@name": "multi",
+							"id": "horticola_cebolla_verdeo",
+							"label": "Cebolla de verdeo"
+						},
+						{
+							"@name": "multi",
+							"label": "Papa"
+						},
+						{
+							"@name": "multi",
+							"label": "Remolacha"
+						},
+						{
+							"@name": "multi",
+							"label": "Zanahoria"
+						},
+						{
+							"@name": "multi",
+							"label": "Otro"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@tipo_cultivo == \"frutales\""
+			},
+			"children": [
+				{
+					"@name": "multiChoice",
+					"id": "tipo_frutales",
+					"label": "Tipo frutales",
+					"choices": [
+						{
+							"@name": "multi",
+							"id": "berries",
+							"label": "Berries"
+						},
+						{
+							"@name": "multi",
+							"id": "citricos",
+							"label": "Citricos"
+						},
+						{
+							"@name": "multi",
+							"id": "carozo",
+							"label": "Frutales de Carozo"
+						},
+						{
+							"@name": "multi",
+							"id": "pepita",
+							"label": "Frutales de Pepita"
+						},
+						{
+							"@name": "multi",
+							"id": "secos",
+							"label": "Frutos secos"
+						},
+						{
+							"@name": "multi",
+							"id": "tropicales",
+							"label": "Frutos Tropicales"
+						},
+						{
+							"@name": "multi",
+							"id": "otros",
+							"label": "Otros frutos"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@tipo_cultivo == \"frutales\" && @tipo_frutales_berries.isSelected"
+			},
+			"children": [
+				{
+					"@name": "multiChoice",
+					"id": "cultivo_berries",
+					"label": "Berries",
+					"choices": [
+						{
+							"@name": "multi",
+							"id": "arandano",
+							"label": "Arandano"
+						},
+						{
+							"@name": "multi",
+							"id": "blueberry",
+							"label": "Blueberry"
+						},
+						{
+							"@name": "multi",
+							"id": "frambuesa",
+							"label": "Frambuesa"
+						},
+						{
+							"@name": "multi",
+							"id": "frutilla",
+							"label": "Frutilla"
+						},
+						{
+							"@name": "multi",
+							"id": "mora",
+							"label": "Mora"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@tipo_cultivo == \"frutales\" && @tipo_frutales_citricos.isSelected"
+			},
+			"children": [
+				{
+					"@name": "multiChoice",
+					"id": "cultivo_citricos",
+					"label": "Citricos",
+					"choices": [
+						{
+							"@name": "multi",
+							"label": "Limon"
+						},
+						{
+							"@name": "multi",
+							"label": "Mandarina"
+						},
+						{
+							"@name": "multi",
+							"label": "Naranja"
+						},
+						{
+							"@name": "multi",
+							"label": "Pomelo"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@tipo_cultivo == \"frutales\" && @tipo_frutales_citricos.isSelected"
+			},
+			"children": [
+				{
+					"@name": "singleChoice",
+					"id": "estado_fenologico_citricos",
+					"label": "Estado Fenologico Citricos",
+					"choices": [
+						{
+							"@name": "single",
+							"label": "Fruto cuajado"
+						},
+						{
+							"@name": "single",
+							"label": "Fruto rodeado de sépalos con corona",
+							"id": "fruto_rodeado_sepalos_corona"
+						},
+						{
+							"@name": "single",
+							"label": "Fruto con el 40 % de su tamaño final",
+							"id": "fruto_40_tamano"
+						},
+						{
+							"@name": "single",
+							"label": "Fruto con el 90 % de su tamaño final",
+							"id": "fruto_90_tamano"
+						},
+						{
+							"@name": "single",
+							"label": "Fruto maduro"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@tipo_cultivo == \"frutales\" && @tipo_frutales_carozo.isSelected"
+			},
+			"children": [
+				{
+					"@name": "multiChoice",
+					"id": "cultivo_carozo",
+					"label": "Frutales de carozo",
+					"choices": [
+						{
+							"@name": "multi",
+							"label": "Cereza"
+						},
+						{
+							"@name": "multi",
+							"label": "Ciruela"
+						},
+						{
+							"@name": "multi",
+							"label": "Damasco"
+						},
+						{
+							"@name": "multi",
+							"label": "Durazno"
+						},
+						{
+							"@name": "multi",
+							"label": "Guindas"
+						},
+						{
+							"@name": "multi",
+							"label": "Palto"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@tipo_cultivo == \"frutales\" && @tipo_frutales_carozo.isSelected && @cultivo_carozo_durazno.isSelected"
+			},
+			"children": [
+				{
+					"@name": "multiChoice",
+					"id": "estado_fenologico_durazno",
+					"label": "Estado Fenologico Durazno",
+					"choices": [
+						{
+							"@name": "multi",
+							"label": "Yema hinchada, cáliz y corona visible",
+							"id": "yema_hinchada_caliz_corona_visible"
+						},
+						{
+							"@name": "multi",
+							"label": "Estambres visibles"
+						},
+						{
+							"@name": "multi",
+							"label": "Flor abierta"
+						},
+						{
+							"@name": "multi",
+							"label": "Caída de pétalos y cuaje de fruto",
+							"id": "caida_petalos_cuaje_fruto"
+						},
+						{
+							"@name": "multi",
+							"label": "Fruto pequeño (desde cuaje a 2 cm de diámetro)",
+							"id": "fruto_pequeno"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@tipo_cultivo == \"frutales\" && @tipo_frutales_pepita.isSelected"
+			},
+			"children": [
+				{
+					"@name": "multiChoice",
+					"id": "cultivo_pepita",
+					"label": "Frutales de Pepita",
+					"choices": [
+						{
+							"@name": "multi",
+							"label": "Manzana"
+						},
+						{
+							"@name": "multi",
+							"label": "Pera"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@tipo_cultivo == \"frutales\" && @tipo_frutales_pepita.isSelected"
+			},
+			"children": [
+				{
+					"@name": "singleChoice",
+					"id": "estado_fenologico_pepita",
+					"label": "Estado Fenologico Frutales Pepita",
+					"choices": [
+						{
+							"@name": "single",
+							"label": "Yema cerrada/reposo invernal",
+							"id": "yema_cerrada_reposo_invernal"
+						},
+						{
+							"@name": "single",
+							"label": "Yema hinchada/desaclimatación",
+							"id": "yema_hinchada_desaclimatacion"
+						},
+						{
+							"@name": "single",
+							"label": "Desborre/desarrollo fenologico visible",
+							"id": "desborre_desarrollo_fenologico_visible"
+						},
+						{
+							"@name": "single",
+							"label": "Inicio de floración"
+						},
+						{
+							"@name": "single",
+							"label": "Plena floración (septiembre-1ºsemana octubre)",
+							"id": "plena_floracion"
+						},
+						{
+							"@name": "single",
+							"label": "Caida de petalos"
+						},
+						{
+							"@name": "single",
+							"label": "Cuaje de frutos (septiembre-octubre)",
+							"id": "cuaje_de_frutos"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@tipo_cultivo == \"frutales\" && @tipo_frutales_secos.isSelected"
+			},
+			"children": [
+				{
+					"@name": "multiChoice",
+					"id": "cultivo_secos",
+					"label": "Frutos secos",
+					"choices": [
+						{
+							"@name": "multi",
+							"label": "Avellana"
+						},
+						{
+							"@name": "multi",
+							"label": "Almendra"
+						},
+						{
+							"@name": "multi",
+							"label": "Nogal"
+						},
+						{
+							"@name": "multi",
+							"label": "Pecan"
+						},
+						{
+							"@name": "multi",
+							"label": "Pistacho"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@tipo_cultivo == \"frutales\" && @tipo_frutales_tropicales.isSelected"
+			},
+			"children": [
+				{
+					"@name": "multiChoice",
+					"id": "cultivo_tropicales",
+					"label": "Frutos tropicales",
+					"choices": [
+						{
+							"@name": "multi",
+							"label": "Anana"
+						},
+						{
+							"@name": "multi",
+							"label": "Banana"
+						},
+						{
+							"@name": "multi",
+							"label": "Mango"
+						},
+						{
+							"@name": "multi",
+							"label": "Maracuya"
+						},
+						{
+							"@name": "multi",
+							"label": "Papaya"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@tipo_cultivo == \"frutales\" && @tipo_frutales_otros.isSelected"
+			},
+			"children": [
+				{
+					"@name": "multiChoice",
+					"id": "cultivo_otros",
+					"label": "Otros frutos",
+					"choices": [
+						{
+							"@name": "multi",
+							"label": "Granada"
+						},
+						{
+							"@name": "multi",
+							"label": "Kiwi"
+						},
+						{
+							"@name": "multi",
+							"label": "Higos"
+						},
+						{
+							"@name": "multi",
+							"label": "Membrillo"
+						},
+						{
+							"@name": "multi",
+							"label": "Olivo"
+						},
+						{
+							"@name": "multi",
+							"label": "Vid"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@tipo_cultivo == \"pasturas\""
+			},
+			"children": [
+				{
+					"@name": "singleChoice",
+					"id": "pasturas_implantadas",
+					"label": "Pasturas implantadas",
+					"choices": [
+						{
+							"@name": "single",
+							"label": "Buffel grass"
+						},
+						{
+							"@name": "single",
+							"label": "Panicum"
+						},
+						{
+							"@name": "single",
+							"label": "Cenchrum"
+						},
+						{
+							"@name": "single",
+							"label": "Alfalfa"
+						},
+						{
+							"@name": "single",
+							"label": "Melilotus"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@tipo_cultivo == \"horticolas\" || @tipo_cultivo == \"frutales\""
+			},
+			"children": [
+				{
+					"@name": "singleChoice",
+					"id": "metodo_control_heladas",
+					"label": "Metodo de control de heladas",
+					"choices": [
+						{
+							"@name": "single",
+							"label": "Fuego en superficie"
+						},
+						{
+							"@name": "single",
+							"label": "Riego por aspersion"
+						},
+						{
+							"@name": "single",
+							"label": "Riego en canales"
+						},
+						{
+							"@name": "single",
+							"label": "Manta termica"
+						},
+						{
+							"@name": "single",
+							"label": "Sin método de control",
+							"id": "sin_metodo"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "singleChoice",
+					"id": "estado_cultivo",
+					"label": "Estado del cultivo después de la helada",
+					"choices": [
+						{
+							"@name": "single",
+							"label": "Muy bueno"
+						},
+						{
+							"@name": "single",
+							"label": "Bueno"
+						},
+						{
+							"@name": "single",
+							"label": "Regular"
+						},
+						{
+							"@name": "single",
+							"label": "Malo"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "textField",
+					"id": "observacion",
+					"label": "¿Alguna observación final?"
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "pic",
+					"id": "pic_helada",
+					"label": "Foto de la helada"
+				},
+				{
+					"@name": "label",
+					"value": "Recuerda:"
+				},
+				{
+					"@name": "info",
+					"title": "Titulo recomendación",
+					"subtitle": "sobre como sacar fotos",
+					"img": "https://cosecheros.web.app/info/photographer.png"
+				}
+			]
+		}
+	]
+}

@@ -199,7 +199,6 @@
         }
       ]
     },
-
     {
       "@name": "formGroup",
       "isVisible": {
@@ -361,7 +360,6 @@
             }
           ]
         }
-
       ]
     },
     {
@@ -413,9 +411,6 @@
         }
       ]
     },
-
-
-
     {
       "@name": "formGroup",
       "isVisible": {
@@ -464,7 +459,6 @@
             }
           ]
         }
-
       ]
     },
     {
@@ -505,7 +499,6 @@
             }
           ]
         }
-
       ]
     },
     {
@@ -537,7 +530,6 @@
             }
           ]
         }
-
       ]
     },
     {
@@ -576,7 +568,6 @@
             }
           ]
         }
-
       ]
     },
     {
@@ -654,10 +645,8 @@
             }
           ]
         }
-
       ]
     },
-
     {
       "@name": "formGroup",
       "isVisible": {
@@ -681,7 +670,6 @@
         }
       ]
     },
-
     {
       "@name": "formGroup",
       "isVisible": {
@@ -730,7 +718,6 @@
         }
       ]
     },
-
     {
       "@name": "formGroup",
       "isVisible": {
@@ -840,9 +827,6 @@
         }
       ]
     },
-
-
-
     {
       "@name": "formGroup",
       "isVisible": {
@@ -878,8 +862,6 @@
         }
       ]
     },
-
-
     {
       "@name": "formGroup",
       "isVisible": {
@@ -916,52 +898,48 @@
         }
       ]
     },
-
     {
-			"@name": "formGroup",
-			"children": [
-				{
-					"@name": "singleChoice",
-					"id": "estado_cultivo",
-					"label": "Estado del cultivo después de la helada",
-					"choices": [
-						{
-							"@name": "single",
-							"label": "Muy bueno"
-						},
-						{
-							"@name": "single",
-							"label": "Bueno"
-						},
-						{
-							"@name": "single",
-							"label": "Regular"
-						},
-						{
-							"@name": "single",
-							"label": "Malo"
-						}
-					]
-				}
-			]
+      "@name": "formGroup",
+      "children": [
+        {
+          "@name": "singleChoice",
+          "id": "estado_cultivo",
+          "label": "Estado del cultivo después de la helada",
+          "choices": [
+            {
+              "@name": "single",
+              "label": "Muy bueno"
+            },
+            {
+              "@name": "single",
+              "label": "Bueno"
+            },
+            {
+              "@name": "single",
+              "label": "Regular"
+            },
+            {
+              "@name": "single",
+              "label": "Malo"
+            }
+          ]
+        }
+      ]
     },
-
-
     {
-			"@name": "formGroup",
-			"children": [
-				{
-					"@name": "label",
-					"value": "¿Alguna observación final?"
-				},
-				{
-					"@name": "textField",
-					"id": "observacion",
-					"label": "Observaciones"
-				}
-			]
-		},
-
+      "@name": "formGroup",
+      "children": [
+        {
+          "@name": "label",
+          "value": "¿Alguna observación final?"
+        },
+        {
+          "@name": "textField",
+          "id": "observacion",
+          "label": "Observaciones"
+        }
+      ]
+    },
     {
       "@name": "formGroup",
       "children": [
@@ -985,7 +963,5 @@
         }
       ]
     }
-
-
   ]
 }

@@ -1,0 +1,387 @@
+{
+	"@name": "form",
+	"id": "inundacion",
+	"name": "Inundación",
+	"children": [
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "pic",
+					"id": "pic_inundacion",
+					"label": "Foto de la inundación"
+				},
+				{
+					"@name": "label",
+					"value": "Recuerda:"
+				},
+				{
+					"@name": "info",
+					"title": "Titulo recomendación",
+					"subtitle": "sobre como sacar la foto",
+					"img": "https://cosecheros.web.app/info/photographer.png"
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "map",
+					"id": "geo"
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "date",
+					"id": "fecha_hora",
+					"label": "¿Cuando pasó?"
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "multiChoice",
+					"id": "damage",
+					"label": "Daños provocados",
+					"choices": [
+						{
+							"@name": "multi",
+							"label": "Caida de árboles",
+							"id": "caida_arboles"
+						},
+						{
+							"@name": "multi",
+							"label": "Daños a la red eléctrica",
+							"id": "red_electrica"
+						},
+						{
+							"@name": "multi",
+							"label": "Voladura de techos o chapas",
+							"id": "voladura_chapas"
+						},
+						{
+							"@name": "multi",
+							"label": "Viviendas inundadas",
+							"id": "viviendas_inundadas"
+						},
+						{
+							"@name": "multi",
+							"label": "Caminos cortados por agua",
+							"id": "caminos_agua"
+						},
+						{
+							"@name": "multi",
+							"label": "Caída de postes o tejidos",
+							"id": "postes_tejidos"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@damage_caida_arboles.isSelected"
+			},
+			"children": [
+				{
+					"@name": "pic",
+					"id": "pic_caida_arboles",
+					"label": "Foto de caída de árboles"
+				},
+				{
+					"@name": "singleChoice",
+					"id": "caida_arboles_porcentaje",
+					"label": "Porcentaje de daño (árboles)",
+					"choices": [
+						{
+							"@name": "single",
+							"label": "100%"
+						},
+						{
+							"@name": "single",
+							"label": "75%"
+						},
+						{
+							"@name": "single",
+							"label": "50%"
+						},
+						{
+							"@name": "single",
+							"label": "25%"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@damage_red_electrica.isSelected"
+			},
+			"children": [
+				{
+					"@name": "pic",
+					"id": "pic_red_electrica",
+					"label": "Foto de los daños de la red eléctrica"
+				},
+				{
+					"@name": "singleChoice",
+					"id": "red_electrica_porcentaje",
+					"label": "Porcentaje de daño (red eléctrica)",
+					"choices": [
+						{
+							"@name": "single",
+							"label": "100%"
+						},
+						{
+							"@name": "single",
+							"label": "75%"
+						},
+						{
+							"@name": "single",
+							"label": "50%"
+						},
+						{
+							"@name": "single",
+							"label": "25%"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@damage_voladura_chapas.isSelected"
+			},
+			"children": [
+				{
+					"@name": "pic",
+					"id": "pic_voladura_chapas",
+					"label": "Foto de voladuras de techos o chapas"
+				},
+				{
+					"@name": "singleChoice",
+					"id": "voladura_chapas_porcentaje",
+					"label": "Porcentaje de daño (techos/chapas)",
+					"choices": [
+						{
+							"@name": "single",
+							"label": "100%"
+						},
+						{
+							"@name": "single",
+							"label": "75%"
+						},
+						{
+							"@name": "single",
+							"label": "50%"
+						},
+						{
+							"@name": "single",
+							"label": "25%"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@damage_viviendas_inundadas.isSelected"
+			},
+			"children": [
+				{
+					"@name": "pic",
+					"id": "pic_viviendas_inundadas",
+					"label": "Foto de viviendas inundadas"
+				},
+				{
+					"@name": "singleChoice",
+					"id": "viviendas_inundadas_porcentaje",
+					"label": "Porcentaje de daño (viviendas)",
+					"choices": [
+						{
+							"@name": "single",
+							"label": "100%"
+						},
+						{
+							"@name": "single",
+							"label": "75%"
+						},
+						{
+							"@name": "single",
+							"label": "50%"
+						},
+						{
+							"@name": "single",
+							"label": "25%"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@damage_caminos_agua.isSelected"
+			},
+			"children": [
+				{
+					"@name": "pic",
+					"id": "pic_caminos_agua",
+					"label": "Foto de caminos inundados"
+				},
+				{
+					"@name": "singleChoice",
+					"id": "caminos_agua_porcentaje",
+					"label": "Porcentaje de daño (caminos)",
+					"choices": [
+						{
+							"@name": "single",
+							"label": "100%"
+						},
+						{
+							"@name": "single",
+							"label": "75%"
+						},
+						{
+							"@name": "single",
+							"label": "50%"
+						},
+						{
+							"@name": "single",
+							"label": "25%"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"isVisible": {
+				"expression": "@damage_postes_tejidos.isSelected"
+			},
+			"children": [
+				{
+					"@name": "pic",
+					"id": "pic_postes_tejidos",
+					"label": "Foto de postes o tejidos caídos"
+				},
+				{
+					"@name": "singleChoice",
+					"id": "postes_tejidos_porcentaje",
+					"label": "Porcentaje de daño (postes/tejidos)",
+					"choices": [
+						{
+							"@name": "single",
+							"label": "100%"
+						},
+						{
+							"@name": "single",
+							"label": "75%"
+						},
+						{
+							"@name": "single",
+							"label": "50%"
+						},
+						{
+							"@name": "single",
+							"label": "25%"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "textField",
+					"id": "precipitacion_acumulada",
+					"inputType": "number",
+					"label": "Precipitación acumulada",
+					"inputLabel": "En milímetros, últimos 7 días",
+					"hint": ""
+				},
+				{
+					"@name": "textField",
+					"inputType": "number",
+					"id": "duracion_anegamiento",
+					"label": "Duración del anegamiento",
+					"inputLabel": "En días"
+				},
+				{
+					"@name": "textField",
+					"id": "hectareas_afectada",
+					"inputType": "number",
+					"label": "Área afectada",
+					"inputLabel": "Hectáreas aproximadas",
+					"hint": ""
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "singleChoice",
+					"id": "cantidad_agua",
+					"label": "Cantidad de agua",
+					"choices": [
+						{
+							"@name": "single",
+							"label": "Sin agua visible"
+						},
+						{
+							"@name": "single",
+							"label": "Charcos dispersos"
+						},
+						{
+							"@name": "single",
+							"label": "Cubre suela calzado"
+						},
+						{
+							"@name": "single",
+							"label": "Cubre hasta mitad calzado"
+						},
+						{
+							"@name": "single",
+							"label": "Hasta el tobillo"
+						},
+						{
+							"@name": "single",
+							"label": "Hasta mitad de pantorrilla"
+						},
+						{
+							"@name": "single",
+							"label": "Hasta la rodilla"
+						},
+						{
+							"@name": "single",
+							"label": "Entre rodilla y cintura"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "textField",
+					"id": "observacion",
+					"label": "¿Alguna cosa más?",
+					"inputLabel": "Observaciones"
+				}
+			]
+		}
+	]
+}

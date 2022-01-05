@@ -1,0 +1,75 @@
+{
+	"@name": "form",
+	"id": "helada",
+	"name": "Helada",
+	"children": [
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "map",
+					"id": "geo"
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "date",
+					"id": "fecha_hora",
+					"label": "¿Cuando pasó?"
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "textField",
+					"id": "hectareas_afectada",
+					"inputType": "number",
+					"label": "Área afectada",
+					"inputLabel": "Hectáreas aproximadas"
+				},
+				{
+					"@name": "textField",
+					"id": "temperatura_minima",
+					"inputType": "number",
+					"label": "Temperatura mínima registrada",
+					"inputLabel": "En grados celsius (°C)"
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "textField",
+					"id": "observacion",
+					"label": "¿Alguna observación final?"
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "pic",
+					"id": "pic_helada",
+					"label": "Foto de la helada"
+				},
+				{
+					"@name": "label",
+					"value": "Recuerda:"
+				},
+				{
+					"@name": "info",
+					"title": "Titulo recomendación",
+					"subtitle": "sobre como sacar fotos",
+					"img": "https://cosecheros.web.app/info/photographer.png"
+				}
+			]
+		}
+	]
+}
