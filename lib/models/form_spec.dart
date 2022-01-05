@@ -3,22 +3,6 @@ import 'package:cosecheros/shared/constants.dart';
 import 'package:cosecheros/shared/extensions.dart';
 import 'package:flutter/widgets.dart';
 
-class FormUrl {
-  String href;
-  int min;
-  Map<String, bool> users;
-
-  FormUrl.fromMap(Map map) {
-    href = map['href'];
-    min = map['min'] as int;
-    users = {
-      'ciudadano': map['ciudadano'],
-      'productor': map['productor'],
-      'centinela': map['centinela'],
-    };
-  }
-}
-
 class FormSpec {
   Color color;
   String label;
@@ -72,11 +56,28 @@ class FormSpec {
    */
   FormUrl getUrl() {
     for (int v = Constants.buildVersion; 0 < v; v--) {
-      final a = urls.where((e) => e.min == v && e.users[CurrentUser.instance.type] == true);
+      final a = urls.where(
+          (e) => e.min == v && e.users[CurrentUser.instance.type] == true);
       if (a.isNotEmpty) {
         return a.last;
       }
     }
     return null;
+  }
+}
+
+class FormUrl {
+  String href;
+  int min;
+  Map<String, bool> users;
+
+  FormUrl.fromMap(Map map) {
+    href = map['href'];
+    min = map['min'] as int;
+    users = {
+      'ciudadano': map['ciudadano'],
+      'productor': map['productor'],
+      'centinela': map['centinela'],
+    };
   }
 }

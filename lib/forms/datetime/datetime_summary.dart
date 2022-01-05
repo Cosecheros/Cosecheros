@@ -24,7 +24,11 @@ class DateTimeSummary extends SummaryWidget<model.Date> {
               SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  DateFormat.yMMMMEEEEd().addPattern("'a las'").add_Hm().format(element.value).capitalize(),
+                  DateFormat.yMMMMEEEEd()
+                      .addPattern("'a las'")
+                      .add_Hm()
+                      .format(element.value)
+                      .capitalize(),
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.onBackground,
                   ),

@@ -8,9 +8,6 @@ class TextParser<TTextField extends TextElement>
   String get name => 'textField';
 
   @override
-  FormElement getInstance() => TextElement();
-
-  @override
   void fillProperties(
     TTextField textField,
     ParserNode parserNode,
@@ -56,6 +53,9 @@ class TextParser<TTextField extends TextElement>
         isImmutable: false,
       );
   }
+
+  @override
+  FormElement getInstance() => TextElement();
 
   TextInputType getTextInputType(String textInputType) {
     TextInputType result;

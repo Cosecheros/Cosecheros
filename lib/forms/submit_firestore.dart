@@ -7,23 +7,11 @@ import 'package:cosecheros/forms/serializers.dart';
 import 'package:cosecheros/login/current_user.dart';
 import 'package:cosecheros/models/response_item.dart';
 import 'package:cosecheros/shared/constants.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:dynamic_forms/dynamic_forms.dart';
 import 'package:cosecheros/shared/extensions.dart';
+import 'package:dynamic_forms/dynamic_forms.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 enum Mode { Uploading, Indeterminate, Done, Fail }
-
-class SubmitProgress {
-  final String task;
-  final Mode mode;
-  final double progress;
-  SubmitProgress(this.task, this.mode, {this.progress});
-
-  @override
-  String toString() {
-    return "($task, $mode, $progress)";
-  }
-}
 
 class SubmitFirestore {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -119,5 +107,17 @@ class SubmitFirestore {
 
     print("ERROR: No hay serializer implementado: $element");
     return null;
+  }
+}
+
+class SubmitProgress {
+  final String task;
+  final Mode mode;
+  final double progress;
+  SubmitProgress(this.task, this.mode, {this.progress});
+
+  @override
+  String toString() {
+    return "($task, $mode, $progress)";
   }
 }

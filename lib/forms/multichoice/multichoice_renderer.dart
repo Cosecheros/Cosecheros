@@ -4,6 +4,17 @@ import 'package:flutter_dynamic_forms_components/flutter_dynamic_forms_component
     as model;
 
 class MultiChoiceRenderer extends FormElementRenderer<model.MultiSelectChoice> {
+  void changeValue(FormElementEventDispatcherFunction dispatcher,
+      model.MultiSelectChoice element) {
+    dispatcher(
+      ChangeValueEvent(
+        value: !element.isSelected,
+        elementId: element.id,
+        propertyName: model.MultiSelectChoice.isSelectedPropertyName,
+      ),
+    );
+  }
+
   BoxDecoration getDecorationBox(BuildContext context, bool value) {
     return value
         ? BoxDecoration(
@@ -22,17 +33,6 @@ class MultiChoiceRenderer extends FormElementRenderer<model.MultiSelectChoice> {
               color: Colors.transparent,
             ),
           );
-  }
-
-  void changeValue(FormElementEventDispatcherFunction dispatcher,
-      model.MultiSelectChoice element) {
-    dispatcher(
-      ChangeValueEvent(
-        value: !element.isSelected,
-        elementId: element.id,
-        propertyName: model.MultiSelectChoice.isSelectedPropertyName,
-      ),
-    );
   }
 
   @override

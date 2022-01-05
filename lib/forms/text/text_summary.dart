@@ -5,6 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class TextSummary extends SummaryWidget<TextElement> {
+  String idToTitle(id) {
+    return id.split("_")[0].capitalize() + ".";
+  }
+
   Widget render(BuildContext context, TextElement element) {
     if (element.value.isEmpty) return SizedBox.shrink();
     return Padding(
@@ -14,9 +18,5 @@ class TextSummary extends SummaryWidget<TextElement> {
         subtitle: element.value,
       ),
     );
-  }
-
-  String idToTitle(id) {
-    return id.split("_")[0].capitalize() + ".";
   }
 }

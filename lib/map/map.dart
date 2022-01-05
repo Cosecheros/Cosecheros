@@ -5,7 +5,6 @@ import 'package:cosecheros/login/current_user.dart';
 import 'package:cosecheros/models/cosecha.dart';
 import 'package:cosecheros/shared/constants.dart';
 import 'package:cosecheros/shared/helpers.dart';
-import 'package:cosecheros/shared/marker_icon_generator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -20,25 +19,15 @@ class HomeMap extends StatefulWidget {
 }
 
 class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
+  static CameraPosition initPos =
+      CameraPosition(target: LatLng(-31.416998, -64.183657), zoom: 10);
   Completer<GoogleMapController> _controller = Completer();
   String _mapStyle;
   BitmapDescriptor _markerDefault;
+
   Map<String, BitmapDescriptor> _markerIcons;
 
   PersistentBottomSheetController _bottomSheetController;
-
-  static CameraPosition initPos =
-      CameraPosition(target: LatLng(-31.416998, -64.183657), zoom: 10);
-
-  @override
-  void initState() {
-    super.initState();
-    initPosition();
-
-    rootBundle.loadString('assets/app/map_style.json').then((string) {
-      _mapStyle = string;
-    });
-  }
 
   @override
   bool get wantKeepAlive => true;
@@ -109,6 +98,9 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
     );
   }
 
+  String getInitials(String input) =>
+      input.split(' ').map((e) => e[0]).take(2).join();
+
   Widget getLogo(BuildContext context) {
     return Stack(
       children: <Widget>[
@@ -137,40 +129,37 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
     );
   }
 
-  Widget topButtons() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FloatingActionButton(
-            heroTag: null,
-            mini: true,
-            backgroundColor: Colors.white,
-            child: Icon(
-              Icons.gps_fixed,
-              color: Theme.of(context).accentColor,
-            ),
-            onPressed: () {
-              updateByCurrentPos();
-            },
-          ),
-          SizedBox(width: 4),
-          FloatingActionButton(
-            heroTag: null,
-            mini: true,
-            backgroundColor: Colors.white,
-            child: Icon(
-              Icons.face_rounded,
-              color: Theme.of(context).colorScheme.onBackground,
-            ),
-            onPressed: () {
-              showProfile();
-            },
-          ),
-        ],
-      ),
-    );
+  void hideBottomSheet() {
+    if (_bottomSheetController != null) {
+      Navigator.of(context).pop();
+      _bottomSheetController = null;
+    }
+  }
+
+  void initPosition() async {
+    var pos = await getLastPosition();
+    if (pos != null) {
+      print("initPosition: $pos");
+      // Intentamos ganarle al mapa y reescribir la posición inicial
+      initPos = CameraPosition(target: pos, zoom: 10);
+      print("initPosition: $pos: wait for map controller");
+      final GoogleMapController controller = await _controller.future;
+      print("initPosition: $pos: controller ready, move!");
+      controller.moveCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(target: pos, zoom: 10.0),
+      ));
+    }
+    updateByCurrentPos();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initPosition();
+
+    rootBundle.loadString('assets/app/map_style.json').then((string) {
+      _mapStyle = string;
+    });
   }
 
   showProfile() async {
@@ -241,8 +230,41 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
     );
   }
 
-  String getInitials(String input) =>
-      input.split(' ').map((e) => e[0]).take(2).join();
+  Widget topButtons() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton(
+            heroTag: null,
+            mini: true,
+            backgroundColor: Colors.white,
+            child: Icon(
+              Icons.gps_fixed,
+              color: Theme.of(context).accentColor,
+            ),
+            onPressed: () {
+              updateByCurrentPos();
+            },
+          ),
+          SizedBox(width: 4),
+          FloatingActionButton(
+            heroTag: null,
+            mini: true,
+            backgroundColor: Colors.white,
+            child: Icon(
+              Icons.face_rounded,
+              color: Theme.of(context).colorScheme.onBackground,
+            ),
+            onPressed: () {
+              showProfile();
+            },
+          ),
+        ],
+      ),
+    );
+  }
 
   void updateByCurrentPos() async {
     final pos = await getCurrentPosition();
@@ -253,49 +275,6 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
       controller.animateCamera(CameraUpdate.newCameraPosition(
         CameraPosition(target: pos, zoom: 12.0),
       ));
-    }
-  }
-
-  void initPosition() async {
-    var pos = await getLastPosition();
-    if (pos != null) {
-      print("initPosition: $pos");
-      // Intentamos ganarle al mapa y reescribir la posición inicial
-      initPos = CameraPosition(target: pos, zoom: 10);
-      print("initPosition: $pos: wait for map controller");
-      final GoogleMapController controller = await _controller.future;
-      print("initPosition: $pos: controller ready, move!");
-      controller.moveCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(target: pos, zoom: 10.0),
-      ));
-    }
-    updateByCurrentPos();
-  }
-
-  Future<void> _createMarkerImageFromAsset(BuildContext context) async {
-    if (_markerIcons == null) {
-      final ImageConfiguration imageConfiguration =
-          createLocalImageConfiguration(context, size: Size.square(32));
-
-      var icons = {
-        'granizada': await BitmapDescriptor.fromAssetImage(
-            imageConfiguration, 'assets/app/granizo.png'),
-        'helada': await BitmapDescriptor.fromAssetImage(
-            imageConfiguration, 'assets/app/helada.png'),
-        'inundacion': await BitmapDescriptor.fromAssetImage(
-            imageConfiguration, 'assets/app/inundacion.png'),
-        'sequia': await BitmapDescriptor.fromAssetImage(
-            imageConfiguration, 'assets/app/sequia.png'),
-        'deriva': await BitmapDescriptor.fromAssetImage(
-            imageConfiguration, 'assets/app/deriva.png'),
-      };
-
-      final bitmap = await BitmapDescriptor.fromAssetImage(
-          imageConfiguration, 'assets/app/pin.png');
-      setState(() {
-        _markerDefault = bitmap;
-        _markerIcons = icons;
-      });
     }
   }
 
@@ -331,10 +310,30 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
     }
   }
 
-  void hideBottomSheet() {
-    if (_bottomSheetController != null) {
-      Navigator.of(context).pop();
-      _bottomSheetController = null;
+  Future<void> _createMarkerImageFromAsset(BuildContext context) async {
+    if (_markerIcons == null) {
+      final ImageConfiguration imageConfiguration =
+          createLocalImageConfiguration(context, size: Size.square(32));
+
+      var icons = {
+        'granizada': await BitmapDescriptor.fromAssetImage(
+            imageConfiguration, 'assets/app/granizo.png'),
+        'helada': await BitmapDescriptor.fromAssetImage(
+            imageConfiguration, 'assets/app/helada.png'),
+        'inundacion': await BitmapDescriptor.fromAssetImage(
+            imageConfiguration, 'assets/app/inundacion.png'),
+        'sequia': await BitmapDescriptor.fromAssetImage(
+            imageConfiguration, 'assets/app/sequia.png'),
+        'deriva': await BitmapDescriptor.fromAssetImage(
+            imageConfiguration, 'assets/app/deriva.png'),
+      };
+
+      final bitmap = await BitmapDescriptor.fromAssetImage(
+          imageConfiguration, 'assets/app/pin.png');
+      setState(() {
+        _markerDefault = bitmap;
+        _markerIcons = icons;
+      });
     }
   }
 }

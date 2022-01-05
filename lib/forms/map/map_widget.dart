@@ -25,61 +25,6 @@ class MapWidgetState extends State<MapWidget>
   Completer<GoogleMapController> _controller = Completer();
   String _mapStyle;
 
-  void _animateMapTo(LatLng latLng) async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newLatLng(latLng));
-  }
-
-  void _dispatchPos(LatLng latLng) async {
-    widget.dispatcher(
-      ChangeValueEvent(
-        value: geoPosFromLatLng(latLng),
-        elementId: widget.element.id,
-        propertyName: Map.pointPropName,
-      ),
-    );
-  }
-
-  void updateByCurrentPos() async {
-    var pos = await getCurrentPosition();
-    if (pos != null) {
-      print("updateByCurrentPos: $pos: wait for map controller");
-      final GoogleMapController controller = await _controller.future;
-      print("updateByCurrentPos: $pos: controller ready, animating...");
-      controller.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(target: pos, zoom: 12.0),
-      ));
-      _dispatchPos(pos);
-    }
-  }
-
-  void initPosition() async {
-    var pos = await getLastPosition();
-    if (pos != null) {
-      print("initPosition: $pos: wait for map controller");
-      final GoogleMapController controller = await _controller.future;
-      print("initPosition: $pos: controller ready, move!");
-      controller.moveCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(target: pos, zoom: 10.0),
-      ));
-      _dispatchPos(pos);
-    }
-    updateByCurrentPos();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    if (widget.element.point == null) {
-      initPosition();
-    }
-
-    rootBundle.loadString('assets/app/map_style.json').then((string) {
-      _mapStyle = string;
-    });
-  }
-
   @override
   bool get wantKeepAlive => true;
 
@@ -137,6 +82,61 @@ class MapWidgetState extends State<MapWidget>
           ),
         )
       ],
+    );
+  }
+
+  void initPosition() async {
+    var pos = await getLastPosition();
+    if (pos != null) {
+      print("initPosition: $pos: wait for map controller");
+      final GoogleMapController controller = await _controller.future;
+      print("initPosition: $pos: controller ready, move!");
+      controller.moveCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(target: pos, zoom: 10.0),
+      ));
+      _dispatchPos(pos);
+    }
+    updateByCurrentPos();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.element.point == null) {
+      initPosition();
+    }
+
+    rootBundle.loadString('assets/app/map_style.json').then((string) {
+      _mapStyle = string;
+    });
+  }
+
+  void updateByCurrentPos() async {
+    var pos = await getCurrentPosition();
+    if (pos != null) {
+      print("updateByCurrentPos: $pos: wait for map controller");
+      final GoogleMapController controller = await _controller.future;
+      print("updateByCurrentPos: $pos: controller ready, animating...");
+      controller.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(target: pos, zoom: 12.0),
+      ));
+      _dispatchPos(pos);
+    }
+  }
+
+  void _animateMapTo(LatLng latLng) async {
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(CameraUpdate.newLatLng(latLng));
+  }
+
+  void _dispatchPos(LatLng latLng) async {
+    widget.dispatcher(
+      ChangeValueEvent(
+        value: geoPosFromLatLng(latLng),
+        elementId: widget.element.id,
+        propertyName: Map.pointPropName,
+      ),
     );
   }
 }

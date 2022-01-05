@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosecheros/cosechar/local.dart';
 import 'package:cosecheros/cosechar/online.dart';
-import 'package:cosecheros/login/current_user.dart';
 import 'package:cosecheros/map/map.dart';
 import 'package:cosecheros/models/form_spec.dart';
-import 'package:cosecheros/shared/constants.dart';
 import 'package:cosecheros/widgets/grid_icon_button.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +47,11 @@ class MainPage extends StatelessWidget {
     );
   }
 
+  Query getFormSpecs() {
+    var query = FirebaseFirestore.instance.collection("forms");
+    return query;
+  }
+
   Widget _asyncCosecharButton(BuildContext context) {
     return FutureBuilder<QuerySnapshot>(
         future: getFormSpecs().get(),
@@ -87,11 +90,6 @@ class MainPage extends StatelessWidget {
         });
   }
 
-  Query getFormSpecs() {
-    var query = FirebaseFirestore.instance.collection("forms");
-    return query;
-  }
-
   _onCosechar(BuildContext context, List<FormSpec> forms) async {
     var selected = await showDialog<String>(
         context: context,
@@ -128,7 +126,10 @@ class MainPage extends StatelessWidget {
                                 errorBuilder: (_, __, ___) =>
                                     Icon(Icons.report_rounded, size: 48),
                               ),
-                        onPressed: () => Navigator.pop(context, e.getUrl().href,),
+                        onPressed: () => Navigator.pop(
+                          context,
+                          e.getUrl().href,
+                        ),
                       ),
                     ),
                     if (kDebugMode)

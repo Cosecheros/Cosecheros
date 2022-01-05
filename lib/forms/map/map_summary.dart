@@ -6,20 +6,10 @@ import 'package:cosecheros/widgets/info_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'map.dart';
-
-class MapSummary extends SummaryWidget<Map> {
-  @override
-  Widget render(BuildContext context, Map element) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: MapInfo(element: element),
-    );
-  }
-}
 
 class MapInfo extends StatefulWidget {
   final Map element;
@@ -29,46 +19,12 @@ class MapInfo extends StatefulWidget {
   _MapInfoState createState() => _MapInfoState();
 }
 
-class _MapInfoState extends State<MapInfo> {
-  String subtitle;
-
+class MapSummary extends SummaryWidget<Map> {
   @override
-  void initState() {
-    super.initState();
-    getPlacemarks();
-  }
-
-  void getPlacemarks() async {
-    GeoPos pos = widget.element.point;
-    var places = await Geolocator().placemarkFromCoordinates(
-      pos.latitude,
-      pos.longitude,
-      localeIdentifier: 'es',
-    );
-    for (var p in places) {
-      print(p.toJson());
-    }
-    if (places.length > 0) {
-      setState(() {
-        var p = places.first;
-        subtitle = "Cerca de " +
-            (p.subLocality.isNotEmpty
-                ? p.subLocality
-                : p.locality.isNotEmpty
-                    ? p.locality
-                    : p.subAdministrativeArea.isNotEmpty
-                        ? p.subAdministrativeArea
-                        : p.name);
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return InfoItem(
-      title: "Ubicación.",
-      subtitle: "${subtitle ?? ''}",
-      childImage: MiniMapWidget(latLngFromGeoPos(widget.element.point)),
+  Widget render(BuildContext context, Map element) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: MapInfo(element: element),
     );
   }
 }
@@ -85,15 +41,6 @@ class MiniMapWidget extends StatefulWidget {
 class MiniMapWidgetState extends State<MiniMapWidget> {
   Completer<GoogleMapController> _controller = Completer();
   String _mapStyle;
-
-  @override
-  void initState() {
-    super.initState();
-
-    rootBundle.loadString('assets/app/map_style.json').then((string) {
-      _mapStyle = string;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,5 +72,58 @@ class MiniMapWidgetState extends State<MiniMapWidget> {
         },
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    rootBundle.loadString('assets/app/map_style.json').then((string) {
+      _mapStyle = string;
+    });
+  }
+}
+
+class _MapInfoState extends State<MapInfo> {
+  String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return InfoItem(
+      title: "Ubicación.",
+      subtitle: "${subtitle ?? ''}",
+      childImage: MiniMapWidget(latLngFromGeoPos(widget.element.point)),
+    );
+  }
+
+  void getPlacemarks() async {
+    GeoPos pos = widget.element.point;
+    var places = await placemarkFromCoordinates(
+      pos.latitude,
+      pos.longitude,
+      localeIdentifier: 'es',
+    );
+    for (var p in places) {
+      print(p.toJson());
+    }
+    if (places.length > 0) {
+      setState(() {
+        var p = places.first;
+        subtitle = "Cerca de " +
+            (p.subLocality.isNotEmpty
+                ? p.subLocality
+                : p.locality.isNotEmpty
+                    ? p.locality
+                    : p.subAdministrativeArea.isNotEmpty
+                        ? p.subAdministrativeArea
+                        : p.name);
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getPlacemarks();
   }
 }

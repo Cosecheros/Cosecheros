@@ -25,27 +25,6 @@ class _TextWidgetState extends State<TextWidget> {
   VoidCallback _listener;
 
   @override
-  void initState() {
-    super.initState();
-    _listener = () => widget.dispatcher(
-          ChangeValueEvent(
-            value: _controller.text,
-            elementId: widget.element.id,
-          ),
-        );
-    _controller.addListener(_listener);
-  }
-
-  @override
-  void dispose() {
-    if (_listener != null) {
-      _controller?.removeListener(_listener);
-    }
-    _controller?.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     if (_controller.text != widget.element.value) {
       _controller.text = widget.element.value;
@@ -72,7 +51,28 @@ class _TextWidgetState extends State<TextWidget> {
     );
   }
 
+  @override
+  void dispose() {
+    if (_listener != null) {
+      _controller?.removeListener(_listener);
+    }
+    _controller?.dispose();
+    super.dispose();
+  }
+
   int getMaxLines(TextInputType textInputType) {
     return textInputType == TextInputType.multiline ? null : 1;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _listener = () => widget.dispatcher(
+          ChangeValueEvent(
+            value: _controller.text,
+            elementId: widget.element.id,
+          ),
+        );
+    _controller.addListener(_listener);
   }
 }

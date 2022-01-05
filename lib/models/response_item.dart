@@ -7,10 +7,10 @@ class ResponseItem {
   ResponseItem({this.id, this.type, this.label, this.value});
 
   ResponseItem.fromJson(Map json) {
-      id = json['id'] ?? '';
-      type = json['type'] ?? '';
-      label = json['label'] ?? '';
-      value = json['value'];
+    id = json['id'] ?? '';
+    type = json['type'] ?? '';
+    label = json['label'] ?? '';
+    value = json['value'];
   }
 
   Map<String, dynamic> toJson() => {

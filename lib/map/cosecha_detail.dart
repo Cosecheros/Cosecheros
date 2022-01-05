@@ -1,16 +1,13 @@
 import 'package:cosecheros/map/details_widgets.dart';
 import 'package:cosecheros/models/cosecha.dart';
 import 'package:cosecheros/models/response_item.dart';
-import 'package:flutter/material.dart';
 import 'package:cosecheros/shared/extensions.dart';
-
+import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class CosechaDetail extends StatelessWidget {
   final Cosecha model;
   final ScrollController scrollController;
-  CosechaDetail(this.model, this.scrollController);
-
   final Map<String, DetailWidget> builders = {
     'picture': PictureDetail(),
     'single_choice': SingleChoiceDetail(),
@@ -19,6 +16,8 @@ class CosechaDetail extends StatelessWidget {
     'text': TextDetail(),
     'date': DateDetail(),
   };
+
+  CosechaDetail(this.model, this.scrollController);
 
   @override
   Widget build(BuildContext context) {
@@ -76,21 +75,6 @@ class CosechaDetail extends StatelessWidget {
     );
   }
 
-  Widget _toDetail(BuildContext context, ResponseItem item) {
-    print("_toDetail: " + item.toString());
-    DetailWidget builder = builders[item.type];
-
-    if (builder is NopeDetail) {
-      return null;
-    }
-
-    if (builder != null) {
-      return builder.render(context, item);
-    }
-    print("ERROR: No hay detail implementado: $item");
-    return Text("Otra opción: ${item.type}");
-  }
-
   Widget buildPictures(BuildContext context, List items) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -104,5 +88,20 @@ class CosechaDetail extends StatelessWidget {
     //   scrollDirection: Axis.horizontal,
     //   children: ,
     // );
+  }
+
+  Widget _toDetail(BuildContext context, ResponseItem item) {
+    print("_toDetail: " + item.toString());
+    DetailWidget builder = builders[item.type];
+
+    if (builder is NopeDetail) {
+      return null;
+    }
+
+    if (builder != null) {
+      return builder.render(context, item);
+    }
+    print("ERROR: No hay detail implementado: $item");
+    return Text("Otra opción: ${item.type}");
   }
 }

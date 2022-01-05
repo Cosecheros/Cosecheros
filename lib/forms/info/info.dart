@@ -5,24 +5,23 @@ class Info extends FormElement {
   static const String subtitlePropName = 'subtitle';
   static const String imgPropName = 'img';
 
-  Property<String> get titleProperty => properties[titlePropName];
-  set titleProperty(Property<String> value) =>
-      registerProperty(titlePropName, value);
-  String get title => titleProperty.value;
-  Stream<String> get titleChanged => titleProperty.valueChanged;
-
-
-  Property<String> get subtitleProperty => properties[subtitlePropName];
-  set subtitleProperty(Property<String> value) =>
-      registerProperty(subtitlePropName, value);
-  String get subtitle => subtitleProperty.value;
-  Stream<String> get subtitleChanged => subtitleProperty.valueChanged;
-
+  String get img => imgProperty.value;
+  Stream<String> get imgChanged => imgProperty.valueChanged;
   Property<String> get imgProperty => properties[imgPropName];
   set imgProperty(Property<String> value) =>
       registerProperty(imgPropName, value);
-  String get img => imgProperty.value;
-  Stream<String> get imgChanged => imgProperty.valueChanged;
+
+  String get subtitle => subtitleProperty.value;
+  Stream<String> get subtitleChanged => subtitleProperty.valueChanged;
+  Property<String> get subtitleProperty => properties[subtitlePropName];
+  set subtitleProperty(Property<String> value) =>
+      registerProperty(subtitlePropName, value);
+
+  String get title => titleProperty.value;
+  Stream<String> get titleChanged => titleProperty.valueChanged;
+  Property<String> get titleProperty => properties[titlePropName];
+  set titleProperty(Property<String> value) =>
+      registerProperty(titlePropName, value);
 
   @override
   FormElement getInstance() {

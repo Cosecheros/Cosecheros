@@ -1,12 +1,10 @@
 import 'package:dynamic_forms/dynamic_forms.dart';
+
 import 'map.dart';
 
 class MapParser extends FormElementParser<Map> {
   @override
   String get name => 'map';
-
-  @override
-  FormElement getInstance() => Map();
 
   @override
   void fillProperties(
@@ -24,4 +22,7 @@ class MapParser extends FormElementParser<Map> {
       isImmutable: false,
     );
   }
+
+  @override
+  FormElement getInstance() => Map();
 }

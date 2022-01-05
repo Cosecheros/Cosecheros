@@ -7,14 +7,6 @@ class OnlineForm extends StatelessWidget {
   final String url;
   OnlineForm(this.url);
 
-  Future<String> _getForm() async {
-    var file = await DefaultCacheManager().getSingleFile(url);
-    if (file == null) {
-      throw ("Falla en la descarga");
-    }
-    return file.readAsString();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,5 +14,13 @@ class OnlineForm extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       body: BaseForm(content: _getForm),
     );
+  }
+
+  Future<String> _getForm() async {
+    var file = await DefaultCacheManager().getSingleFile(url);
+    if (file == null) {
+      throw ("Falla en la descarga");
+    }
+    return file.readAsString();
   }
 }

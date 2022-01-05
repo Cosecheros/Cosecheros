@@ -1,12 +1,10 @@
 import 'package:dynamic_forms/dynamic_forms.dart';
+
 import 'pic.dart';
 
 class PictureParser extends FormElementParser<Picture> {
   @override
   String get name => 'pic';
-
-  @override
-  FormElement getInstance() => Picture();
 
   @override
   void fillProperties(
@@ -26,4 +24,7 @@ class PictureParser extends FormElementParser<Picture> {
       isImmutable: true,
     );
   }
+
+  @override
+  FormElement getInstance() => Picture();
 }

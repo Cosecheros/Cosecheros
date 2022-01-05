@@ -10,14 +10,6 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'pic.dart';
 
 class PictureSummary extends SummaryWidget<Picture> {
-  Widget render(BuildContext context, Picture element) {
-    return Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: element.path == null
-            ? emptyPic(context, element)
-            : showSelected(element));
-  }
-
   Widget emptyPic(BuildContext context, Picture element) {
     return InfoItem(
       title: element.label ?? idToTitle(element.id),
@@ -30,6 +22,14 @@ class PictureSummary extends SummaryWidget<Picture> {
         ),
       ),
     );
+  }
+
+  Widget render(BuildContext context, Picture element) {
+    return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: element.path == null
+            ? emptyPic(context, element)
+            : showSelected(element));
   }
 
   Widget showSelected(Picture element) {

@@ -17,26 +17,6 @@ class ChoiceButton extends StatelessWidget {
     @required this.onTap,
   }) : super(key: key);
 
-  BoxDecoration getDecorationBox(context) {
-    return value
-        ? BoxDecoration(
-            color: Theme.of(context).colorScheme.primaryVariant.withAlpha(12),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              width: 2,
-              color: Theme.of(context).colorScheme.primaryVariant,
-            ),
-          )
-        : BoxDecoration(
-            color: Colors.black.withOpacity(.04),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              width: 2,
-              color: Colors.transparent,
-            ),
-          );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -49,7 +29,8 @@ class ChoiceButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Flexible(child: Padding(
+            Flexible(
+                child: Padding(
               padding: const EdgeInsets.only(top: 8),
               child: icon,
             )),
@@ -96,5 +77,25 @@ class ChoiceButton extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  BoxDecoration getDecorationBox(context) {
+    return value
+        ? BoxDecoration(
+            color: Theme.of(context).colorScheme.primaryVariant.withAlpha(12),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              width: 2,
+              color: Theme.of(context).colorScheme.primaryVariant,
+            ),
+          )
+        : BoxDecoration(
+            color: Colors.black.withOpacity(.04),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              width: 2,
+              color: Colors.transparent,
+            ),
+          );
   }
 }

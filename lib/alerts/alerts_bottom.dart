@@ -10,11 +10,6 @@ class AlertsBottom extends StatefulWidget {
 
 class _AlertsBottomState extends State<AlertsBottom> {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -36,5 +31,10 @@ class _AlertsBottomState extends State<AlertsBottom> {
         Icon(Icons.notification_important_rounded)
       ],
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 }

@@ -1,18 +1,18 @@
 import 'package:cosecheros/home.dart';
-import 'package:cosecheros/login/setup_user.dart';
 import 'package:cosecheros/login/current_user.dart';
 import 'package:cosecheros/login/intro.dart';
+import 'package:cosecheros/login/setup_user.dart';
 import 'package:cosecheros/shared/constants.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:firebase_remote_config/firebase_remote_config.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter/foundation.dart' show kDebugMode;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,13 +24,13 @@ void main() async {
   runApp(MyApp());
 }
 
-enum Cosecha { test, granizo, helada }
-
-final Color primary = Color(0xFF5C92FF);
-final Color secondary = Color(0xFF32559B);
 final Color background = Color(0xFFEDF4F5);
 final Color black = Color(0xFF103940);
+final Color primary = Color(0xFF5C92FF);
 final Color red = Color(0xFFFC6063);
+final Color secondary = Color(0xFF32559B);
+
+enum Cosecha { test, granizo, helada }
 
 class MyApp extends StatelessWidget {
   @override
@@ -42,17 +42,9 @@ class MyApp extends StatelessWidget {
       supportedLocales: [const Locale('es')],
       themeMode: ThemeMode.light,
       theme: ThemeData(
-        colorScheme: ColorScheme.light(
-          primary: primary,
-          primaryVariant: secondary,
-          secondary: red,
-          background: background,
-          onBackground: black,
-        ),
         splashColor: secondary.withOpacity(0.05),
         highlightColor: secondary.withOpacity(0.05),
         primaryColor: primary,
-        accentColor: secondary,
         backgroundColor: background,
         buttonTheme: ButtonThemeData(
           buttonColor: Colors.white,
@@ -108,6 +100,13 @@ class MyApp extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(12.0)),
           ),
         ),
+        colorScheme: ColorScheme.light(
+          primary: primary,
+          primaryVariant: secondary,
+          secondary: red,
+          background: background,
+          onBackground: black,
+        ).copyWith(secondary: secondary),
       ),
       home: FutureBuilder<FirebaseApp>(
         future: setupFirebase(),
@@ -122,6 +121,33 @@ class MyApp extends StatelessWidget {
           return Container(color: background);
         },
       ),
+    );
+  }
+
+  Widget onFirebaseUp() {
+    return StreamBuilder(
+      stream: CurrentUser.instance.updates(),
+      builder: (BuildContext context, AsyncSnapshot<UserStatus> shot) {
+        print("CurrentUser update: $shot");
+        if (shot.connectionState == ConnectionState.active) {
+          switch (shot.data) {
+            case UserStatus.unlogged:
+              return Intro();
+              break;
+            case UserStatus.without_type:
+              return BeforeStart();
+              break;
+            case UserStatus.ready:
+              return MainPage();
+              break;
+            default:
+              return MainPage();
+              break;
+          }
+        }
+        print('Main >>> Cargando~');
+        return Container(color: background);
+      },
     );
   }
 
@@ -152,32 +178,5 @@ class MyApp extends StatelessWidget {
     }
 
     return app;
-  }
-
-  Widget onFirebaseUp() {
-    return StreamBuilder(
-      stream: CurrentUser.instance.updates(),
-      builder: (BuildContext context, AsyncSnapshot<UserStatus> shot) {
-        print("CurrentUser update: $shot");
-        if (shot.connectionState == ConnectionState.active) {
-          switch (shot.data) {
-            case UserStatus.unlogged:
-              return Intro();
-              break;
-            case UserStatus.without_type:
-              return BeforeStart();
-              break;
-            case UserStatus.ready:
-              return MainPage();
-              break;
-            default:
-              return MainPage();
-              break;
-          }
-        }
-        print('Main >>> Cargando~');
-        return Container(color: background);
-      },
-    );
   }
 }

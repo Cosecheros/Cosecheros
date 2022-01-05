@@ -44,8 +44,8 @@ class InfoItem extends StatelessWidget {
               Text(
                 title,
                 style: Theme.of(context).textTheme.bodyText2.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
               ..._getSubtitle(context),
             ],
@@ -53,22 +53,6 @@ class InfoItem extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  List<Widget> _getSubtitle(BuildContext context) {
-    return [
-      if (subtitle != null || childSubtitle != null) SizedBox(height: 8),
-      if (subtitle != null)
-        Text(subtitle,
-            style: Theme.of(context).textTheme.bodyText1.copyWith(
-                  color: Theme.of(context)
-                      .textTheme
-                      .bodyText1
-                      .color
-                      .withOpacity(0.8),
-                )),
-      if (childSubtitle != null) childSubtitle
-    ];
   }
 
   Widget getPicture() {
@@ -95,5 +79,21 @@ class InfoItem extends StatelessWidget {
       return childImage;
     }
     return SizedBox.shrink();
+  }
+
+  List<Widget> _getSubtitle(BuildContext context) {
+    return [
+      if (subtitle != null || childSubtitle != null) SizedBox(height: 8),
+      if (subtitle != null)
+        Text(subtitle,
+            style: Theme.of(context).textTheme.bodyText1.copyWith(
+                  color: Theme.of(context)
+                      .textTheme
+                      .bodyText1
+                      .color
+                      .withOpacity(0.8),
+                )),
+      if (childSubtitle != null) childSubtitle
+    ];
   }
 }

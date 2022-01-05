@@ -13,9 +13,9 @@ class LabelWidget extends StatelessWidget {
         text,
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.subtitle1.copyWith(
-          fontWeight: FontWeight.bold,
-          color: Theme.of(context).textTheme.subtitle1.color.withOpacity(0.8)
-        ),
+            fontWeight: FontWeight.bold,
+            color:
+                Theme.of(context).textTheme.subtitle1.color.withOpacity(0.8)),
       ),
     );
   }

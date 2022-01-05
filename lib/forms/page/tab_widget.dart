@@ -9,6 +9,9 @@ class TabWidget extends StatefulWidget {
 
   TabWidget({this.header, this.children, this.dispatcher});
 
+  @override
+  TabWidgetState createState() => TabWidgetState();
+
   static TabWidgetState of(BuildContext context) {
     assert(context != null);
     final TabWidgetState result =
@@ -16,33 +19,12 @@ class TabWidget extends StatefulWidget {
     if (result != null) return result;
     throw Exception("No se encontró un TabWidget padre.");
   }
-
-  @override
-  TabWidgetState createState() => TabWidgetState();
 }
 
 class TabWidgetState extends State<TabWidget> {
   final controller = PageController(initialPage: 0);
   int currentPage = 0;
   bool userShowSummary = false;
-
-  Future<bool> onBack() async {
-    if (!isFirst()) {
-      movePage(-1);
-      return false;
-    }
-    return true;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    controller.addListener(() {
-      setState(() {
-        userShowSummary = userShowSummary || isLast();
-      });
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,8 +81,11 @@ class TabWidgetState extends State<TabWidget> {
               child: Text(
                 widget.header,
                 style: Theme.of(context).textTheme.headline6.copyWith(
-                  color: Theme.of(context).textTheme.headline6.color.withOpacity(0.7)
-                ),
+                    color: Theme.of(context)
+                        .textTheme
+                        .headline6
+                        .color
+                        .withOpacity(0.7)),
               ),
             ),
           ),
@@ -148,8 +133,27 @@ class TabWidgetState extends State<TabWidget> {
     );
   }
 
+  @override
+  void initState() {
+    super.initState();
+    controller.addListener(() {
+      setState(() {
+        userShowSummary = userShowSummary || isLast();
+      });
+    });
+  }
+
   bool isFirst() => currentPage == 0;
+
   bool isLast() => currentPage == widget.children.length - 1;
+  void movePage(int step) {
+    print("movePage: $step");
+    controller.animateToPage(
+      currentPage + step,
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeInOut,
+    );
+  }
 
   void moveToPage(int page) {
     print("moveToPage: $page");
@@ -160,12 +164,11 @@ class TabWidgetState extends State<TabWidget> {
     );
   }
 
-  void movePage(int step) {
-    print("movePage: $step");
-    controller.animateToPage(
-      currentPage + step,
-      duration: const Duration(milliseconds: 400),
-      curve: Curves.easeInOut,
-    );
+  Future<bool> onBack() async {
+    if (!isFirst()) {
+      movePage(-1);
+      return false;
+    }
+    return true;
   }
 }

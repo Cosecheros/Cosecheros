@@ -1,5 +1,5 @@
-import 'package:flutter_dynamic_forms_components/flutter_dynamic_forms_components.dart';
 import 'package:dynamic_forms/dynamic_forms.dart';
+import 'package:flutter_dynamic_forms_components/flutter_dynamic_forms_components.dart';
 
 import 'singlechoice_group.dart';
 
@@ -9,9 +9,6 @@ class SingleChoiceGroupParser
   String get name => 'singleChoice';
 
   @override
-  FormElement getInstance() => SingleChoiceGroup();
-
-  @override
   void fillProperties(
     SingleChoiceGroup singleChoiceGroup,
     ParserNode parserNode,
@@ -19,6 +16,10 @@ class SingleChoiceGroupParser
     ElementParserFunction parser,
   ) {
     super.fillProperties(singleChoiceGroup, parserNode, parent, parser);
-    singleChoiceGroup.labelProperty = parserNode.getStringProperty(SingleChoiceGroup.labelPropertyName);
+    singleChoiceGroup.labelProperty =
+        parserNode.getStringProperty(SingleChoiceGroup.labelPropertyName);
   }
+
+  @override
+  FormElement getInstance() => SingleChoiceGroup();
 }

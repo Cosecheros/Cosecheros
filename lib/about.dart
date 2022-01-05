@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class About extends StatelessWidget {
   @override
@@ -28,18 +28,6 @@ class About extends StatelessWidget {
 }
 
 // stores ExpansionPanel state information
-class Item {
-  Item({
-    this.isExpanded = false,
-    this.header,
-    this.expanded,
-  });
-
-  bool isExpanded;
-  String header;
-  Widget expanded;
-}
-
 class AboutListWidget extends StatefulWidget {
   AboutListWidget({Key key}) : super(key: key);
 
@@ -47,12 +35,24 @@ class AboutListWidget extends StatefulWidget {
   _AboutListWidgetState createState() => _AboutListWidgetState();
 }
 
+class Item {
+  bool isExpanded;
+
+  String header;
+  Widget expanded;
+  Item({
+    this.isExpanded = false,
+    this.header,
+    this.expanded,
+  });
+}
+
 class _AboutListWidgetState extends State<AboutListWidget> {
   List<Item> _data = [
     Item(
         header: "Qué es Cosecheros",
         expanded: Text(
-          "Es un programa que posibilita la geolocalización temporal de las granizadas y la recolección y caracterización cristalográfica de granizos, a lo largo del territorio provincial, con el fin de correlacionar estos datos con la información obtenida por instrumental remoto científico y las modelizaciones disponibles.")),
+            "Es un programa que posibilita la geolocalización temporal de las granizadas y la recolección y caracterización cristalográfica de granizos, a lo largo del territorio provincial, con el fin de correlacionar estos datos con la información obtenida por instrumental remoto científico y las modelizaciones disponibles.")),
 
     Item(
         header: "Qué cosechar",
@@ -94,7 +94,7 @@ class _AboutListWidgetState extends State<AboutListWidget> {
     Item(
         header: "Qué hacemos con las fotos",
         expanded: Text(
-            "Las analizamos: a partir de las fotos podemos deducir la cantidad de granizo que cayó por unidadd de superfficie",
+          "Las analizamos: a partir de las fotos podemos deducir la cantidad de granizo que cayó por unidadd de superfficie",
           style: GoogleFonts.patrickHand(
             textStyle: TextStyle(color: Colors.black, letterSpacing: .5),
           ),
@@ -117,15 +117,6 @@ class _AboutListWidgetState extends State<AboutListWidget> {
         expanded: Text(
             'aca iria mail de cosecheros. ver como hacer para que abra gmail con destinatario cosecheros')),
   ];
-
-  static _launchYoutube() async {
-    const url = 'https://www.youtube.com/watch?v=RGY37mrk5yQ';
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -151,5 +142,14 @@ class _AboutListWidgetState extends State<AboutListWidget> {
         );
       }).toList(),
     );
+  }
+
+  static _launchYoutube() async {
+    const url = 'https://www.youtube.com/watch?v=RGY37mrk5yQ';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

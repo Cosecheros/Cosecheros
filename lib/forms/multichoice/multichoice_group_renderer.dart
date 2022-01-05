@@ -20,16 +20,14 @@ class MultiChoiceGroupRenderer extends FormElementRenderer<MultiChoiceGroup> {
         ],
       ),
       builder: (context, _) {
-        return Column(
-          children: [
-            LabelWidget(element.label),
-            SizedBox(height: 8),
-            ...element.choices
+        return Column(children: [
+          LabelWidget(element.label),
+          SizedBox(height: 8),
+          ...element.choices
               .where((c) => c.isVisible)
               .map((choice) => renderer(choice, context))
               .toList(),
-          ]
-        );
+        ]);
       },
     );
   }

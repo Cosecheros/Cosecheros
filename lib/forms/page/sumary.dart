@@ -2,8 +2,8 @@ import 'package:cosecheros/forms/checkbox/checkbox_summary.dart';
 import 'package:cosecheros/forms/datetime/datetime_summary.dart';
 import 'package:cosecheros/forms/form_manager.dart';
 import 'package:cosecheros/forms/info/info.dart';
-import 'package:cosecheros/forms/map/map_summary.dart';
 import 'package:cosecheros/forms/map/map.dart' as custom;
+import 'package:cosecheros/forms/map/map_summary.dart';
 import 'package:cosecheros/forms/multichoice/multichoice_group.dart';
 import 'package:cosecheros/forms/multichoice/multichoice_summary.dart';
 import 'package:cosecheros/forms/picture/pic.dart';
@@ -13,9 +13,9 @@ import 'package:cosecheros/forms/singlechoice/singlechoice_summary.dart';
 import 'package:cosecheros/forms/text/text.dart';
 import 'package:cosecheros/forms/text/text_summary.dart';
 import 'package:cosecheros/widgets/label_widget.dart';
+import 'package:dynamic_forms/dynamic_forms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dynamic_forms/flutter_dynamic_forms.dart';
-import 'package:dynamic_forms/dynamic_forms.dart';
 import 'package:flutter_dynamic_forms_components/flutter_dynamic_forms_components.dart'
     as model;
 
@@ -23,10 +23,6 @@ import 'tab_widget.dart';
 
 typedef BuildSummary<T extends FormElement> = Widget Function(
     BuildContext context, T element);
-
-abstract class SummaryWidget<T extends FormElement> {
-  Widget render(BuildContext context, T element);
-}
 
 class NopeSummary extends SummaryWidget {
   @override
@@ -36,6 +32,24 @@ class NopeSummary extends SummaryWidget {
 }
 
 class SumaryPage extends StatelessWidget {
+  final Map<Type, SummaryWidget> summ = {
+    Picture: PictureSummary(),
+    SingleChoiceGroup: SingleChoiceSummary(),
+    MultiChoiceGroup: MultiChoiceSummary(),
+    model.CheckBox: CheckBoxSummary(),
+    custom.Map: MapSummary(),
+    TextElement: TextSummary(),
+    model.Date: DateTimeSummary(),
+
+    //Ignore
+    model.SingleSelectChoice: NopeSummary(),
+    model.MultiSelectChoice: NopeSummary(),
+    model.Label: NopeSummary(),
+    model.FormGroup: NopeSummary(),
+    model.Form: NopeSummary(),
+    Info: NopeSummary(),
+  };
+
   @override
   Widget build(BuildContext context) {
     var manager = FormProvider.of<CustomFormManager>(context);
@@ -58,24 +72,6 @@ class SumaryPage extends StatelessWidget {
       ),
     );
   }
-
-  final Map<Type, SummaryWidget> summ = {
-    Picture: PictureSummary(),
-    SingleChoiceGroup: SingleChoiceSummary(),
-    MultiChoiceGroup: MultiChoiceSummary(),
-    model.CheckBox: CheckBoxSummary(),
-    custom.Map: MapSummary(),
-    TextElement: TextSummary(),
-    model.Date: DateTimeSummary(),
-
-    //Ignore
-    model.SingleSelectChoice: NopeSummary(),
-    model.MultiSelectChoice: NopeSummary(),
-    model.Label: NopeSummary(),
-    model.FormGroup: NopeSummary(),
-    model.Form: NopeSummary(),
-    Info: NopeSummary(),
-  };
 
   Widget _toSummary(BuildContext context, FormElement element) {
     print("_toSummary: " + element.toString());
@@ -111,4 +107,8 @@ class SumaryPage extends StatelessWidget {
     print("ERROR: No hay summary implementado: $element");
     return Text("Otra opción: $element");
   }
+}
+
+abstract class SummaryWidget<T extends FormElement> {
+  Widget render(BuildContext context, T element);
 }

@@ -1,14 +1,12 @@
-import 'package:flutter_dynamic_forms_components/flutter_dynamic_forms_components.dart';
 import 'package:dynamic_forms/dynamic_forms.dart';
+import 'package:flutter_dynamic_forms_components/flutter_dynamic_forms_components.dart';
 
 import 'multichoice_group.dart';
 
-class MultiChoiceGroupParser extends MultiSelectGroupParser<MultiChoiceGroup, MultiSelectChoice> {
+class MultiChoiceGroupParser
+    extends MultiSelectGroupParser<MultiChoiceGroup, MultiSelectChoice> {
   @override
   String get name => 'multiChoice';
-
-  @override
-  FormElement getInstance() => MultiChoiceGroup();
 
   @override
   void fillProperties(
@@ -18,6 +16,10 @@ class MultiChoiceGroupParser extends MultiSelectGroupParser<MultiChoiceGroup, Mu
     ElementParserFunction parser,
   ) {
     super.fillProperties(multiChoiceGroup, parserNode, parent, parser);
-    multiChoiceGroup.labelProperty = parserNode.getStringProperty(MultiChoiceGroup.labelPropertyName);
+    multiChoiceGroup.labelProperty =
+        parserNode.getStringProperty(MultiChoiceGroup.labelPropertyName);
   }
+
+  @override
+  FormElement getInstance() => MultiChoiceGroup();
 }

@@ -4,6 +4,15 @@ import 'package:flutter_dynamic_forms_components/flutter_dynamic_forms_component
     as model;
 
 class CheckBoxRenderer extends FormElementRenderer<model.CheckBox> {
+  void changeValue(dispatcher, element) {
+    dispatcher(
+      ChangeValueEvent(
+        value: !element.value,
+        elementId: element.id,
+      ),
+    );
+  }
+
   BoxDecoration getDecorationBox(context, value) {
     return value
         ? BoxDecoration(
@@ -22,15 +31,6 @@ class CheckBoxRenderer extends FormElementRenderer<model.CheckBox> {
               color: Colors.transparent,
             ),
           );
-  }
-
-  void changeValue(dispatcher, element) {
-    dispatcher(
-      ChangeValueEvent(
-        value: !element.value,
-        elementId: element.id,
-      ),
-    );
   }
 
   @override

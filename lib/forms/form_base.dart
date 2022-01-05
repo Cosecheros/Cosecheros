@@ -10,6 +10,7 @@ import 'package:flutter_dynamic_forms/flutter_dynamic_forms.dart';
 import 'package:flutter_dynamic_forms_components/flutter_dynamic_forms_components.dart'
     as components;
 
+import 'checkbox/checkbox_renderer.dart';
 import 'events.dart';
 import 'expressions.dart';
 import 'form_manager.dart';
@@ -22,12 +23,11 @@ import 'page/page.dart';
 import 'page/tab.dart';
 import 'picture/pic_parser.dart';
 import 'picture/pic_render.dart';
-import 'text/text_renderer.dart';
-import 'checkbox/checkbox_renderer.dart';
 import 'singlechoice/singlechoice_group_parser.dart';
 import 'singlechoice/singlechoice_group_renderer.dart';
 import 'singlechoice/singlechoice_parser.dart';
 import 'singlechoice/singlechoice_renderer.dart';
+import 'text/text_renderer.dart';
 
 typedef InitFunction = Future<String> Function();
 
@@ -46,37 +46,6 @@ class _BaseFormState extends State<BaseForm> {
   bool isLoading = true;
   Future<String> json;
   Stream<SubmitProgress> upload;
-
-  @override
-  void initState() {
-    super.initState();
-    json = widget.content();
-  }
-
-  void _onSubmit() {
-    setState(() {
-      upload = _submiter.submit(_formManager);
-    });
-  }
-
-  void _onEvent(BuildContext context, FormElementEvent event) {
-    print("_onEvent: $event");
-
-    if (event is ChangeValueEvent) {
-      print("_onEvent: elementId: ${event.elementId}, value: ${event.value}");
-      _formManager.changeValue(
-          value: event.value,
-          elementId: event.elementId,
-          propertyName: event.propertyName,
-          ignoreLastChange: event.ignoreLastChange);
-    }
-
-    if (event is DoneEvent) {
-      _onSubmit();
-    }
-  }
-
-  // TODO: Retry on error
 
   @override
   Widget build(BuildContext context) {
@@ -100,6 +69,12 @@ class _BaseFormState extends State<BaseForm> {
     );
   }
 
+  @override
+  void initState() {
+    super.initState();
+    json = widget.content();
+  }
+
   Widget _buildForm(context, snapshot) {
     if (snapshot.connectionState != ConnectionState.done) {
       return Center(child: CircularProgressIndicator());
@@ -119,48 +94,45 @@ class _BaseFormState extends State<BaseForm> {
     return Container(); // No debería suceder
   }
 
-  Widget _circularProgress(double value) {
-    return SizedBox(
-      height: 64.0,
-      width: 64.0,
-      child: CircularProgressIndicator(
-        valueColor: AlwaysStoppedAnimation<Color>(
-          Theme.of(context).colorScheme.primaryVariant,
-        ),
-        value: value,
-      ),
-    );
-  }
+  // TODO: Retry on error
 
-  Widget _doneButton() {
-    return RawMaterialButton(
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-      child: Icon(
-        Icons.done,
-        color: Colors.white,
-        size: 32.0,
+  Widget _buildFormData(BuildContext context, String data) {
+    return ParsedFormProvider(
+      create: (_) => _formManager,
+      content: data,
+      parsers: components.getDefaultParserList() +
+          [
+            SingleChoiceParser(),
+            SingleChoiceGroupParser(),
+            MultiChoiceParser(),
+            MultiChoiceGroupParser(),
+            MapParser(),
+            PictureParser(),
+            InfoParser(),
+            TextParser(),
+          ],
+      child: FormRenderer<CustomFormManager>(
+        dispatcher: (event) {
+          _onEvent(context, event);
+        },
+        renderers: components.getRenderers() +
+            [
+              TextRenderer(),
+              LabelRenderer(),
+              TabRenderer(),
+              PageRenderer(),
+              CheckBoxRenderer(),
+              SingleChoiceRenderer(),
+              SingleChoiceGroupRenderer(),
+              MultiChoiceRenderer(),
+              MultiChoiceGroupRenderer(),
+              MapRenderer(),
+              PictureRenderer(),
+              InfoRenderer(),
+              DateTimeRenderer(),
+            ],
       ),
-      shape: CircleBorder(),
-      elevation: 2.0,
-      fillColor: Theme.of(context).colorScheme.primaryVariant,
-      padding: const EdgeInsets.all(16.0),
-    );
-  }
-
-  Widget _retryButton(VoidCallback onRetry) {
-    return RawMaterialButton(
-      onPressed: onRetry,
-      child: Icon(
-        Icons.refresh_rounded,
-        color: Colors.white,
-        size: 32.0,
-      ),
-      shape: CircleBorder(),
-      elevation: 2.0,
-      fillColor: Theme.of(context).colorScheme.primaryVariant,
-      padding: const EdgeInsets.all(16.0),
+      expressionFactories: [ToUpperCaseExpression.get()],
     );
   }
 
@@ -252,43 +224,71 @@ class _BaseFormState extends State<BaseForm> {
     );
   }
 
-  Widget _buildFormData(BuildContext context, String data) {
-    return ParsedFormProvider(
-      create: (_) => _formManager,
-      content: data,
-      parsers: components.getDefaultParserList() +
-          [
-            SingleChoiceParser(),
-            SingleChoiceGroupParser(),
-            MultiChoiceParser(),
-            MultiChoiceGroupParser(),
-            MapParser(),
-            PictureParser(),
-            InfoParser(),
-            TextParser(),
-          ],
-      child: FormRenderer<CustomFormManager>(
-        dispatcher: (event) {
-          _onEvent(context, event);
-        },
-        renderers: components.getRenderers() +
-            [
-              TextRenderer(),
-              LabelRenderer(),
-              TabRenderer(),
-              PageRenderer(),
-              CheckBoxRenderer(),
-              SingleChoiceRenderer(),
-              SingleChoiceGroupRenderer(),
-              MultiChoiceRenderer(),
-              MultiChoiceGroupRenderer(),
-              MapRenderer(),
-              PictureRenderer(),
-              InfoRenderer(),
-              DateTimeRenderer(),
-            ],
+  Widget _circularProgress(double value) {
+    return SizedBox(
+      height: 64.0,
+      width: 64.0,
+      child: CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(
+          Theme.of(context).colorScheme.primaryVariant,
+        ),
+        value: value,
       ),
-      expressionFactories: [ToUpperCaseExpression.get()],
+    );
+  }
+
+  Widget _doneButton() {
+    return RawMaterialButton(
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+      child: Icon(
+        Icons.done,
+        color: Colors.white,
+        size: 32.0,
+      ),
+      shape: CircleBorder(),
+      elevation: 2.0,
+      fillColor: Theme.of(context).colorScheme.primaryVariant,
+      padding: const EdgeInsets.all(16.0),
+    );
+  }
+
+  void _onEvent(BuildContext context, FormElementEvent event) {
+    print("_onEvent: $event");
+
+    if (event is ChangeValueEvent) {
+      print("_onEvent: elementId: ${event.elementId}, value: ${event.value}");
+      _formManager.changeValue(
+          value: event.value,
+          elementId: event.elementId,
+          propertyName: event.propertyName,
+          ignoreLastChange: event.ignoreLastChange);
+    }
+
+    if (event is DoneEvent) {
+      _onSubmit();
+    }
+  }
+
+  void _onSubmit() {
+    setState(() {
+      upload = _submiter.submit(_formManager);
+    });
+  }
+
+  Widget _retryButton(VoidCallback onRetry) {
+    return RawMaterialButton(
+      onPressed: onRetry,
+      child: Icon(
+        Icons.refresh_rounded,
+        color: Colors.white,
+        size: 32.0,
+      ),
+      shape: CircleBorder(),
+      elevation: 2.0,
+      fillColor: Theme.of(context).colorScheme.primaryVariant,
+      padding: const EdgeInsets.all(16.0),
     );
   }
 }

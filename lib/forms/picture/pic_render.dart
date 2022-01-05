@@ -26,43 +26,6 @@ class PictureRenderer extends FormElementRenderer<Picture> {
     );
   }
 
-  @override
-  Widget render(
-      Picture element,
-      BuildContext context,
-      FormElementEventDispatcherFunction dispatcher,
-      FormElementRendererFunction renderer) {
-    return StreamBuilder<String>(
-      initialData: element.path,
-      stream: element.pathChanged,
-      builder: (context, snapshot) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            LabelWidget(element.label),
-            if (snapshot.data == null)
-              pickerPicWidget(
-                context: context,
-                onPicked: (value) {
-                  changeValue(element, dispatcher, value);
-                },
-              )
-            else
-              showPicWidget(
-                context: context,
-                img: File(snapshot.data),
-                onRemove: () {
-                  changeValue(element, dispatcher, null);
-                },
-              ),
-            SizedBox(height: 24),
-
-          ],
-        );
-      },
-    );
-  }
-
   Widget pickerPicWidget({BuildContext context, Function(String) onPicked}) {
     return Container(
       height: 132,
@@ -99,6 +62,42 @@ class PictureRenderer extends FormElementRenderer<Picture> {
           ],
         ),
       ),
+    );
+  }
+
+  @override
+  Widget render(
+      Picture element,
+      BuildContext context,
+      FormElementEventDispatcherFunction dispatcher,
+      FormElementRendererFunction renderer) {
+    return StreamBuilder<String>(
+      initialData: element.path,
+      stream: element.pathChanged,
+      builder: (context, snapshot) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            LabelWidget(element.label),
+            if (snapshot.data == null)
+              pickerPicWidget(
+                context: context,
+                onPicked: (value) {
+                  changeValue(element, dispatcher, value);
+                },
+              )
+            else
+              showPicWidget(
+                context: context,
+                img: File(snapshot.data),
+                onRemove: () {
+                  changeValue(element, dispatcher, null);
+                },
+              ),
+            SizedBox(height: 24),
+          ],
+        );
+      },
     );
   }
 

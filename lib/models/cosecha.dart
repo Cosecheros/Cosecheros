@@ -17,15 +17,13 @@ class Cosecha {
     // print(doc.data());
     // print("Cosecha: fromSnapshot <<<");
 
-    var data = doc.data();
-
     result.id = doc.id;
-    result.form = data['form_id'];
-    result.alias = data['form_alias'] ?? "Una cosecha";
-    result.username = data['username'] ?? "un héroe anónimo";
-    result.timestamp = data['timestamp']?.toDate() ?? DateTime.now();
+    result.form = doc.get('form_id');
+    result.alias = doc.get('form_alias') ?? "Una cosecha";
+    result.username = doc.get('username') ?? "un héroe anónimo";
+    result.timestamp = doc.get('timestamp')?.toDate() ?? DateTime.now();
 
-    final payload = data['payload'];
+    final payload = doc.get('payload');
     if (payload is List) {
       result.payload = payload.map((e) => ResponseItem.fromJson(e)).toList();
 

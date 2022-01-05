@@ -1,14 +1,25 @@
+import 'package:cosecheros/shared/extensions.dart';
 import 'package:cosecheros/widgets/label_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dynamic_forms/flutter_dynamic_forms.dart';
-import 'package:intl/intl.dart';
-import 'package:timeago/timeago.dart' as timeago;
-import 'package:cosecheros/shared/extensions.dart';
-
 import 'package:flutter_dynamic_forms_components/flutter_dynamic_forms_components.dart'
     as model;
+import 'package:intl/intl.dart';
 
 class DateTimeRenderer extends FormElementRenderer<model.Date> {
+  String formatDate(DateTime date) {
+    if (DateTime.now().isSameDate(date)) {
+      return "Hoy";
+    }
+    if (DateTime.now().subtract(Duration(days: 1)).isSameDate(date)) {
+      return "Ayer";
+    }
+    if (DateTime.now().subtract(Duration(days: 2)).isSameDate(date)) {
+      return "Antes de ayer";
+    }
+    return DateFormat("'El' EEEE d 'de' MMMM 'del' yyyy").format(date);
+  }
+
   @override
   Widget render(
       model.Date element,
@@ -118,18 +129,5 @@ class DateTimeRenderer extends FormElementRenderer<model.Date> {
         );
       },
     );
-  }
-
-  String formatDate(DateTime date) {
-    if (DateTime.now().isSameDate(date)) {
-      return "Hoy";
-    }
-    if (DateTime.now().subtract(Duration(days: 1)).isSameDate(date)) {
-      return "Ayer";
-    }
-    if (DateTime.now().subtract(Duration(days: 2)).isSameDate(date)) {
-      return "Antes de ayer";
-    }
-    return DateFormat("'El' EEEE d 'de' MMMM 'del' yyyy").format(date);
   }
 }

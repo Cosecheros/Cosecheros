@@ -44,7 +44,8 @@ class _IntroState extends State<Intro> {
                     child: Text("Iniciar con google".toUpperCase()),
                     style: ElevatedButton.styleFrom(
                       primary: Theme.of(context).colorScheme.secondary,
-                      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 40, vertical: 12),
                       shadowColor: Theme.of(context)
                           .colorScheme
                           .secondary
@@ -61,7 +62,8 @@ class _IntroState extends State<Intro> {
                     ),
                     style: TextButton.styleFrom(
                       primary: Theme.of(context).colorScheme.onBackground,
-                      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 40, vertical: 12),
                     ),
                     onPressed: signInAnon,
                   ),

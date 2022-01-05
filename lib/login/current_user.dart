@@ -2,31 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:stream_transform/stream_transform.dart';
 
-enum UserStatus { unlogged, without_type, ready }
-enum UserType { ciudadano, productor }
-
-class UserData {
-  final String name;
-  final String photo;
-  final String uid;
-  final UserType type;
-  final bool isAnonymous;
-
-  UserData({this.name, this.photo, this.uid, this.type, this.isAnonymous});
-}
-
 class CurrentUser {
-  CurrentUser._privateConstructor();
-
   static final CurrentUser instance = CurrentUser._privateConstructor();
 
   UserData data;
 
-  Stream<UserStatus> updates() {
-    return FirebaseAuth.instance
-        .authStateChanges()
-        .switchMap((event) => onStateChange(event));
-  }
+  CurrentUser._privateConstructor();
+
+  String get type => data.type.toString().split('.').last;
 
   Stream<UserStatus> onStateChange(User user) async* {
     print("onStateChange: $user");
@@ -45,7 +28,7 @@ class CurrentUser {
   UserStatus onUserDocChange(User user, DocumentSnapshot doc) {
     print("onUserDocChange: ${doc.data()}");
     if (doc.exists) {
-      if (doc.data()["type"] != null) {
+      if (doc.get("type") != null) {
         data = userDataFrom(user, doc.data());
         return UserStatus.ready;
       } else {
@@ -56,6 +39,12 @@ class CurrentUser {
       data = userDataFrom(user, null);
       return UserStatus.without_type;
     }
+  }
+
+  Stream<UserStatus> updates() {
+    return FirebaseAuth.instance
+        .authStateChanges()
+        .switchMap((event) => onStateChange(event));
   }
 
   UserData userDataFrom(User user, Map<String, dynamic> doc) {
@@ -75,6 +64,18 @@ class CurrentUser {
       isAnonymous: user?.isAnonymous,
     );
   }
-
-  String get type => data.type.toString().split('.').last;
 }
+
+class UserData {
+  final String name;
+  final String photo;
+  final String uid;
+  final UserType type;
+  final bool isAnonymous;
+
+  UserData({this.name, this.photo, this.uid, this.type, this.isAnonymous});
+}
+
+enum UserStatus { unlogged, without_type, ready }
+
+enum UserType { ciudadano, productor }

@@ -6,18 +6,18 @@ class Picture extends FormElement {
 
   String url;
 
+  String get label => labelProperty.value;
+  Stream<String> get labelChanged => labelProperty.valueChanged;
+  Property<String> get labelProperty =>
+      properties[labelPropertyName] as Property<String>;
+  set labelProperty(Property<String> value) =>
+      registerProperty(labelPropertyName, value);
+
+  String get path => pathProperty.value;
+  Stream<String> get pathChanged => pathProperty.valueChanged;
   Property<String> get pathProperty => properties[pathPropName];
   set pathProperty(Property<String> path) =>
       registerProperty(pathPropName, path);
-  String get path => pathProperty.value;
-  Stream<String> get pathChanged => pathProperty.valueChanged;
-
-  Property<String> get labelProperty => properties[labelPropertyName] as Property<String>;
-  set labelProperty(Property<String> value) =>
-      registerProperty(labelPropertyName, value);
-  String get label =>
-      labelProperty.value;
-  Stream<String> get labelChanged => labelProperty.valueChanged;
 
   @override
   FormElement getInstance() {

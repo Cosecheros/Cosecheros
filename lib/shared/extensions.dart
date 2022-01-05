@@ -1,18 +1,10 @@
 import 'package:flutter/widgets.dart';
 
-extension StringExtension on String {
-  String capitalize() {
-    return "${this[0].toUpperCase()}${this.substring(1)}";
-  }
-  String human() {
-    return this.replaceAll('_', ' ').capitalize() + ".";
-  }
-}
-
 extension DateOnlyCompare on DateTime {
   bool isSameDate(DateTime other) {
-    return this.year == other.year && this.month == other.month
-           && this.day == other.day;
+    return this.year == other.year &&
+        this.month == other.month &&
+        this.day == other.day;
   }
 }
 
@@ -32,4 +24,14 @@ extension HexColor on Color {
       '${red.toRadixString(16).padLeft(2, '0')}'
       '${green.toRadixString(16).padLeft(2, '0')}'
       '${blue.toRadixString(16).padLeft(2, '0')}';
+}
+
+extension StringExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${this.substring(1)}";
+  }
+
+  String human() {
+    return this.replaceAll('_', ' ').capitalize() + ".";
+  }
 }
