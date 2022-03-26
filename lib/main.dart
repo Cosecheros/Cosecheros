@@ -6,13 +6,15 @@ import 'package:cosecheros/shared/constants.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
-import 'package:flutter/foundation.dart' show kDebugMode;
+import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:timeago/timeago.dart' as timeago;
+
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,7 +40,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Cosecheros',
       debugShowCheckedModeBanner: false,
-      localizationsDelegates: [GlobalMaterialLocalizations.delegate],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
       supportedLocales: [const Locale('es')],
       themeMode: ThemeMode.light,
       theme: ThemeData(
@@ -102,7 +104,6 @@ class MyApp extends StatelessWidget {
         ),
         colorScheme: ColorScheme.light(
           primary: primary,
-          primaryVariant: secondary,
           secondary: red,
           background: background,
           onBackground: black,
@@ -152,7 +153,9 @@ class MyApp extends StatelessWidget {
   }
 
   Future<FirebaseApp> setupFirebase() async {
-    var app = await Firebase.initializeApp();
+    var app = await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
 
     // En un momento se usó remote config
     // Para guardar los formularios
@@ -169,12 +172,16 @@ class MyApp extends StatelessWidget {
     remoteConfig.fetchAndActivate();
     RemoteConfigValue(null, ValueSource.valueStatic);
 
-    // Pasar todos los crashes no atrapados de Flutter a Crashlitycs
-    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+    // Crashlytics no está soportado en web
+    if (!kIsWeb) {
+      // Pasar todos los crashes no atrapados de Flutter a Crashlitycs
+      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
-    // Deshabilitar los reportes de crashes si estamos en desarrollo
-    if (kDebugMode) {
-      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
+      // Deshabilitar los reportes de crashes si estamos en desarrollo
+      if (kDebugMode) {
+        await FirebaseCrashlytics.instance
+            .setCrashlyticsCollectionEnabled(false);
+      }
     }
 
     return app;

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosecheros/forms/map/map.dart';
+import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -44,6 +45,12 @@ Future<LatLng> getLastPosition() async {
 
   // Permissions are denied forever, handle appropriately.
   if (permission == LocationPermission.deniedForever) {
+    return null;
+  }
+
+  if (kIsWeb) {
+    // getLastKnownPosition no está soportado en web
+    // Pero está bueno pedir el permiso antes.
     return null;
   }
 

@@ -11,6 +11,8 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+// import 'package:google_maps_flutter_web/google_maps_flutter_web.dart';
+
 import 'cosecha_preview.dart';
 
 class HomeMap extends StatefulWidget {
