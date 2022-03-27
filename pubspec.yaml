@@ -1,6 +1,10 @@
 name: cosecheros
 description: Cosecheros de Granizo en Flutter
 
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
 # followed by an optional build number separated by a +.
@@ -11,7 +15,7 @@ description: Cosecheros de Granizo en Flutter
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 6.0+6
+version: 6.0.0+6
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -35,7 +39,7 @@ dependencies:
   cached_network_image: ^3.2.0
   flutter_cache_manager: ^3.3.0
 
-  # formaters
+  # formatters
   intl: ^0.17.0
   timeago: ^3.1.0
 
