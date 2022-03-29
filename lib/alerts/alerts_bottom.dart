@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class AlertsBottom extends StatefulWidget {
   AlertsBottom({Key key}) : super(key: key);

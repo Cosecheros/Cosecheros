@@ -16,11 +16,11 @@ class CheckBoxRenderer extends FormElementRenderer<model.CheckBox> {
   BoxDecoration getDecorationBox(context, value) {
     return value
         ? BoxDecoration(
-            color: Theme.of(context).colorScheme.primaryVariant.withAlpha(12),
+            color: Theme.of(context).colorScheme.primary.withAlpha(12),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               width: 2,
-              color: Theme.of(context).colorScheme.primaryVariant,
+              color: Theme.of(context).colorScheme.primary,
             ),
           )
         : BoxDecoration(
@@ -70,7 +70,7 @@ class CheckBoxRenderer extends FormElementRenderer<model.CheckBox> {
                                 ? FontWeight.w800
                                 : FontWeight.w500,
                             color: snapshot.data
-                                ? Theme.of(context).colorScheme.primaryVariant
+                                ? Theme.of(context).colorScheme.primary
                                 : Theme.of(context).colorScheme.onBackground),
                       ),
                     ),

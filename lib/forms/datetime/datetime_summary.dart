@@ -19,7 +19,7 @@ class DateTimeSummary extends SummaryWidget<model.Date> {
             children: [
               Icon(
                 Icons.history_rounded,
-                color: Theme.of(context).colorScheme.primaryVariant,
+                color: Theme.of(context).colorScheme.primary,
               ),
               SizedBox(width: 8),
               Expanded(

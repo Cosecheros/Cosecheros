@@ -12,7 +12,7 @@ class MultiChoiceSummary extends SummaryWidget<MultiChoiceGroup> {
         children: [
           Icon(
             Icons.check,
-            color: Theme.of(context).colorScheme.primaryVariant,
+            color: Theme.of(context).colorScheme.primary,
           ),
           SizedBox(width: 8),
           Expanded(

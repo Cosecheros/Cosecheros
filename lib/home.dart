@@ -95,26 +95,25 @@ class MainPage extends StatelessWidget {
         context: context,
         builder: (BuildContext context) {
           return Dialog(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  margin: EdgeInsets.only(top: 24),
-                  child: Text(
-                    '¿Qué vas a cosechar?',
-                    style: Theme.of(context).textTheme.headline6,
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(12),
+              child: Wrap(
+                runSpacing: 12,
+                spacing: 12,
+                alignment: WrapAlignment.center,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(top: 12),
+                    alignment: Alignment.center,
+                    child: Text(
+                      '¿Qué vas a cosechar?',
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
                   ),
-                ),
-                GridView.count(
-                  shrinkWrap: true,
-                  crossAxisCount: 2,
-                  padding: const EdgeInsets.all(16),
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                  scrollDirection: Axis.vertical,
-                  children: [
-                    ...forms.map(
-                      (e) => GridIconButton(
+                  ...forms.map(
+                    (e) => SizedBox.square(
+                      dimension: 128,
+                      child: GridIconButton(
                         title: e.label,
                         background: e.color,
                         icon: e.icon == null
@@ -132,15 +131,18 @@ class MainPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    if (kDebugMode)
-                      GridIconButton(
+                  ),
+                  if (kDebugMode)
+                    SizedBox.square(
+                      dimension: 128,
+                      child: GridIconButton(
                         title: "Local",
                         background: Colors.black87,
                         onPressed: () => Navigator.pop(context, "local"),
                       ),
-                  ],
-                ),
-              ],
+                    ),
+                ],
+              ),
             ),
           );
         });

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class GridIconButton extends StatelessWidget {
   final String title;
   final Widget icon;
   final VoidCallback onPressed;
   final Color background;
+
   const GridIconButton({
     this.title = "title",
     this.icon,
@@ -15,9 +15,11 @@ class GridIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OutlinedButton(
+    return TextButton(
       onPressed: this.onPressed,
       style: OutlinedButton.styleFrom(
+          elevation: 4,
+          shadowColor: background.withOpacity(0.4),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(12.0)),
           ),
@@ -28,12 +30,12 @@ class GridIconButton extends StatelessWidget {
         children: [
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(8),
               child: icon ?? Icon(Icons.help_outline_rounded),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(bottom: 16),
+            padding: const EdgeInsets.only(bottom: 12),
             child: Text(
               title.toUpperCase(),
               textAlign: TextAlign.center,

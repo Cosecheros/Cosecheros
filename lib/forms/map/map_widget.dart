@@ -72,7 +72,7 @@ class MapWidgetState extends State<MapWidget>
                 backgroundColor: Colors.white,
                 child: Icon(
                   Icons.gps_fixed,
-                  color: Theme.of(context).accentColor,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
                 onPressed: () {
                   updateByCurrentPos();

@@ -1,7 +1,6 @@
 import 'package:cosecheros/map/cosecha_detail.dart';
 import 'package:cosecheros/models/cosecha.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class CosechaPreview extends StatelessWidget {

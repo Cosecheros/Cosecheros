@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cosecheros/forms/picture/pic.dart';
 import 'package:cosecheros/widgets/label_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_dynamic_forms/flutter_dynamic_forms.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -31,7 +30,7 @@ class PictureRenderer extends FormElementRenderer<Picture> {
       height: 132,
       margin: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primaryVariant.withAlpha(12),
+        color: Theme.of(context).colorScheme.primary.withAlpha(12),
         borderRadius: BorderRadius.circular(12),
       ),
       child: InkWell(
@@ -50,13 +49,13 @@ class PictureRenderer extends FormElementRenderer<Picture> {
               Icons.crop_original_rounded,
               size: 32,
               color:
-                  Theme.of(context).colorScheme.primaryVariant.withOpacity(0.7),
+                  Theme.of(context).colorScheme.secondary.withOpacity(0.7),
             ),
             SizedBox(height: 8),
             Text(
               "SUBIR FOTO",
               style: Theme.of(context).textTheme.button.copyWith(
-                  color: Theme.of(context).colorScheme.primaryVariant,
+                  color: Theme.of(context).colorScheme.secondary,
                   fontWeight: FontWeight.bold),
             ),
           ],
@@ -154,7 +153,7 @@ class PictureRenderer extends FormElementRenderer<Picture> {
                   children: [
                     Icon(
                       Icons.photo_camera_rounded,
-                      color: Theme.of(context).colorScheme.primaryVariant,
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
                     const SizedBox(width: 12),
                     const Text('Tomar una con la cámara'),
@@ -183,7 +182,7 @@ class PictureRenderer extends FormElementRenderer<Picture> {
       return null;
     }
 
-    PickedFile file = await _picker.getImage(source: selected);
+    XFile file = await _picker.pickImage(source: selected);
     if (file == null) {
       return null;
     }

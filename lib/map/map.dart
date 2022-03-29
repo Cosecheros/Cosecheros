@@ -244,7 +244,7 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
             backgroundColor: Colors.white,
             child: Icon(
               Icons.gps_fixed,
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).colorScheme.primary,
             ),
             onPressed: () {
               updateByCurrentPos();

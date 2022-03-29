@@ -104,10 +104,10 @@ class MyApp extends StatelessWidget {
         ),
         colorScheme: ColorScheme.light(
           primary: primary,
-          secondary: red,
+          secondary: secondary,
           background: background,
           onBackground: black,
-        ).copyWith(secondary: secondary),
+        ),
       ),
       home: FutureBuilder<FirebaseApp>(
         future: setupFirebase(),

@@ -230,7 +230,7 @@ class _BaseFormState extends State<BaseForm> {
       width: 64.0,
       child: CircularProgressIndicator(
         valueColor: AlwaysStoppedAnimation<Color>(
-          Theme.of(context).colorScheme.primaryVariant,
+          Theme.of(context).colorScheme.secondary,
         ),
         value: value,
       ),
@@ -249,7 +249,7 @@ class _BaseFormState extends State<BaseForm> {
       ),
       shape: CircleBorder(),
       elevation: 2.0,
-      fillColor: Theme.of(context).colorScheme.primaryVariant,
+      fillColor: Theme.of(context).colorScheme.primary,
       padding: const EdgeInsets.all(16.0),
     );
   }
@@ -287,7 +287,7 @@ class _BaseFormState extends State<BaseForm> {
       ),
       shape: CircleBorder(),
       elevation: 2.0,
-      fillColor: Theme.of(context).colorScheme.primaryVariant,
+      fillColor: Theme.of(context).colorScheme.primary,
       padding: const EdgeInsets.all(16.0),
     );
   }

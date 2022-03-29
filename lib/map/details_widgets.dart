@@ -25,7 +25,7 @@ class DateDetail extends DetailWidget {
             children: [
               Icon(
                 Icons.history_rounded,
-                color: Theme.of(context).colorScheme.primaryVariant,
+                color: Theme.of(context).colorScheme.primary,
               ),
               SizedBox(width: 8),
               Expanded(
@@ -60,7 +60,7 @@ class MultiChoiceDetail extends DetailWidget {
         children: [
           Icon(
             Icons.check,
-            color: Theme.of(context).colorScheme.primaryVariant,
+            color: Theme.of(context).colorScheme.primary,
           ),
           SizedBox(width: 8),
           Expanded(
@@ -111,7 +111,7 @@ class PictureDetail extends DetailWidget {
             width: 30.0,
             child: CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(
-                Theme.of(context).colorScheme.primaryVariant,
+                Theme.of(context).colorScheme.primary,
               ),
             ),
           ),

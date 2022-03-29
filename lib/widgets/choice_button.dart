@@ -82,11 +82,11 @@ class ChoiceButton extends StatelessWidget {
   BoxDecoration getDecorationBox(context) {
     return value
         ? BoxDecoration(
-            color: Theme.of(context).colorScheme.primaryVariant.withAlpha(12),
+            color: Theme.of(context).colorScheme.primary.withAlpha(12),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               width: 2,
-              color: Theme.of(context).colorScheme.primaryVariant,
+              color: Theme.of(context).colorScheme.primary,
             ),
           )
         : BoxDecoration(

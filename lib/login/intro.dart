@@ -1,3 +1,4 @@
+import 'package:cosecheros/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -43,13 +44,10 @@ class _IntroState extends State<Intro> {
                   ElevatedButton(
                     child: Text("Iniciar con google".toUpperCase()),
                     style: ElevatedButton.styleFrom(
-                      primary: Theme.of(context).colorScheme.secondary,
+                      primary: red,
                       padding:
                           EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-                      shadowColor: Theme.of(context)
-                          .colorScheme
-                          .secondary
-                          .withOpacity(0.16),
+                      shadowColor: red.withOpacity(0.16),
                     ),
                     onPressed: signInWithGoogle,
                   ),

@@ -1,6 +1,5 @@
 import 'package:cosecheros/forms/page/tab_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_dynamic_forms/flutter_dynamic_forms.dart';
 import 'package:flutter_dynamic_forms_components/flutter_dynamic_forms_components.dart'
     as model;
@@ -11,11 +10,11 @@ class SingleChoiceRenderer
   BoxDecoration getDecorationBox(context, value) {
     return value
         ? BoxDecoration(
-            color: Theme.of(context).colorScheme.primaryVariant.withAlpha(12),
+            color: Theme.of(context).colorScheme.primary.withAlpha(12),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               width: 2,
-              color: Theme.of(context).colorScheme.primaryVariant,
+              color: Theme.of(context).colorScheme.primary,
             ),
           )
         : BoxDecoration(
@@ -67,7 +66,7 @@ class SingleChoiceRenderer
                           ? FontWeight.w800
                           : FontWeight.w500,
                       color: element.value == parent.value
-                          ? Theme.of(context).colorScheme.primaryVariant
+                          ? Theme.of(context).colorScheme.primary
                           : Theme.of(context).colorScheme.onBackground),
                 ),
               ),
