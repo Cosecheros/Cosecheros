@@ -19,12 +19,11 @@ class _BeforeStartState extends State<BeforeStart> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           child: Column(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 16),
               Text(
                 "Antes de empezar,",
                 style: Theme.of(context).textTheme.subtitle1,
@@ -34,11 +33,28 @@ class _BeforeStartState extends State<BeforeStart> {
                 child: Container(),
               ),
               Center(
-                child: LabelWidget("¿Qué tipo de cosechero eres?"),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    LabelWidget("¿Qué tipo de cosechero eres?"),
+                    Tooltip(
+                      message:
+                          "Este dato nos ayuda a ofrecerte una mejor experiencia.",
+                      triggerMode: TooltipTriggerMode.tap,
+                      child: Icon(
+                        Icons.help_outline_rounded,
+                        color: Theme.of(context).colorScheme.onBackground,
+                      ),
+                    )
+                  ],
+                ),
               ),
-              SizedBox(height: 32),
               Expanded(
-                flex: 3,
+                flex: 1,
+                child: Container(),
+              ),
+              Expanded(
+                flex: 6,
                 child: ChoiceButton(
                   value: selected == UserType.ciudadano,
                   label: "Ciudadano",
@@ -56,9 +72,12 @@ class _BeforeStartState extends State<BeforeStart> {
                   },
                 ),
               ),
-              SizedBox(height: 16),
               Expanded(
-                flex: 3,
+                flex: 1,
+                child: Container(),
+              ),
+              Expanded(
+                flex: 6,
                 child: ChoiceButton(
                   value: selected == UserType.productor,
                   label: "Productor",
@@ -80,15 +99,6 @@ class _BeforeStartState extends State<BeforeStart> {
                 flex: 1,
                 child: Container(),
               ),
-              Text(
-                "* Este dato nos ayuda a ofrecerte una mejor experiencia dentro de la app.",
-                style: Theme.of(context).textTheme.bodyText1.copyWith(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onBackground
-                        .withOpacity(0.8)),
-              ),
-              SizedBox(height: 32),
               ConstrainedBox(
                 constraints: BoxConstraints.expand(height: 56),
                 child: ElevatedButton(

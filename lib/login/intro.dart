@@ -25,50 +25,66 @@ class _IntroState extends State<Intro> {
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Column(
+              child: Row(
                 children: [
-                  Image.asset(
-                    "assets/icon-fore.png",
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                  Text(
-                    "Nuestra tierra es una granja de eventos metereológicos extremos.\n\n¡Alguien tiene que cosecharlos!",
-                    style: Theme.of(context)
-                        .textTheme
-                        .subtitle1
-                        .copyWith(fontSize: 18),
-                    textAlign: TextAlign.center,
-                  ),
-                  Expanded(child: Container()),
-                  ElevatedButton(
-                    child: Text("Iniciar con google".toUpperCase()),
-                    style: ElevatedButton.styleFrom(
-                      primary: red,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-                      shadowColor: red.withOpacity(0.16),
+                  if (MediaQuery.of(context).orientation == Orientation.landscape)
+                  Expanded(
+                    flex: 1,
+                    child: Image.asset(
+                      "assets/icon-fore.png",
+                      fit: BoxFit.cover,
                     ),
-                    onPressed: signInWithGoogle,
                   ),
-                  TextButton(
-                    child: Text(
-                      "Saltar paso".toUpperCase(),
-                      style: Theme.of(context).textTheme.button.copyWith(
-                            fontWeight: FontWeight.bold,
+                  Expanded(
+                    flex: 1,
+                    child: Column(
+                      children: [
+                        if (MediaQuery.of(context).orientation == Orientation.portrait)
+                        Image.asset(
+                          "assets/icon-fore.png",
+                          fit: BoxFit.cover,
+                        ),
+
+                        Text(
+                          "Nuestra tierra es una granja de eventos metereológicos extremos.\n\n¡Alguien tiene que cosecharlos!",
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle1
+                              .copyWith(fontSize: 18),
+                          textAlign: TextAlign.center,
+                        ),
+                        Expanded(child: Container()),
+                        ElevatedButton(
+                          child: Text("Iniciar con google".toUpperCase()),
+                          style: ElevatedButton.styleFrom(
+                            primary: red,
+                            padding:
+                                EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                            shadowColor: red.withOpacity(0.16),
                           ),
+                          onPressed: signInWithGoogle,
+                        ),
+                        TextButton(
+                          child: Text(
+                            "Saltar paso".toUpperCase(),
+                            style: Theme.of(context).textTheme.button.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                          style: TextButton.styleFrom(
+                            primary: Theme.of(context).colorScheme.onBackground,
+                            padding:
+                                EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                          ),
+                          onPressed: signInAnon,
+                        ),
+                        SizedBox(height: 16),
+                        Text(
+                          "* Si eres sentinela, debes iniciar si o si con tu cuenta de Google.",
+                          style: Theme.of(context).textTheme.caption,
+                        ),
+                      ],
                     ),
-                    style: TextButton.styleFrom(
-                      primary: Theme.of(context).colorScheme.onBackground,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-                    ),
-                    onPressed: signInAnon,
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    "* Si eres sentinela, debes iniciar si o si con tu cuenta de Google.",
-                    style: Theme.of(context).textTheme.caption,
                   ),
                 ],
               ),
