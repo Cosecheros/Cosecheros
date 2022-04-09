@@ -4,12 +4,14 @@ class MultiChoiceWidget extends StatelessWidget {
   final ValueChanged<bool> onChanged;
   final String label;
   final bool isSelected;
+  final double height;
 
   const MultiChoiceWidget({
     Key key,
     this.onChanged,
     this.label,
     this.isSelected,
+    this.height
   }) : super(key: key);
 
   @override
@@ -17,7 +19,7 @@ class MultiChoiceWidget extends StatelessWidget {
     return Container(
       decoration: getDecorationBox(context, isSelected),
       clipBehavior: Clip.antiAlias,
-      height: 80,
+      height: height,
       child: InkWell(
         onTap: () {
           onChanged(!isSelected);

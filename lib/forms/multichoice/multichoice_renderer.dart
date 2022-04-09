@@ -19,6 +19,8 @@ class MultiChoiceRenderer extends FormElementRenderer<model.MultiSelectChoice> {
             margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
             child: MultiChoiceWidget(
               label: element.label,
+              height: 80,
+              isSelected: snapshot.data,
               onChanged: (value) => dispatcher(
                 ChangeValueEvent(
                   value: value,
@@ -26,7 +28,6 @@ class MultiChoiceRenderer extends FormElementRenderer<model.MultiSelectChoice> {
                   propertyName: model.MultiSelectChoice.isSelectedPropertyName,
                 ),
               ),
-              isSelected: snapshot.data,
             ),
           );
         });
