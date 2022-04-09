@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosecheros/data/current_user.dart';
+import 'package:cosecheros/map/multichoice_dialog.dart';
 import 'package:cosecheros/map/tile_provider_wms.dart';
 import 'package:cosecheros/models/cosecha.dart';
 import 'package:cosecheros/shared/constants.dart';
@@ -116,30 +117,7 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
               myLocationEnabled: true,
               zoomControlsEnabled: false,
               initialCameraPosition: initPos,
-              tileOverlays: {
-                TileOverlay(
-                  tileOverlayId: const TileOverlayId('tile_overlay_1'),
-                  tileProvider: DebugTileProvider(),
-                  zIndex: 4,
-                ),
-                TileOverlay(
-                  tileOverlayId: const TileOverlayId('tile_overlay_4'),
-                  tileProvider: WMSTileProvider(
-                    layer: "idecor:parcelas_graf",
-                    style: "sty_parcelas_vuelos",
-                  ),
-                  zIndex: 3,
-                ),
-                TileOverlay(
-                  tileOverlayId: const TileOverlayId('tile_overlay_2'),
-                  tileProvider: WMSTileProvider(
-                    layer: "idecor:Mosaico_CBAFeb2021",
-                    style: "",
-                    format: "image/jpeg",
-                  ),
-                  zIndex: 2,
-                ),
-              },
+              tileOverlays: selectedTilesProvider,
               onMapCreated: (GoogleMapController controller) {
                 print("onMapCreated");
                 _controller.complete(controller);
@@ -210,7 +188,7 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
     String name = CurrentUser.instance.data.name?.trim() ?? "";
     String photoURL = CurrentUser.instance.data.photo;
 
-    await showDialog<String>(
+    await showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return Dialog(
@@ -305,6 +283,19 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
               showProfile();
             },
           ),
+          SizedBox(width: 4),
+          FloatingActionButton(
+            heroTag: null,
+            mini: true,
+            backgroundColor: Colors.white,
+            child: Icon(
+              Icons.layers_rounded,
+              color: Theme.of(context).colorScheme.onBackground,
+            ),
+            onPressed: () {
+              showLayerSelector();
+            },
+          ),
         ],
       ),
     );
@@ -365,6 +356,51 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
       setState(() {
         _markerDefault = bitmap;
         _markerIcons = icons;
+      });
+    }
+  }
+
+  final allTilesProviders = {
+    "Debug": TileOverlay(
+      tileOverlayId: const TileOverlayId('debug_overlay'),
+      tileProvider: DebugTileProvider(),
+      zIndex: 4,
+    ),
+    "Parcelas": TileOverlay(
+      tileOverlayId: const TileOverlayId('parcelas_overlay'),
+      tileProvider: WMSTileProvider(
+        layer: "idecor:parcelas_graf",
+        style: "sty_parcelas_vuelos",
+      ),
+      zIndex: 3,
+    ),
+    "Satelite": TileOverlay(
+      tileOverlayId: const TileOverlayId('satelite_hires_overlay'),
+      tileProvider: WMSTileProvider(
+        layer: "idecor:Mosaico_CBAFeb2021",
+        style: "",
+        format: "image/jpeg",
+      ),
+      zIndex: 2,
+    ),
+  };
+
+  Set<TileOverlay> selectedTilesProvider = {};
+
+  void showLayerSelector() async {
+    var selected = await showDialog<Set<TileOverlay>>(
+      context: context,
+      builder: (BuildContext context) {
+        return MultiChoiceDialog(
+          options: allTilesProviders,
+          selected: selectedTilesProvider,
+        );
+      },
+    );
+
+    if (selected != null) {
+      setState(() {
+        selectedTilesProvider = selected;
       });
     }
   }
