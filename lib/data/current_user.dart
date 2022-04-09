@@ -5,11 +5,15 @@ import 'package:stream_transform/stream_transform.dart';
 class CurrentUser {
   static final CurrentUser instance = CurrentUser._privateConstructor();
 
-  UserData data;
-
   CurrentUser._privateConstructor();
 
-  String get type => data.type.toString().split('.').last;
+  UserData data;
+
+  Stream<UserStatus> updates() {
+    return FirebaseAuth.instance
+        .authStateChanges()
+        .switchMap((event) => onStateChange(event));
+  }
 
   Stream<UserStatus> onStateChange(User user) async* {
     print("onStateChange: $user");
@@ -21,6 +25,8 @@ class CurrentUser {
           .collection("users")
           .doc(user.uid)
           .snapshots()
+          .distinct(
+              (eventA, eventB) => eventA.get("type") == eventB.get("type"))
           .map((event) => onUserDocChange(user, event));
     }
   }
@@ -41,12 +47,6 @@ class CurrentUser {
     }
   }
 
-  Stream<UserStatus> updates() {
-    return FirebaseAuth.instance
-        .authStateChanges()
-        .switchMap((event) => onStateChange(event));
-  }
-
   UserData userDataFrom(User user, Map<String, dynamic> doc) {
     // Pensé que eras chevere Dart
     // https://stackoverflow.com/a/44060511
@@ -64,6 +64,13 @@ class CurrentUser {
       isAnonymous: user?.isAnonymous,
     );
   }
+
+  void setUserType(UserType selected) async {
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .set({"type": selected.id()});
+  }
 }
 
 class UserData {
@@ -79,3 +86,9 @@ class UserData {
 enum UserStatus { unlogged, without_type, ready }
 
 enum UserType { ciudadano, productor }
+
+extension UserTypeToString on UserType {
+  String id() {
+    return toString().split('.').last;
+  }
+}

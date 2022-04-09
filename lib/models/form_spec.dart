@@ -1,4 +1,4 @@
-import 'package:cosecheros/login/current_user.dart';
+import 'package:cosecheros/data/current_user.dart';
 import 'package:cosecheros/shared/constants.dart';
 import 'package:cosecheros/shared/extensions.dart';
 import 'package:flutter/widgets.dart';
@@ -57,7 +57,7 @@ class FormSpec {
   FormUrl getUrl() {
     for (int v = Constants.buildVersion; 0 < v; v--) {
       final a = urls.where(
-          (e) => e.min == v && e.users[CurrentUser.instance.type] == true);
+          (e) => e.min == v && e.users[CurrentUser.instance.data.type.id()] == true);
       if (a.isNotEmpty) {
         return a.last;
       }

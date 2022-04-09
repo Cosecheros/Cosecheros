@@ -1,8 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cosecheros/login/current_user.dart';
+import 'package:cosecheros/data/current_user.dart';
 import 'package:cosecheros/widgets/choice_button.dart';
 import 'package:cosecheros/widgets/label_widget.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -104,13 +102,8 @@ class _BeforeStartState extends State<BeforeStart> {
                 child: ElevatedButton(
                   onPressed: selected == null
                       ? null
-                      : () async {
-                          await FirebaseFirestore.instance
-                              .collection("users")
-                              .doc(FirebaseAuth.instance.currentUser.uid)
-                              .set({
-                            "type": selected.toString().split('.').last
-                          });
+                      : () {
+                          CurrentUser.instance.setUserType(selected);
                         },
                   child: Text(
                     "CONFIRMAR",

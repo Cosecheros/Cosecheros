@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cosecheros/login/current_user.dart';
+import 'package:cosecheros/data/current_location.dart';
+import 'package:cosecheros/data/current_user.dart';
 import 'package:cosecheros/models/cosecha.dart';
 import 'package:cosecheros/shared/constants.dart';
 import 'package:cosecheros/shared/helpers.dart';
@@ -33,6 +34,46 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
 
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    initPosition();
+
+    rootBundle.loadString('assets/app/map_style.json').then((string) {
+      _mapStyle = string;
+    });
+  }
+
+  void initPosition() async {
+    var pos = await getLastPosition();
+    if (pos != null) {
+      print("initPosition: $pos");
+      // Intentamos ganarle al mapa y reescribir la posición inicial
+      initPos = CameraPosition(target: pos, zoom: 10);
+      print("initPosition: $pos: wait for map controller");
+      final GoogleMapController controller = await _controller.future;
+      print("initPosition: $pos: controller ready, move!");
+      controller.moveCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(target: pos, zoom: 10.0),
+      ));
+    }
+    updateByCurrentPos();
+  }
+
+  void updateByCurrentPos() async {
+    final pos = await getCurrentPosition();
+    if (pos != null) {
+      print("updateByCurrentPos: $pos: wait for map controller");
+      final GoogleMapController controller = await _controller.future;
+      print("updateByCurrentPos: $pos: controller ready, animating...");
+      controller.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(target: pos, zoom: 12.0),
+      ));
+      // Asíncronamente guardar la posición del usuario (no usar wait)
+      CurrentLocation.instance.saveUserPosition(geoPosFromLatLng(pos));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -138,32 +179,6 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
     }
   }
 
-  void initPosition() async {
-    var pos = await getLastPosition();
-    if (pos != null) {
-      print("initPosition: $pos");
-      // Intentamos ganarle al mapa y reescribir la posición inicial
-      initPos = CameraPosition(target: pos, zoom: 10);
-      print("initPosition: $pos: wait for map controller");
-      final GoogleMapController controller = await _controller.future;
-      print("initPosition: $pos: controller ready, move!");
-      controller.moveCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(target: pos, zoom: 10.0),
-      ));
-    }
-    updateByCurrentPos();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    initPosition();
-
-    rootBundle.loadString('assets/app/map_style.json').then((string) {
-      _mapStyle = string;
-    });
-  }
-
   showProfile() async {
     String name = CurrentUser.instance.data.name?.trim() ?? "";
     String photoURL = CurrentUser.instance.data.photo;
@@ -266,18 +281,6 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
         ],
       ),
     );
-  }
-
-  void updateByCurrentPos() async {
-    final pos = await getCurrentPosition();
-    if (pos != null) {
-      print("updateByCurrentPos: $pos: wait for map controller");
-      final GoogleMapController controller = await _controller.future;
-      print("updateByCurrentPos: $pos: controller ready, animating...");
-      controller.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(target: pos, zoom: 12.0),
-      ));
-    }
   }
 
   Marker _createMarker(Cosecha model) {

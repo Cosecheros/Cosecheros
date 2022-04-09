@@ -3,6 +3,7 @@ import 'package:cosecheros/widgets/label_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dynamic_forms/flutter_dynamic_forms.dart';
 
+import '../../models/geo_pos.dart';
 import 'map.dart';
 
 class MapRenderer extends FormElementRenderer<Map> {

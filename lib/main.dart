@@ -1,5 +1,5 @@
 import 'package:cosecheros/home.dart';
-import 'package:cosecheros/login/current_user.dart';
+import 'package:cosecheros/data/current_user.dart';
 import 'package:cosecheros/login/intro.dart';
 import 'package:cosecheros/login/setup_user.dart';
 import 'package:cosecheros/shared/constants.dart';

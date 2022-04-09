@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosecheros/forms/form_manager.dart';
 import 'package:cosecheros/forms/picture/pic.dart';
 import 'package:cosecheros/forms/serializers.dart';
-import 'package:cosecheros/login/current_user.dart';
+import 'package:cosecheros/data/current_user.dart';
 import 'package:cosecheros/models/response_item.dart';
 import 'package:cosecheros/shared/constants.dart';
 import 'package:cosecheros/shared/extensions.dart';
@@ -105,7 +105,7 @@ class SubmitFirestore {
       return builder.serialize(element);
     }
 
-    print("ERROR: No hay serializer implementado: $element");
+    print("ERROR: No serializer implemented for: $element");
     return null;
   }
 }

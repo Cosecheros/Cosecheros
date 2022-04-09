@@ -1,14 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cosecheros/forms/map/map.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../models/geo_pos.dart';
+
 GeoPoint geoPoinFromGeoPos(GeoPos pos) => GeoPoint(pos.latitude, pos.longitude);
+
 GeoPos geoPosFromLatLng(LatLng latLng) =>
     GeoPos(latLng.latitude, latLng.longitude);
 
 GeoPos geoPosFromPosition(Position pos) => GeoPos(pos.latitude, pos.longitude);
+
+LatLng latLngFromGeoPos(GeoPos pos) => LatLng(pos.latitude, pos.longitude);
+
+LatLng latLngFromPosition(Position pos) => LatLng(pos.latitude, pos.longitude);
+
 Future<LatLng> getCurrentPosition() async {
   var pos = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high);
@@ -18,7 +25,6 @@ Future<LatLng> getCurrentPosition() async {
   }
   return null;
 }
-// LatLng latLngFromPosition(Position pos) => LatLng(pos.latitude, pos.longitude);
 
 Future<LatLng> getLastPosition() async {
   // Test if location services are enabled.
@@ -61,7 +67,3 @@ Future<LatLng> getLastPosition() async {
 
   return latLngFromPosition(pos);
 }
-
-LatLng latLngFromGeoPos(GeoPos pos) => LatLng(pos.latitude, pos.longitude);
-
-LatLng latLngFromPosition(Position pos) => LatLng(pos.latitude, pos.longitude);

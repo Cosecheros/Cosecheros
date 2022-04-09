@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dynamic_forms/flutter_dynamic_forms.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../models/geo_pos.dart';
 import 'map.dart';
 
 class MapWidget extends StatefulWidget {

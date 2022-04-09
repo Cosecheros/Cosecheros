@@ -9,6 +9,7 @@ import 'package:flutter/widgets.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../models/geo_pos.dart';
 import 'map.dart';
 
 class MapInfo extends StatefulWidget {
