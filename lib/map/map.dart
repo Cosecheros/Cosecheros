@@ -1,18 +1,16 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cosecheros/data/current_location.dart';
 import 'package:cosecheros/data/current_user.dart';
 import 'package:cosecheros/models/cosecha.dart';
 import 'package:cosecheros/shared/constants.dart';
 import 'package:cosecheros/shared/helpers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-// import 'package:google_maps_flutter_web/google_maps_flutter_web.dart';
 
 import 'cosecha_preview.dart';
 
@@ -39,7 +37,8 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
   void initState() {
     super.initState();
     initPosition();
-
+    setupToken();
+    
     rootBundle.loadString('assets/app/map_style.json').then((string) {
       _mapStyle = string;
     });
@@ -71,8 +70,19 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
         CameraPosition(target: pos, zoom: 12.0),
       ));
       // Asíncronamente guardar la posición del usuario (no usar wait)
-      CurrentLocation.instance.saveUserPosition(geoPosFromLatLng(pos));
+      CurrentUser.instance.savePosition(geoPosFromLatLng(pos));
     }
+  }
+
+  Future<void> setupToken() async {
+    // Get the token each time the application loads
+    String token = await FirebaseMessaging.instance.getToken();
+
+    // Save the initial token to the database
+    await CurrentUser.instance.saveToken(token);
+
+    // Any time the token refreshes, store this in the database too.
+    FirebaseMessaging.instance.onTokenRefresh.listen(CurrentUser.instance.saveToken);
   }
 
   @override

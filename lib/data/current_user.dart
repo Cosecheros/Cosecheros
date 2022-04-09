@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cosecheros/models/geo_pos.dart';
+import 'package:cosecheros/shared/helpers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:stream_transform/stream_transform.dart';
 
@@ -65,11 +67,38 @@ class CurrentUser {
     );
   }
 
-  void setUserType(UserType selected) async {
+  Future<void> saveType(UserType selected) async {
+    print("setUserType: $selected");
     await FirebaseFirestore.instance
         .collection("users")
         .doc(FirebaseAuth.instance.currentUser.uid)
         .set({"type": selected.id()});
+  }
+
+  Future<void> savePosition(GeoPos pos) async {
+    print("saveUserPosition: $pos");
+    var update = {
+      "position": {
+        "pos": geoPoinFromGeoPos(pos),
+        "timestamp": DateTime.now(),
+      }
+    };
+
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .set(update, SetOptions(merge: true));
+  }
+
+  Future<void> saveToken(String token) async {
+    print("saveToken: $token");
+    var update = {
+      'tokens': FieldValue.arrayUnion([token])
+    };
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .update(update);
   }
 }
 

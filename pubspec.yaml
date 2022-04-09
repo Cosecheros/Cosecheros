@@ -64,6 +64,7 @@ dependencies:
   # forms
   flutter_dynamic_forms: ^1.0.0
   flutter_dynamic_forms_components: ^1.0.0
+  firebase_messaging: ^11.2.12
 
 flutter_icons:
   android: true

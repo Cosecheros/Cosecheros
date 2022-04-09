@@ -103,7 +103,7 @@ class _BeforeStartState extends State<BeforeStart> {
                   onPressed: selected == null
                       ? null
                       : () {
-                          CurrentUser.instance.setUserType(selected);
+                          CurrentUser.instance.saveType(selected);
                         },
                   child: Text(
                     "CONFIRMAR",
