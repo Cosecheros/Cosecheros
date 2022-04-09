@@ -2,17 +2,18 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosecheros/data/current_user.dart';
+import 'package:cosecheros/map/tile_provider_wms.dart';
 import 'package:cosecheros/models/cosecha.dart';
 import 'package:cosecheros/shared/constants.dart';
 import 'package:cosecheros/shared/helpers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'cosecha_preview.dart';
+import 'tile_provider_debug.dart';
 
 class HomeMap extends StatefulWidget {
   @override
@@ -20,8 +21,11 @@ class HomeMap extends StatefulWidget {
 }
 
 class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
-  static CameraPosition initPos =
-      CameraPosition(target: LatLng(-31.416998, -64.183657), zoom: 10);
+  static CameraPosition initPos = CameraPosition(
+    target: LatLng(-31.416998, -64.183657),
+    zoom: 10,
+  );
+
   Completer<GoogleMapController> _controller = Completer();
   String _mapStyle;
   BitmapDescriptor _markerDefault;
@@ -37,8 +41,8 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
   void initState() {
     super.initState();
     initPosition();
-    setupToken();
-    
+    CurrentUser.instance.setupToken();
+
     rootBundle.loadString('assets/app/map_style.json').then((string) {
       _mapStyle = string;
     });
@@ -72,17 +76,6 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
       // Asíncronamente guardar la posición del usuario (no usar wait)
       CurrentUser.instance.savePosition(geoPosFromLatLng(pos));
     }
-  }
-
-  Future<void> setupToken() async {
-    // Get the token each time the application loads
-    String token = await FirebaseMessaging.instance.getToken();
-
-    // Save the initial token to the database
-    await CurrentUser.instance.saveToken(token);
-
-    // Any time the token refreshes, store this in the database too.
-    FirebaseMessaging.instance.onTokenRefresh.listen(CurrentUser.instance.saveToken);
   }
 
   @override
@@ -123,6 +116,30 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
               myLocationEnabled: true,
               zoomControlsEnabled: false,
               initialCameraPosition: initPos,
+              tileOverlays: {
+                TileOverlay(
+                  tileOverlayId: const TileOverlayId('tile_overlay_1'),
+                  tileProvider: DebugTileProvider(),
+                  zIndex: 4,
+                ),
+                TileOverlay(
+                  tileOverlayId: const TileOverlayId('tile_overlay_4'),
+                  tileProvider: WMSTileProvider(
+                    layer: "idecor:parcelas_graf",
+                    style: "sty_parcelas_vuelos",
+                  ),
+                  zIndex: 3,
+                ),
+                TileOverlay(
+                  tileOverlayId: const TileOverlayId('tile_overlay_2'),
+                  tileProvider: WMSTileProvider(
+                    layer: "idecor:Mosaico_CBAFeb2021",
+                    style: "",
+                    format: "image/jpeg",
+                  ),
+                  zIndex: 2,
+                ),
+              },
               onMapCreated: (GoogleMapController controller) {
                 print("onMapCreated");
                 _controller.complete(controller);

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosecheros/models/geo_pos.dart';
 import 'package:cosecheros/shared/helpers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 class CurrentUser {
@@ -90,7 +91,19 @@ class CurrentUser {
         .set(update, SetOptions(merge: true));
   }
 
-  Future<void> saveToken(String token) async {
+  Future<void> setupToken() async {
+    // Get the token each time the application loads
+    String token = await FirebaseMessaging.instance.getToken();
+
+    // Save the initial token to the database
+    await _saveToken(token);
+
+    // Any time the token refreshes, store this in the database too.
+    FirebaseMessaging.instance.onTokenRefresh
+        .listen(_saveToken);
+  }
+  
+  Future<void> _saveToken(String token) async {
     print("saveToken: $token");
     var update = {
       'tokens': FieldValue.arrayUnion([token])

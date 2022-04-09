@@ -57,6 +57,7 @@ dependencies:
   firebase_analytics: ^9.0.4
   firebase_remote_config: ^1.0.3
   firebase_crashlytics: ^2.4.4
+  firebase_messaging: ^11.2.12
 
   # login
   google_sign_in: ^5.2.1
@@ -64,7 +65,6 @@ dependencies:
   # forms
   flutter_dynamic_forms: ^1.0.0
   flutter_dynamic_forms_components: ^1.0.0
-  firebase_messaging: ^11.2.12
 
 flutter_icons:
   android: true
