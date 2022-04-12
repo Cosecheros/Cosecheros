@@ -1,0 +1,172 @@
+{
+	"@name": "form",
+	"id": "deriva",
+	"name": "Deriva",
+	"children": [
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "map",
+					"id": "geo"
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "singleChoice",
+					"id": "percibio_ultima_semana",
+					"label": "¿Percibió la última semana en esta ubicación deriva de plaguicidas?",
+					"choices": [
+						{
+							"@name": "single",
+							"label": "SI"
+						},
+						{
+							"@name": "single",
+							"label": "NO"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "singleChoice",
+					"id": "alertado_deriva_daños",
+					"label": "Usted fue alertado de la deriva por daños en cultivos por:",
+					"choices": [
+						{
+							"@name": "single",
+							"label": "Daño parcial del lote",
+							"id": "daño_parcial"
+						},
+						{
+							"@name": "single",
+							"label": "Daño total del lote",
+							"id": "daño_total"
+						},
+						{
+							"@name": "single",
+							"label": "No he observado daño en cultivos",
+							"id": "sin_daños"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "multiChoice",
+					"id": "alertado_deriva_daños",
+					"label": "Usted fue alertado de la deriva por percibir señales en su cuerpo:",
+					"choices": [
+						{
+							"@name": "multi",
+							"label": "No he percibido",
+							"id": "no_percibido"
+						},
+						{
+							"@name": "multi",
+							"label": "Si, he tenido irritación, ardor o picazón de piel, nariz, ojos",
+							"id": "irritacion_ardor_picazon"
+						},
+						{
+							"@name": "multi",
+							"label": "Si, he tenido dolor de cabeza",
+							"id": "dolor_cabeza"
+						},
+						{
+							"@name": "multi",
+							"label": "Si, he tenido visión borrosa, convulsiones",
+							"id": "vision_borrosa_convulsiones"
+						},
+						{
+							"@name": "multi",
+							"label": "Si, he tenido náuseas, vómitos",
+							"id": "nauseas_vomitos"
+						},
+						{
+							"@name": "multi",
+							"label": "Si, me sentí mal y consulté al médico",
+							"id": "consulte_medico"
+						},
+						{
+							"@name": "multi",
+							"label": "Si, me sentí enferma/o y fui hospitalizada/o",
+							"id": "enfermo_hospitalizado"
+						}
+					]
+				}
+			]
+		},
+		{
+			"@name": "formGroup",
+			"children": [
+				{
+					"@name": "multiChoice",
+					"id": "despues_ultima_aplicacion",
+					"label": "¿Después de la última aplicación y/o manipulación de plaguicidas ha sentido alguna manifestación en su salud?",
+					"choices": [
+            {
+							"@name": "multi",
+							"label": "No aplico ni manipulo plaguicidas",
+							"id": "no_usa_plaguicidas"
+						},
+						{
+							"@name": "multi",
+							"label": "No he sentido",
+							"id": "no_sentido"
+						},
+						{
+							"@name": "multi",
+							"label": "Si, he tenido irritación, ardor o picazón de piel, nariz, ojos",
+							"id": "irritacion_ardor_picazon"
+						},
+						{
+							"@name": "multi",
+							"label": "Si, he tenido dolor de cabeza",
+							"id": "dolor_cabeza"
+						},
+						{
+							"@name": "multi",
+							"label": "Si, he tenido sensación excesiva de nerviosismo o depresión, falta de concentración, pérdida de memoria",
+							"id": "nerviosismo_depresion"
+						},
+						{
+							"@name": "multi",
+							"label": "Si, he tenido visión borrosa, convulsiones",
+							"id": "vision_borrosa_convulsiones"
+						},
+						{
+							"@name": "multi",
+							"label": "Si, he tenido dificultad para respirar, dolor en el pecho, molestia en el pecho, tos frecuente",
+							"id": "dificultad_respirar_tos"
+						},
+						{
+							"@name": "multi",
+							"label": "Si, he tenido náuseas, vómitos, diarrea",
+							"id": "nauseas_vomitos_diarrea"
+						},
+						{
+							"@name": "multi",
+							"label": "Si, me sentí mal y consulté al médico",
+							"id": "consulte_medico"
+						},
+						{
+							"@name": "multi",
+							"label": "Si, me sentí enferma/o y fui hospitalizada/o",
+							"id": "enfermo_hospitalizado"
+						}
+					]
+				}
+			]
+		}
+	]
+}
