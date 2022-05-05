@@ -366,6 +366,14 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
       tileProvider: DebugTileProvider(),
       zIndex: 4,
     ),
+    "Cartas del suelo": TileOverlay(
+      tileOverlayId: const TileOverlayId('mapa_suelo_overlay'),
+      tileProvider: WMSTileProvider(
+        layer: "idecor:cartas_suelo_unidas_2021",
+        style: "",
+      ),
+      zIndex: 2,
+    ),
     "Parcelas": TileOverlay(
       tileOverlayId: const TileOverlayId('parcelas_overlay'),
       tileProvider: WMSTileProvider(
