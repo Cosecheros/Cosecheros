@@ -80,7 +80,7 @@ class _IntroState extends State<Intro> {
                         ),
                         SizedBox(height: 16),
                         Text(
-                          "* Si eres sentinela, debes iniciar si o si con tu cuenta de Google.",
+                          "* Si eres centinela, debes iniciar si o si con tu cuenta de Google.",
                           style: Theme.of(context).textTheme.caption,
                         ),
                       ],
