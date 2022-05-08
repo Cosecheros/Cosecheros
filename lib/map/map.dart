@@ -367,16 +367,47 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
       zIndex: 4,
     ),
     "Cartas del suelo": TileOverlay(
-      tileOverlayId: const TileOverlayId('mapa_suelo_overlay'),
+      tileOverlayId: const TileOverlayId('cartas_overlay'),
       tileProvider: WMSTileProvider(
+        host: Constants.IDECOR_HOST,
+        path: Constants.IDECOR_PATH,
         layer: "idecor:cartas_suelo_unidas_2021",
-        style: "",
+      ),
+      zIndex: 2,
+    ),
+    "Humedad del suelo IDECOR": TileOverlay(
+      tileOverlayId: const TileOverlayId('humedad_overlay'),
+      tileProvider: WMSTileProvider(
+        host: Constants.IDECOR_HOST,
+        path: Constants.IDECOR_PATH,
+        layer: "idecor:DSS_MSM_1",
+      ),
+      zIndex: 2,
+    ),
+    "Humedad del suelo CONAE": TileOverlay(
+      tileOverlayId: const TileOverlayId('humedad_overlay'),
+      tileProvider: WMSTileProvider(
+        host: Constants.CONAE_HOST,
+        path: Constants.CONAE_PATH,
+        layer: "HumedadDeSuelos:DSS_MSM_1",
+        format: "image/png",
+      ),
+      zIndex: 2,
+    ),
+    "Coberturas horticolas": TileOverlay(
+      tileOverlayId: const TileOverlayId('horticolas_overlay'),
+      tileProvider: WMSTileProvider(
+        host: Constants.IDECOR_HOST,
+        path: Constants.IDECOR_PATH,
+        layer: "idecor:Nivel3_28_dic_2018_30m_completo",
       ),
       zIndex: 2,
     ),
     "Parcelas": TileOverlay(
       tileOverlayId: const TileOverlayId('parcelas_overlay'),
       tileProvider: WMSTileProvider(
+        host: Constants.IDECOR_HOST,
+        path: Constants.IDECOR_PATH,
         layer: "idecor:parcelas_graf",
         style: "sty_parcelas_vuelos",
       ),
@@ -385,8 +416,9 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
     "Satelite": TileOverlay(
       tileOverlayId: const TileOverlayId('satelite_hires_overlay'),
       tileProvider: WMSTileProvider(
+        host: Constants.IDECOR_HOST,
+        path: Constants.IDECOR_PATH,
         layer: "idecor:Mosaico_CBAFeb2021",
-        style: "",
         format: "image/jpeg",
       ),
       zIndex: 2,
