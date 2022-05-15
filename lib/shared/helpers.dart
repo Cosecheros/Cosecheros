@@ -16,14 +16,19 @@ LatLng latLngFromGeoPos(GeoPos pos) => LatLng(pos.latitude, pos.longitude);
 
 LatLng latLngFromPosition(Position pos) => LatLng(pos.latitude, pos.longitude);
 
-Future<LatLng> getCurrentPosition() async {
-  var pos = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high);
+Future<Position> getCurrentPosition() async {
+  return await Geolocator.getCurrentPosition(
+    desiredAccuracy: LocationAccuracy.high,
+  );
+}
 
-  if (pos != null) {
-    return latLngFromPosition(pos);
-  }
-  return null;
+Stream<Position> streamCurrentPosition() {
+  return Geolocator.getPositionStream(
+    locationSettings: LocationSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 100,
+    ),
+  );
 }
 
 Future<LatLng> getLastPosition() async {

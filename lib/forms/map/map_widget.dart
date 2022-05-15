@@ -114,15 +114,16 @@ class MapWidgetState extends State<MapWidget>
   }
 
   void updateByCurrentPos() async {
-    var pos = await getCurrentPosition();
+    final pos = await getCurrentPosition();
+    final latlng = latLngFromPosition(pos);
     if (pos != null) {
       print("updateByCurrentPos: $pos: wait for map controller");
       final GoogleMapController controller = await _controller.future;
       print("updateByCurrentPos: $pos: controller ready, animating...");
       controller.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(target: pos, zoom: 12.0),
+        CameraPosition(target: latlng, zoom: 12.0),
       ));
-      _dispatchPos(pos);
+      _dispatchPos(latlng);
     }
   }
 

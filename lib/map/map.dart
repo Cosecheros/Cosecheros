@@ -34,8 +34,10 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
 
   Completer<GoogleMapController> _controller = Completer();
   String _mapStyle;
+
   BitmapDescriptor _markerDefault;
 
+  //BitmapDescriptor _markerProfile;
   Map<String, BitmapDescriptor> _markerIcons;
 
   PersistentBottomSheetController _bottomSheetController;
@@ -72,9 +74,9 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
       print("initPosition: $pos");
       // Intentamos ganarle al mapa y reescribir la posición inicial
       initPos = CameraPosition(target: pos, zoom: 10);
-      print("initPosition: $pos: wait for map controller");
+      print("initPosition: wait for map controller");
       final GoogleMapController controller = await _controller.future;
-      print("initPosition: $pos: controller ready, move!");
+      print("initPosition: controller ready, move!");
       controller.moveCamera(CameraUpdate.newCameraPosition(
         CameraPosition(target: pos, zoom: 10.0),
       ));
@@ -84,15 +86,16 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
 
   void updateByCurrentPos() async {
     final pos = await getCurrentPosition();
+    final latlng = latLngFromPosition(pos);
     if (pos != null) {
-      print("updateByCurrentPos: $pos: wait for map controller");
+      print("updateByCurrentPos: wait for map controller");
       final GoogleMapController controller = await _controller.future;
-      print("updateByCurrentPos: $pos: controller ready, animating...");
+      print("updateByCurrentPos: controller ready, animating...");
       controller.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(target: pos, zoom: 12.0),
+        CameraPosition(target: latlng, zoom: 12.0),
       ));
       // Asíncronamente guardar la posición del usuario (no usar wait)
-      CurrentUser.instance.savePosition(geoPosFromLatLng(pos));
+      CurrentUser.instance.savePosition(geoPosFromLatLng(latlng));
     }
   }
 
@@ -108,7 +111,7 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
             Set<Marker> _markers = Set();
 
             if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
+              return SafeArea(child: Text('Error: ${snapshot.error}'));
             }
 
             if (snapshot.connectionState != ConnectionState.waiting) {
@@ -320,6 +323,7 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
           markerId: MarkerId(model.id),
           position: model.latLng,
           icon: _markerIcons[model.form.toLowerCase()] ?? _markerDefault,
+          anchor: Offset(0.5, 0.5),
           onTap: () {
             hideBottomSheet();
             _bottomSheetController = showBottomSheet(
@@ -337,6 +341,7 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
           .map((e) => Marker(
                 markerId: MarkerId(model.id),
                 position: LatLng(e.lat, e.lon),
+                anchor: Offset(0.5, 0.5),
                 icon:
                     _markerIcons[model.event_type + "-tuit"] ?? _markerDefault,
                 onTap: () {
@@ -351,15 +356,28 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
               ))
           .toList();
     }
+    // if (model is Position) {
+    //   return [
+    //     Marker(
+    //       markerId: MarkerId("user_profile"),
+    //       position: latLngFromPosition(model),
+    //       icon: _markerProfile,
+    //       zIndex: 100,
+    //       anchor: Offset(0.5, 0.5),
+    //       rotation: model.heading,
+    //       onTap: showProfile,
+    //     )
+    //   ];
+    // }
     return null;
   }
 
   Future<void> _createMarkerImageFromAsset(BuildContext context) async {
     if (_markerIcons == null) {
       final ImageConfiguration imageConfiguration =
-          createLocalImageConfiguration(context, size: Size.square(32));
+          createLocalImageConfiguration(context);
 
-      var icons = {
+      final icons = {
         'granizada': await BitmapDescriptor.fromAssetImage(
             imageConfiguration, 'assets/app/granizo.png'),
         'granizo-tuit': await BitmapDescriptor.fromAssetImage(
@@ -378,11 +396,16 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
             imageConfiguration, 'assets/app/deriva.png'),
       };
 
-      final bitmap = await BitmapDescriptor.fromAssetImage(
+      final pin = await BitmapDescriptor.fromAssetImage(
           imageConfiguration, 'assets/app/pin.png');
+
+      // final profile = await BitmapDescriptor.fromAssetImage(
+      //     imageConfiguration, 'assets/app/profile.png');
+
       setState(() {
-        _markerDefault = bitmap;
         _markerIcons = icons;
+        _markerDefault = pin;
+        // _markerProfile = profile;
       });
     }
   }
