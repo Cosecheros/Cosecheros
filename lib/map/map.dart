@@ -168,7 +168,7 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
         Text(
           'Cosecheros',
           style: GoogleFonts.inter(
-            fontSize: 32,
+            fontSize: 28,
             fontWeight: FontWeight.w900,
             foreground: Paint()
               ..style = PaintingStyle.stroke
@@ -180,7 +180,7 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
         Text(
           'Cosecheros',
           style: GoogleFonts.inter(
-            fontSize: 32,
+            fontSize: 28,
             fontWeight: FontWeight.w900,
             color: Theme.of(context).colorScheme.onBackground,
           ),
