@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosecheros/data/current_user.dart';
+import 'package:cosecheros/data/database.dart';
 import 'package:cosecheros/map/multichoice_dialog.dart';
 import 'package:cosecheros/map/tile_provider_wms.dart';
 import 'package:cosecheros/models/cosecha.dart';
+import 'package:cosecheros/models/tweet.dart';
 import 'package:cosecheros/shared/constants.dart';
 import 'package:cosecheros/shared/helpers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:stream_transform/stream_transform.dart';
 
 import 'cosecha_preview.dart';
 import 'tile_provider_debug.dart';
@@ -34,6 +37,18 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
   Map<String, BitmapDescriptor> _markerIcons;
 
   PersistentBottomSheetController _bottomSheetController;
+
+  static final _streamCosecha = Database.instance.cosechasRef.snapshots().map(
+      (event) =>
+          event.docs.map((e) => e.data()).where((e) => e.latLng != null));
+
+  static final _streamTweets = Database.instance.tuitsRef.snapshots().map(
+      (event) => event.docs
+          .map((e) => e.data())
+          .where((e) => e.places != null || e.tw_place != null));
+
+  final Stream<Iterable<dynamic>> markerStream =
+      _streamCosecha.combineLatest(_streamTweets, (a, b) => [...a, ...b]);
 
   @override
   bool get wantKeepAlive => true;
@@ -85,15 +100,9 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
     _createMarkerImageFromAsset(context);
     return Stack(
       children: [
-        StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance
-              .collection(Constants.collection)
-              .where("timestamp",
-                  isGreaterThan: DateTime.now().subtract(Duration(days: 30)))
-              .orderBy("timestamp", descending: true)
-              .snapshots(),
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        StreamBuilder<Iterable<dynamic>>(
+          stream: markerStream,
+          builder: (BuildContext context, snapshot) {
             Set<Marker> _markers = Set();
 
             if (snapshot.hasError) {
@@ -101,13 +110,11 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
             }
 
             if (snapshot.connectionState != ConnectionState.waiting) {
-              _markers.addAll(
-                snapshot.data.docs
-                    .map((doc) => Cosecha.fromSnapshot(doc))
-                    .where((element) => element.latLng != null)
-                    .map((e) => _createMarker(e)),
-              );
+              _markers.addAll(snapshot.data
+                  .map((e) => _createMarker(e))
+                  .where((e) => e != null));
             }
+
             return GoogleMap(
               mapType: MapType.normal,
               markers: _markers,
@@ -301,8 +308,11 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
     );
   }
 
-  Marker _createMarker(Cosecha model) {
-    if (_markerIcons != null) {
+  Marker _createMarker(dynamic model) {
+    if (_markerIcons == null) {
+      return null;
+    }
+    if (model is Cosecha) {
       return Marker(
         markerId: MarkerId(model.id),
         position: model.latLng,
@@ -311,26 +321,30 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
           hideBottomSheet();
           _bottomSheetController = showBottomSheet(
             context: context,
-            builder: (context) => ConstrainedBox(
-              constraints: BoxConstraints.tightFor(width: double.infinity),
-              child: Card(
-                margin: EdgeInsets.only(top: 36),
-                shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(16.0)),
-                ),
-                child: CosechaPreview(model),
-              ),
+            builder: (context) => previewContainer(
+              child: CosechaPreview(model),
             ),
           );
         },
       );
-    } else {
+    }
+    if (model is Tweet) {
       return Marker(
         markerId: MarkerId(model.id),
-        position: model.latLng,
+        position: LatLng(model.places.first.lat, model.places.first.lon),
+        icon: _markerIcons["tuit"] ?? _markerDefault,
+        onTap: () {
+          hideBottomSheet();
+          _bottomSheetController = showBottomSheet(
+            context: context,
+            builder: (context) => previewContainer(
+              child: Text(model.text),
+            ),
+          );
+        },
       );
     }
+    return null;
   }
 
   Future<void> _createMarkerImageFromAsset(BuildContext context) async {
@@ -349,6 +363,8 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
             imageConfiguration, 'assets/app/sequia.png'),
         'deriva': await BitmapDescriptor.fromAssetImage(
             imageConfiguration, 'assets/app/deriva.png'),
+        'tuit': await BitmapDescriptor.fromAssetImage(
+            imageConfiguration, 'assets/app/tuit.png'),
       };
 
       final bitmap = await BitmapDescriptor.fromAssetImage(
@@ -359,6 +375,17 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
       });
     }
   }
+
+  Widget previewContainer({Widget child}) => ConstrainedBox(
+        constraints: BoxConstraints.tightFor(width: double.infinity),
+        child: Card(
+          margin: EdgeInsets.only(top: 36),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+          ),
+          child: child,
+        ),
+      );
 
   final allTilesProviders = {
     "Debug": TileOverlay(

@@ -11,7 +11,7 @@ class Cosecha {
   String alias;
   List<ResponseItem> payload;
 
-  static Cosecha fromSnapshot(QueryDocumentSnapshot doc) {
+  static Cosecha fromSnapshot(DocumentSnapshot doc) {
     Cosecha result = Cosecha();
     // print("Cosecha: fromSnapshot >>>
     // print(doc.data());
@@ -40,5 +40,9 @@ class Cosecha {
       }
     }
     return result;
+  }
+
+  toJson() {
+    // TODO!
   }
 }
