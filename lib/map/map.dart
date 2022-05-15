@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosecheros/data/current_user.dart';
 import 'package:cosecheros/data/database.dart';
+import 'package:cosecheros/details/tweet_preview.dart';
 import 'package:cosecheros/map/multichoice_dialog.dart';
 import 'package:cosecheros/map/tile_provider_wms.dart';
 import 'package:cosecheros/models/cosecha.dart';
@@ -16,7 +17,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:stream_transform/stream_transform.dart';
 
-import 'cosecha_preview.dart';
+import '../details/cosecha_preview.dart';
 import 'tile_provider_debug.dart';
 
 class HomeMap extends StatefulWidget {
@@ -111,7 +112,7 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
 
             if (snapshot.connectionState != ConnectionState.waiting) {
               _markers.addAll(snapshot.data
-                  .map((e) => _createMarker(e))
+                  .expand((e) => _createMarker(e))
                   .where((e) => e != null));
             }
 
@@ -308,41 +309,46 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
     );
   }
 
-  Marker _createMarker(dynamic model) {
+  List<Marker> _createMarker(dynamic model) {
     if (_markerIcons == null) {
       return null;
     }
     if (model is Cosecha) {
-      return Marker(
-        markerId: MarkerId(model.id),
-        position: model.latLng,
-        icon: _markerIcons[model.form.toLowerCase()] ?? _markerDefault,
-        onTap: () {
-          hideBottomSheet();
-          _bottomSheetController = showBottomSheet(
-            context: context,
-            builder: (context) => previewContainer(
-              child: CosechaPreview(model),
-            ),
-          );
-        },
-      );
+      return [
+        Marker(
+          markerId: MarkerId(model.id),
+          position: model.latLng,
+          icon: _markerIcons[model.form.toLowerCase()] ?? _markerDefault,
+          onTap: () {
+            hideBottomSheet();
+            _bottomSheetController = showBottomSheet(
+              context: context,
+              builder: (context) => previewContainer(
+                child: CosechaPreview(model),
+              ),
+            );
+          },
+        )
+      ];
     }
     if (model is Tweet) {
-      return Marker(
-        markerId: MarkerId(model.id),
-        position: LatLng(model.places.first.lat, model.places.first.lon),
-        icon: _markerIcons["tuit"] ?? _markerDefault,
-        onTap: () {
-          hideBottomSheet();
-          _bottomSheetController = showBottomSheet(
-            context: context,
-            builder: (context) => previewContainer(
-              child: Text(model.text),
-            ),
-          );
-        },
-      );
+      return model.places
+          .map((e) => Marker(
+                markerId: MarkerId(model.id),
+                position: LatLng(e.lat, e.lon),
+                icon:
+                    _markerIcons[model.event_type + "-tuit"] ?? _markerDefault,
+                onTap: () {
+                  hideBottomSheet();
+                  _bottomSheetController = showBottomSheet(
+                    context: context,
+                    builder: (context) => previewContainer(
+                      child: TweetPreview(model),
+                    ),
+                  );
+                },
+              ))
+          .toList();
     }
     return null;
   }
@@ -355,16 +361,20 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
       var icons = {
         'granizada': await BitmapDescriptor.fromAssetImage(
             imageConfiguration, 'assets/app/granizo.png'),
+        'granizo-tuit': await BitmapDescriptor.fromAssetImage(
+            imageConfiguration, 'assets/app/granizo-tuit.png'),
         'helada': await BitmapDescriptor.fromAssetImage(
             imageConfiguration, 'assets/app/helada.png'),
+        'helada-tuit': await BitmapDescriptor.fromAssetImage(
+            imageConfiguration, 'assets/app/helada-tuit.png'),
         'inundacion': await BitmapDescriptor.fromAssetImage(
             imageConfiguration, 'assets/app/inundacion.png'),
+        'inundaciones-tuit': await BitmapDescriptor.fromAssetImage(
+            imageConfiguration, 'assets/app/inundacion-tuit.png'),
         'sequia': await BitmapDescriptor.fromAssetImage(
             imageConfiguration, 'assets/app/sequia.png'),
         'deriva': await BitmapDescriptor.fromAssetImage(
             imageConfiguration, 'assets/app/deriva.png'),
-        'tuit': await BitmapDescriptor.fromAssetImage(
-            imageConfiguration, 'assets/app/tuit.png'),
       };
 
       final bitmap = await BitmapDescriptor.fromAssetImage(

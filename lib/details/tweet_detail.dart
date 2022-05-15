@@ -1,12 +1,13 @@
-import 'package:cosecheros/map/details_widgets.dart';
-import 'package:cosecheros/models/cosecha.dart';
-import 'package:cosecheros/models/response_item.dart';
+import 'package:cosecheros/details/details_widgets.dart';
+import 'package:cosecheros/models/tweet.dart';
 import 'package:cosecheros/shared/extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:url_launcher/url_launcher.dart';
 
-class CosechaDetail extends StatelessWidget {
-  final Cosecha model;
+class TweetDetail extends StatelessWidget {
+  final Tweet model;
   final ScrollController scrollController;
   final Map<String, DetailWidget> builders = {
     'picture': PictureDetail(),
@@ -17,7 +18,7 @@ class CosechaDetail extends StatelessWidget {
     'date': DateDetail(),
   };
 
-  CosechaDetail(this.model, this.scrollController);
+  TweetDetail(this.model, this.scrollController);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,7 @@ class CosechaDetail extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: 24),
             child: Text(
-              "${model.alias}",
+              "${model.event_type.capitalize()}",
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.headline6.copyWith(
                   fontWeight: FontWeight.bold,
@@ -41,7 +42,7 @@ class CosechaDetail extends StatelessWidget {
           ),
           SizedBox(height: 12),
           Text(
-            "Por ${model.username}",
+            "Por @${model.screen_name}",
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyText2.copyWith(
                 fontWeight: FontWeight.bold,
@@ -53,7 +54,7 @@ class CosechaDetail extends StatelessWidget {
           ),
           SizedBox(height: 4),
           Text(
-            "${timeago.format(model.timestamp).capitalize()}",
+            "${timeago.format(model.date).capitalize()}",
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyText1.copyWith(
                   color: Theme.of(context)
@@ -64,44 +65,26 @@ class CosechaDetail extends StatelessWidget {
                 ),
           ),
           SizedBox(height: 16),
-          buildPictures(context,
-              model.payload.where((e) => e.type == 'picture').toList()),
-          ...model.payload
-              .where((e) => e.type != 'picture')
-              .map((item) => _toDetail(context, item))
-              .where((e) => e != null)
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Linkify(
+              text: model.text,
+              onOpen: (link) async {
+                if (await canLaunch(link.url)) {
+                  await launch(link.url);
+                }
+              },
+              style: Theme.of(context).textTheme.bodyText1.copyWith(
+                    color: Theme.of(context)
+                        .textTheme
+                        .bodyText1
+                        .color
+                        .withOpacity(0.8),
+                  ),
+            ),
+          )
         ],
       ),
     );
-  }
-
-  Widget buildPictures(BuildContext context, List items) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      padding: EdgeInsets.only(bottom: 16),
-      child: Row(
-        children: items.map((e) => _toDetail(context, e)).toList(),
-      ),
-    );
-    // return ListView(
-    //   controller: scrollController,
-    //   scrollDirection: Axis.horizontal,
-    //   children: ,
-    // );
-  }
-
-  Widget _toDetail(BuildContext context, ResponseItem item) {
-    print("_toDetail: " + item.toString());
-    DetailWidget builder = builders[item.type];
-
-    if (builder is NopeDetail) {
-      return null;
-    }
-
-    if (builder != null) {
-      return builder.render(context, item);
-    }
-    print("ERROR: No hay detail implementado: $item");
-    return Text("Otra opción: ${item.type}");
   }
 }

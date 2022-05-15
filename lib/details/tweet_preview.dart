@@ -1,11 +1,14 @@
-import 'package:cosecheros/map/cosecha_detail.dart';
-import 'package:cosecheros/models/cosecha.dart';
+import 'package:cosecheros/models/tweet.dart';
+import 'package:cosecheros/shared/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-class CosechaPreview extends StatelessWidget {
-  final Cosecha model;
-  const CosechaPreview(this.model);
+import 'tweet_detail.dart';
+
+class TweetPreview extends StatelessWidget {
+  final Tweet model;
+
+  const TweetPreview(this.model);
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +25,7 @@ class CosechaPreview extends StatelessWidget {
             return DraggableScrollableSheet(
               expand: false,
               builder: (context, scrollController) {
-                return CosechaDetail(this.model, scrollController);
+                return TweetDetail(this.model, scrollController);
               },
             );
           },
@@ -32,7 +35,6 @@ class CosechaPreview extends StatelessWidget {
           padding: EdgeInsets.all(16),
           child: Row(
             children: [
-              // TODO: Un icono
               Icon(Icons.keyboard_arrow_up_rounded),
               SizedBox(width: 8),
               Column(
@@ -40,7 +42,9 @@ class CosechaPreview extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    model.alias + " " + timeago.format(model.timestamp),
+                    model.event_type.capitalize() +
+                        " " +
+                        timeago.format(model.date),
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 12,
@@ -48,7 +52,7 @@ class CosechaPreview extends StatelessWidget {
                   ),
                   SizedBox(height: 2),
                   Text(
-                    "Cosechado por " + model.username,
+                    "Tuiteado por @" + model.screen_name,
                     style: TextStyle(
                         fontWeight: FontWeight.w300,
                         fontSize: 12,
