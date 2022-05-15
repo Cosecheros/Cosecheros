@@ -11,6 +11,7 @@ import 'package:cosecheros/models/tweet.dart';
 import 'package:cosecheros/shared/constants.dart';
 import 'package:cosecheros/shared/helpers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_fonts/google_fonts.dart';
@@ -398,11 +399,12 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
       );
 
   final allTilesProviders = {
-    "Debug": TileOverlay(
-      tileOverlayId: const TileOverlayId('debug_overlay'),
-      tileProvider: DebugTileProvider(),
-      zIndex: 4,
-    ),
+    if (kDebugMode)
+      "Debug": TileOverlay(
+        tileOverlayId: const TileOverlayId('debug_overlay'),
+        tileProvider: DebugTileProvider(),
+        zIndex: 4,
+      ),
     "Cartas del suelo": TileOverlay(
       tileOverlayId: const TileOverlayId('cartas_overlay'),
       tileProvider: WMSTileProvider(
