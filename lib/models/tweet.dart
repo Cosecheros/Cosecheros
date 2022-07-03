@@ -11,22 +11,50 @@ class Tweet {
   GeoPoint tw_place;
   List<Place> places;
 
+  bool isValid() {
+    if (date == null) {
+      //print("tuit ${id} invalid: no date");
+      return false;
+    }
+
+    if (event_type == null || date == null) {
+      //print("tuit ${id} invalid: no type");
+      return false;
+    }
+
+    if (places == null && tw_place == null) {
+      //print("tuit ${id} invalid: no place");
+      return false;
+    }
+
+    //print("tuit ${id} valid");
+    return true;
+  }
+
   static Tweet fromSnapshot(DocumentSnapshot<Map<String, dynamic>> doc) {
     Tweet record = Tweet();
     record.id = doc.id;
 
     final data = doc.data();
-    record.date = data["date"].toDate() ?? DateTime.now();
-    record.event_type = data["event_type"];
+    final date = data["date"];
+    if (date is Timestamp) {
+      record.date = date.toDate() ?? DateTime.now();
+    } else if (date is String) {
+      record.date = DateTime.tryParse(date);
+    }
+
+    record.event_type = data["event_type"] ?? "tuit";
     record.screen_name = data["screen_name"];
     record.text = data["text"];
 
     record.tw_place = data["tw_place"];
 
     final places = data["places"];
-    if (places is List) {
+
+    if (places != null && places is List) {
       record.places = places.map((e) => Place.fromJson(e)).toList();
     }
+
     return record;
   }
 

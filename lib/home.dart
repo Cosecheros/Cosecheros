@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosecheros/cosechar/local.dart';
 import 'package:cosecheros/cosechar/online.dart';
+import 'package:cosecheros/data/database.dart';
 import 'package:cosecheros/map/map.dart';
 import 'package:cosecheros/models/form_spec.dart';
 import 'package:cosecheros/widgets/grid_icon_button.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class MainPage extends StatelessWidget {
-
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,37 +48,26 @@ class MainPage extends StatelessWidget {
     );
   }
 
-  Query getFormSpecs() {
-    var query = FirebaseFirestore.instance.collection("forms");
-    return query;
-  }
-
   Widget _asyncCosecharButton(BuildContext context) {
-    return FutureBuilder<QuerySnapshot>(
-        future: getFormSpecs().get(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          List<FormSpec> forms;
-          print("getFormSpecs: $snapshot");
-
-          if (snapshot.hasError) {
-            return Text(snapshot.error.toString());
+    return FutureBuilder<QuerySnapshot<FormSpec>>(
+        future: Database.instance.forms().get(),
+        builder: (context, snap) {
+          if (snap.hasError) {
+            return Text(snap.error.toString());
           }
 
-          if (snapshot.connectionState != ConnectionState.waiting) {
-            forms = snapshot.data.docs
-                .map((doc) => FormSpec.fromMap(doc.data()))
-                .where((e) => e.getUrl() != null)
+          List<FormSpec> forms;
+          if (snap.connectionState == ConnectionState.done) {
+            forms = snap.data.docs
+                .map((e) => e.data())
+                .where((e) => e.isValid())
                 .toList();
           }
-          print("Home: CosecharButton: forms len: ${forms?.length}");
+          print("Home: Cosechar: ${snap.connectionState}, forms=${forms?.length}");
 
           return FloatingActionButton.extended(
             heroTag: null,
-            onPressed: forms == null
-                ? null
-                : () {
-                    _onCosechar(context, forms);
-                  },
+            onPressed: forms == null ? null : () => _onCosechar(context, forms),
             label: Text(
               'Cosechar',
               style: TextStyle(color: Colors.white),
@@ -91,7 +80,7 @@ class MainPage extends StatelessWidget {
         });
   }
 
-  _onCosechar(BuildContext context, List<FormSpec> forms) async {
+  void _onCosechar(BuildContext context, List<FormSpec> forms) async {
     var selected = await showDialog<String>(
         context: context,
         builder: (BuildContext context) {

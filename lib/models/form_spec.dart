@@ -11,7 +11,7 @@ class FormSpec {
   Map<String, bool> users;
 
   FormSpec.fromMap(Map map) {
-    print("FormSpec: map: $map");
+    print("FormSpec: label: ${map['label']}");
 
     color = HexColor.fromHex(map['color'] ?? '#FF2196F3');
     label = map['label'];
@@ -21,6 +21,14 @@ class FormSpec {
     urls = unparsedUrls is List
         ? unparsedUrls.map((e) => FormUrl.fromMap(e)).toList()
         : List.empty();
+  }
+
+  Map<String, dynamic> toJson() {
+    return Map();
+  }
+
+  bool isValid() {
+    return getUrl() != null;
   }
 
   /*
@@ -56,8 +64,8 @@ class FormSpec {
    */
   FormUrl getUrl() {
     for (int v = Constants.buildVersion; 0 < v; v--) {
-      final a = urls.where(
-          (e) => e.min == v && e.users[CurrentUser.instance.data.type.id()] == true);
+      final a = urls.where((e) =>
+          e.min == v && e.users[CurrentUser.instance.data.type.id()] == true);
       if (a.isNotEmpty) {
         return a.last;
       }

@@ -35,3 +35,13 @@ extension StringExtension on String {
     return this.replaceAll('_', ' ').capitalize() + ".";
   }
 }
+
+extension DefaultMap<K,V> on Map<K,V> {
+  V getOr(K key, K defaultKey) {
+    if (this.containsKey(key)) {
+      return this[key];
+    } else {
+      return this[defaultKey];
+    }
+  }
+}

@@ -15,11 +15,11 @@ class CurrentUser {
   Stream<UserStatus> updates() {
     return FirebaseAuth.instance
         .authStateChanges()
-        .switchMap((event) => onStateChange(event));
+        .switchMap((event) => onFirebaseAuthChange(event));
   }
 
-  Stream<UserStatus> onStateChange(User user) async* {
-    print("onStateChange: $user");
+  Stream<UserStatus> onFirebaseAuthChange(User user) async* {
+    print("onFirebaseAuthChange: uid=${user?.uid}");
     if (user == null) {
       data = null;
       yield UserStatus.unlogged;
@@ -29,24 +29,23 @@ class CurrentUser {
           .doc(user.uid)
           .snapshots()
           .distinct(
-              (eventA, eventB) => eventA.get("type") == eventB.get("type"))
+              (eventA, eventB) => eventA.exists && eventA.data()["type"] == eventB.data()["type"])
           .map((event) => onUserDocChange(user, event));
     }
   }
 
   UserStatus onUserDocChange(User user, DocumentSnapshot doc) {
-    print("onUserDocChange: ${doc.data()}");
-    if (doc.exists) {
-      if (doc.get("type") != null) {
-        data = userDataFrom(user, doc.data());
-        return UserStatus.ready;
-      } else {
-        data = userDataFrom(user, doc.data());
-        return UserStatus.without_type;
-      }
-    } else {
+    print("onUserDocChange: exist=${doc.exists}, ${doc.data()}");
+    if (!doc.exists) {
       data = userDataFrom(user, null);
       return UserStatus.without_type;
+    } else {
+      data = userDataFrom(user, doc.data());
+      if (doc.get("type") == null) {
+        return UserStatus.without_type;
+      } else {
+        return UserStatus.ready;
+      }
     }
   }
 

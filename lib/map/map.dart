@@ -9,6 +9,7 @@ import 'package:cosecheros/map/tile_provider_wms.dart';
 import 'package:cosecheros/models/cosecha.dart';
 import 'package:cosecheros/models/tweet.dart';
 import 'package:cosecheros/shared/constants.dart';
+import 'package:cosecheros/shared/extensions.dart';
 import 'package:cosecheros/shared/helpers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -35,8 +36,6 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
   Completer<GoogleMapController> _controller = Completer();
   String _mapStyle;
 
-  BitmapDescriptor _markerDefault;
-
   //BitmapDescriptor _markerProfile;
   Map<String, BitmapDescriptor> _markerIcons;
 
@@ -46,13 +45,24 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
       (event) =>
           event.docs.map((e) => e.data()).where((e) => e.latLng != null));
 
-  static final _streamTweets = Database.instance.tuitsRef.snapshots().map(
-      (event) => event.docs
-          .map((e) => e.data())
-          .where((e) => e.places != null || e.tw_place != null));
+  _streamTweets() => Database.instance
+          .tuits(DateTime.now().subtract(Duration(days: 360)))
+          .snapshots(includeMetadataChanges: true)
+          .map((event) {
+        if (event.metadata.isFromCache) {
+          print("_streamTweets: from cache! ${event.docs.length}");
+        } else {
+          print("_streamTweets: online: ${event.docs.length}");
+        }
 
-  final Stream<Iterable<dynamic>> markerStream =
-      _streamCosecha.combineLatest(_streamTweets, (a, b) => [...a, ...b]);
+        return event.docs
+            .map((e) => e.data())
+            .where((e) => e != null && e.isValid())
+            .toList();
+      });
+
+  Stream<Iterable<dynamic>> markerStream() =>
+      _streamCosecha.combineLatest(_streamTweets(), (a, b) => [...a, ...b]);
 
   @override
   bool get wantKeepAlive => true;
@@ -103,58 +113,63 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
   Widget build(BuildContext context) {
     super.build(context);
     _createMarkerImageFromAsset(context);
-    return Stack(
-      children: [
-        StreamBuilder<Iterable<dynamic>>(
-          stream: markerStream,
-          builder: (BuildContext context, snapshot) {
-            Set<Marker> _markers = Set();
+    return StreamBuilder<Iterable<dynamic>>(
+      stream: markerStream(),
+      builder: (BuildContext context, snapshot) {
+        Set<Marker> _markers = Set();
 
-            if (snapshot.hasError) {
-              return SafeArea(child: Text('Error: ${snapshot.error}'));
-            }
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
 
-            if (snapshot.connectionState != ConnectionState.waiting) {
-              _markers.addAll(snapshot.data
-                  .expand((e) => _createMarker(e))
-                  .where((e) => e != null));
-            }
+        if (snapshot.connectionState != ConnectionState.waiting) {
+          _markers.addAll(snapshot.data
+              .expand((e) => _createMarker(e))
+              .where((e) => e != null));
+        }
 
-            return GoogleMap(
-              mapType: MapType.normal,
-              markers: _markers,
-              compassEnabled: false,
-              mapToolbarEnabled: false,
-              myLocationButtonEnabled: false,
-              myLocationEnabled: true,
-              zoomControlsEnabled: false,
-              initialCameraPosition: initPos,
-              tileOverlays: selectedTilesProvider,
-              onMapCreated: (GoogleMapController controller) {
-                print("onMapCreated");
-                _controller.complete(controller);
-                controller.setMapStyle(_mapStyle);
-              },
-              onTap: (e) {
-                hideBottomSheet();
-                print(e);
-              },
-            );
-          },
-        ),
-        SafeArea(
-          child: Align(
-            alignment: Alignment.topLeft,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: getLogo(context),
+        return Stack(children: [
+          GoogleMap(
+            mapType: MapType.normal,
+            markers: _markers,
+            compassEnabled: false,
+            mapToolbarEnabled: false,
+            myLocationButtonEnabled: false,
+            myLocationEnabled: true,
+            zoomControlsEnabled: false,
+            initialCameraPosition: initPos,
+            tileOverlays: selectedTilesProvider,
+            onMapCreated: (GoogleMapController controller) {
+              print("onMapCreated");
+              _controller.complete(controller);
+              controller.setMapStyle(_mapStyle);
+            },
+            onTap: (e) {
+              hideBottomSheet();
+              print(e);
+            },
+          ),
+          SafeArea(
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: getLogo(context),
+              ),
             ),
           ),
-        ),
-        SafeArea(
-          child: Align(alignment: Alignment.topRight, child: topButtons()),
-        )
-      ],
+          SafeArea(
+            child: Align(alignment: Alignment.topRight, child: topButtons()),
+          ),
+          if (snapshot.connectionState == ConnectionState.waiting)
+            SafeArea(
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: LinearProgressIndicator(),
+              ),
+            )
+        ]);
+      },
     );
   }
 
@@ -322,7 +337,7 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
         Marker(
           markerId: MarkerId(model.id),
           position: model.latLng,
-          icon: _markerIcons[model.form.toLowerCase()] ?? _markerDefault,
+          icon: _markerIcons.getOr(model.form.toLowerCase(), 'fallback'),
           anchor: Offset(0.5, 0.5),
           onTap: () {
             hideBottomSheet();
@@ -342,8 +357,8 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
                 markerId: MarkerId(model.id),
                 position: LatLng(e.lat, e.lon),
                 anchor: Offset(0.5, 0.5),
-                icon:
-                    _markerIcons[model.event_type + "-tuit"] ?? _markerDefault,
+                icon: _markerIcons.getOr(
+                    model.event_type + "-tuit", 'fallback-tuit'),
                 onTap: () {
                   hideBottomSheet();
                   _bottomSheetController = showBottomSheet(
@@ -378,6 +393,10 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
           createLocalImageConfiguration(context);
 
       final icons = {
+        'fallback': await BitmapDescriptor.fromAssetImage(
+            imageConfiguration, 'assets/app/pin.png'),
+        'fallback-tuit': await BitmapDescriptor.fromAssetImage(
+            imageConfiguration, 'assets/app/fallback-tuit.png'),
         'granizada': await BitmapDescriptor.fromAssetImage(
             imageConfiguration, 'assets/app/granizo.png'),
         'granizo-tuit': await BitmapDescriptor.fromAssetImage(
@@ -396,15 +415,11 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
             imageConfiguration, 'assets/app/deriva.png'),
       };
 
-      final pin = await BitmapDescriptor.fromAssetImage(
-          imageConfiguration, 'assets/app/pin.png');
-
       // final profile = await BitmapDescriptor.fromAssetImage(
       //     imageConfiguration, 'assets/app/profile.png');
 
       setState(() {
         _markerIcons = icons;
-        _markerDefault = pin;
         // _markerProfile = profile;
       });
     }

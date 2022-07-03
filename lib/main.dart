@@ -1,5 +1,6 @@
-import 'package:cosecheros/home.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosecheros/data/current_user.dart';
+import 'package:cosecheros/home.dart';
 import 'package:cosecheros/login/intro.dart';
 import 'package:cosecheros/login/setup_user.dart';
 import 'package:cosecheros/shared/constants.dart';
@@ -32,8 +33,6 @@ final Color primary = Color(0xFF5C92FF);
 final Color red = Color(0xFFFC6063);
 final Color secondary = Color(0xFF32559B);
 
-enum Cosecha { test, granizo, helada }
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -58,7 +57,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: background,
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            primary: secondary,
+            primary: primary,
             elevation: 4,
             shadowColor: secondary.withOpacity(.4),
             shape: RoundedRectangleBorder(
@@ -75,7 +74,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         floatingActionButtonTheme: FloatingActionButtonThemeData(
-          backgroundColor: secondary,
+          backgroundColor: primary,
         ),
         cardTheme: CardTheme(
           elevation: 24,
@@ -109,47 +108,55 @@ class MyApp extends StatelessWidget {
           onBackground: black,
         ),
       ),
-      home: FutureBuilder<FirebaseApp>(
-        future: setupFirebase(),
-        builder: (BuildContext context, AsyncSnapshot<FirebaseApp> snapshot) {
-          print("onSetupFirebase: $snapshot");
-          if (snapshot.hasError) {
-            return Center(child: Text('Ocurrió un error!'));
-          }
-          if (snapshot.connectionState == ConnectionState.done) {
-            return onFirebaseUp();
-          }
-          return Container(color: background);
-        },
+      // home: FutureBuilder<FirebaseApp>(
+      //   future: setupFirebase(),
+      //   builder: (BuildContext context, AsyncSnapshot<FirebaseApp> snapshot) {
+      //     print("onSetupFirebase: $snapshot");
+      //     if (snapshot.hasError) {
+      //       return Center(child: Text('Ocurrió un error! ${snapshot.error}'));
+      //     }
+      //     if (snapshot.connectionState == ConnectionState.done) {
+      //       return onFirebaseUp();
+      //     }
+      //     return Container(color: background);
+      //   },
+      // ),
+      home: Container(
+        color: background,
+        child: StreamBuilder(
+          stream: start(),
+          builder: (BuildContext context, AsyncSnapshot<UserStatus> shot) {
+            print("Main: ${shot.connectionState}, ${shot.data}");
+            Widget show;
+            if (shot.hasError) {
+              show = Text(shot.error.toString());
+            }
+            if (shot.connectionState == ConnectionState.active) {
+              switch (shot.data) {
+                case UserStatus.unlogged:
+                  show = Intro();
+                  break;
+                case UserStatus.without_type:
+                  show = BeforeStart();
+                  break;
+                case UserStatus.ready:
+                  show = HomePage();
+                  break;
+              }
+            }
+            return AnimatedSwitcher(
+              duration: const Duration(milliseconds: 500),
+              child: show ?? Container(color: background),
+            );
+          },
+        ),
       ),
     );
   }
 
-  Widget onFirebaseUp() {
-    return StreamBuilder(
-      stream: CurrentUser.instance.updates(),
-      builder: (BuildContext context, AsyncSnapshot<UserStatus> shot) {
-        print("CurrentUser update: $shot");
-        if (shot.connectionState == ConnectionState.active) {
-          switch (shot.data) {
-            case UserStatus.unlogged:
-              return Intro();
-              break;
-            case UserStatus.without_type:
-              return BeforeStart();
-              break;
-            case UserStatus.ready:
-              return MainPage();
-              break;
-            default:
-              return MainPage();
-              break;
-          }
-        }
-        print('Main >>> Cargando~');
-        return Container(color: background);
-      },
-    );
+  Stream<UserStatus> start() async* {
+    await setupFirebase();
+    yield* CurrentUser.instance.updates();
   }
 
   Future<FirebaseApp> setupFirebase() async {
@@ -182,6 +189,14 @@ class MyApp extends StatelessWidget {
         await FirebaseCrashlytics.instance
             .setCrashlyticsCollectionEnabled(false);
       }
+    }
+
+    // Offline persistence
+    if (!kIsWeb) {
+      FirebaseFirestore.instance.settings = const Settings(
+        persistenceEnabled: true,
+        cacheSizeBytes: 1 << 20,
+      );
     }
 
     return app;

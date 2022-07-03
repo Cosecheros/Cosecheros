@@ -9,13 +9,10 @@ class Cosecha {
   LatLng latLng;
   String username;
   String alias;
-  List<ResponseItem> payload;
+  List<ResponseItem> payload = List.empty();
 
   static Cosecha fromSnapshot(DocumentSnapshot doc) {
     Cosecha result = Cosecha();
-    // print("Cosecha: fromSnapshot >>>
-    // print(doc.data());
-    // print("Cosecha: fromSnapshot <<<");
 
     result.id = doc.id;
     result.form = doc.get('form_id');
@@ -27,8 +24,6 @@ class Cosecha {
     if (payload is List) {
       result.payload = payload.map((e) => ResponseItem.fromJson(e)).toList();
 
-      print("Cosecha: payload: " + result.payload.length.toString());
-
       final geo = result.payload.singleWhere(
         (element) => element.type == 'geo_point',
         orElse: () => null,
@@ -39,6 +34,7 @@ class Cosecha {
         result.latLng = LatLng(geoPoint.latitude, geoPoint.longitude);
       }
     }
+    print("Cosecha ${doc.id}: payload: ${result.payload.length}");
     return result;
   }
 

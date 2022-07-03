@@ -102,7 +102,7 @@ class _IntroState extends State<Intro> {
 
     UserCredential userCredential =
         await FirebaseAuth.instance.signInAnonymously();
-    print("signInAnon: userCredential: $userCredential");
+    print("signInAnon: $userCredential");
 
     setState(() {
       _loading = false;
