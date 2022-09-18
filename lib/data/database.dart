@@ -10,18 +10,17 @@ class Database {
   Database._privateConstructor();
 
   Query<Tweet> tuits(DateTime from) => FirebaseFirestore.instance
-      .collection(kReleaseMode ? "tweets_v2" : "tweets_v2")
-      .where("date",
-          isGreaterThan: from) //DateFormat('yyyy-MM-dd').format(from))
+      .collection(kReleaseMode ? "tweets_v3" : "tweets_v3")
+      //DateFormat('yyyy-MM-dd').format(from))
+      .where("date", isGreaterThan: from)
       .withConverter<Tweet>(
         fromFirestore: (snapshot, _) => Tweet.fromSnapshot(snapshot),
         toFirestore: (tweet, _) => tweet.toJson(),
       );
 
-  final cosechasRef = FirebaseFirestore.instance
+  Query<Cosecha> cosechas(DateTime from) => FirebaseFirestore.instance
       .collection(kReleaseMode ? "prod_v2" : "dev")
-      .where("timestamp",
-          isGreaterThan: DateTime.now().subtract(Duration(days: 30)))
+      .where("timestamp", isGreaterThan: from)
       .orderBy("timestamp", descending: true)
       .withConverter<Cosecha>(
         fromFirestore: (snapshot, _) => Cosecha.fromSnapshot(snapshot),

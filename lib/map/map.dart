@@ -41,12 +41,15 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
 
   PersistentBottomSheetController _bottomSheetController;
 
-  static final _streamCosecha = Database.instance.cosechasRef.snapshots().map(
-      (event) =>
-          event.docs.map((e) => e.data()).where((e) => e.latLng != null));
+  Stream<Iterable<Cosecha>> _streamCosecha() => Database.instance
+      .cosechas(DateTime.now().subtract(Duration(days: 30)))
+      .snapshots()
+      .map((event) =>
+          event.docs.map((e) => e.data()).where((e) => e.latLng != null))
+      .startWith([]);
 
-  _streamTweets() => Database.instance
-          .tuits(DateTime.now().subtract(Duration(days: 360)))
+  Stream<Iterable<Tweet>> _streamTweets() => Database.instance
+          .tuits(DateTime.now().subtract(Duration(days: 7)))
           .snapshots(includeMetadataChanges: true)
           .map((event) {
         if (event.metadata.isFromCache) {
@@ -57,12 +60,11 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
 
         return event.docs
             .map((e) => e.data())
-            .where((e) => e != null && e.isValid())
-            .toList();
-      });
+            .where((e) => e != null && e.isValid());
+      }).startWith([]);
 
   Stream<Iterable<dynamic>> markerStream() =>
-      _streamCosecha.combineLatest(_streamTweets(), (a, b) => [...a, ...b]);
+      _streamCosecha().combineLatest(_streamTweets(), (a, b) => [...a, ...b]);
 
   @override
   bool get wantKeepAlive => true;
@@ -159,7 +161,10 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
             ),
           ),
           SafeArea(
-            child: Align(alignment: Alignment.topRight, child: topButtons()),
+            child: Align(
+              alignment: Alignment.topRight,
+              child: topButtons(),
+            ),
           ),
           if (snapshot.connectionState == ConnectionState.waiting)
             SafeArea(
@@ -282,22 +287,9 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
   Widget topButtons() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Row(
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          FloatingActionButton(
-            heroTag: null,
-            mini: true,
-            backgroundColor: Colors.white,
-            child: Icon(
-              Icons.gps_fixed,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            onPressed: () {
-              updateByCurrentPos();
-            },
-          ),
-          SizedBox(width: 4),
           FloatingActionButton(
             heroTag: null,
             mini: true,
@@ -310,7 +302,7 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
               showProfile();
             },
           ),
-          SizedBox(width: 4),
+          SizedBox(height: 4),
           FloatingActionButton(
             heroTag: null,
             mini: true,
@@ -321,6 +313,19 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
             ),
             onPressed: () {
               showLayerSelector();
+            },
+          ),
+          SizedBox(height: 4),
+          FloatingActionButton(
+            heroTag: null,
+            mini: true,
+            backgroundColor: Colors.white,
+            child: Icon(
+              Icons.gps_fixed,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            onPressed: () {
+              updateByCurrentPos();
             },
           ),
         ],
