@@ -363,13 +363,15 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
                 position: LatLng(e.lat, e.lon),
                 anchor: Offset(0.5, 0.5),
                 icon: _markerIcons.getOr(
-                    model.event_type + "-tuit", 'fallback-tuit'),
+                  model.event_type + "-tuit",
+                  'fallback-tuit',
+                ),
                 onTap: () {
                   hideBottomSheet();
                   _bottomSheetController = showBottomSheet(
                     context: context,
                     builder: (context) => previewContainer(
-                      child: TweetPreview(model),
+                      child: TweetPreview(model.id),
                     ),
                   );
                 },

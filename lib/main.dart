@@ -106,6 +106,7 @@ class MyApp extends StatelessWidget {
           secondary: secondary,
           background: background,
           onBackground: black,
+          error: red,
         ),
       ),
       // home: FutureBuilder<FirebaseApp>(

@@ -11,6 +11,8 @@ class Tweet {
   GeoPoint tw_place;
   List<Place> places;
 
+  Map<String, int> votes = {};
+
   bool isValid() {
     if (date == null) {
       //print("tuit ${id} invalid: no date");
@@ -50,9 +52,13 @@ class Tweet {
     record.tw_place = data["tw_place"];
 
     final places = data["places"];
-
     if (places != null && places is List) {
       record.places = places.map((e) => Place.fromJson(e)).toList();
+    }
+
+    final votes = data["votes"];
+    if (votes != null && votes is Map) {
+      record.votes = votes.map((key, value) => MapEntry(key, value as int));
     }
 
     return record;
@@ -61,6 +67,16 @@ class Tweet {
   toJson() {
     // todo
   }
+
+  int ups() => votes.values.where((e) => e == 1).length;
+
+  int downs() => votes.values.where((e) => e == -1).length;
+
+  int sum() => votes.values.fold(0, (value, element) => value + element);
+
+  int voteOf(String uid) => votes[uid] ?? 0;
+
+  int votesCount() => votes.values.where((e) => e != 0).length;
 }
 
 class Place {
@@ -74,5 +90,28 @@ class Place {
     record.lat = json["lat"];
     record.lon = json["lon"];
     return record;
+  }
+}
+
+class Vote {
+  String uid;
+  bool up;
+
+  static Vote from(String uid, bool up) {
+    Vote record = Vote();
+    record.uid = uid;
+    record.up = up;
+    return record;
+  }
+
+  static Vote fromJson(Map<String, dynamic> json) {
+    Vote record = Vote();
+    record.uid = json["uid"];
+    record.up = json["up"];
+    return record;
+  }
+
+  Map<String, dynamic> toJson() {
+    return {"uid": uid, "up": up};
   }
 }
