@@ -211,7 +211,7 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
 
   void hideBottomSheet() {
     if (_bottomSheetController != null) {
-      Navigator.of(context).pop();
+      _bottomSheetController.close();
       _bottomSheetController = null;
     }
   }

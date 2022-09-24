@@ -40,9 +40,12 @@ class _IntroState extends State<Intro> {
                     child: Column(
                       children: [
                         if (MediaQuery.of(context).orientation == Orientation.portrait)
-                        Image.asset(
-                          "assets/icon-fore.png",
-                          fit: BoxFit.cover,
+                        Expanded(
+                          flex: 10,
+                          child: Image.asset(
+                            "assets/icon-fore.png",
+                            fit: BoxFit.cover,
+                          ),
                         ),
 
                         Text(
@@ -53,7 +56,7 @@ class _IntroState extends State<Intro> {
                               .copyWith(fontSize: 18),
                           textAlign: TextAlign.center,
                         ),
-                        Expanded(child: Container()),
+                        Spacer(),
                         ElevatedButton(
                           child: Text("Iniciar con google".toUpperCase()),
                           style: ElevatedButton.styleFrom(
