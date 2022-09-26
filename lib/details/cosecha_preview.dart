@@ -14,10 +14,6 @@ class CosechaPreview extends StatelessWidget {
         showModalBottomSheet(
           context: context,
           isScrollControlled: true,
-          backgroundColor: Theme.of(context).colorScheme.background,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(12.0)),
-          ),
           builder: (BuildContext builder) {
             return DraggableScrollableSheet(
               expand: false,

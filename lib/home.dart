@@ -4,6 +4,7 @@ import 'package:cosecheros/cosechar/online.dart';
 import 'package:cosecheros/data/database.dart';
 import 'package:cosecheros/map/map.dart';
 import 'package:cosecheros/models/form_spec.dart';
+import 'package:cosecheros/shared/CenterTrueFloatFabLocation.dart';
 import 'package:cosecheros/widgets/grid_icon_button.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -12,9 +13,9 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: _asyncCosecharButton(context),
-      extendBody: true,
+      // floatingActionButtonLocation: CenterTrueFloatFabLocation(),
+      // floatingActionButton: _asyncCosecharButton(context),
+      // extendBody: true,
       body: HomeMap(),
       // bottomNavigationBar: GestureDetector(
       //   onTap: () {

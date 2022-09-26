@@ -1,9 +1,15 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cosecheros/cosechar/local.dart';
+import 'package:cosecheros/cosechar/online.dart';
 import 'package:cosecheros/data/current_user.dart';
 import 'package:cosecheros/data/database.dart';
-import 'package:cosecheros/details/tweet_preview.dart';
+import 'package:cosecheros/details/cosecha_detail.dart';
+import 'package:cosecheros/details/preview_marker.dart';
+import 'package:cosecheros/details/tweet_detail.dart';
+import 'package:cosecheros/map/MapMarker.dart';
 import 'package:cosecheros/map/multichoice_dialog.dart';
 import 'package:cosecheros/map/tile_provider_wms.dart';
 import 'package:cosecheros/models/cosecha.dart';
@@ -11,15 +17,17 @@ import 'package:cosecheros/models/tweet.dart';
 import 'package:cosecheros/shared/constants.dart';
 import 'package:cosecheros/shared/extensions.dart';
 import 'package:cosecheros/shared/helpers.dart';
+import 'package:cosecheros/widgets/grid_icon_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_cluster_manager/google_maps_cluster_manager.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:stream_transform/stream_transform.dart';
 
-import '../details/cosecha_preview.dart';
+import '../models/form_spec.dart';
 import 'tile_provider_debug.dart';
 
 class HomeMap extends StatefulWidget {
@@ -35,6 +43,10 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
 
   Completer<GoogleMapController> _controller = Completer();
   String _mapStyle;
+
+  ClusterManager _cluster;
+  Set<Marker> markers = {};
+  StreamSubscription _markerSubscription;
 
   //BitmapDescriptor _markerProfile;
   Map<String, BitmapDescriptor> _markerIcons;
@@ -63,9 +75,6 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
             .where((e) => e != null && e.isValid());
       }).startWith([]);
 
-  Stream<Iterable<dynamic>> markerStream() =>
-      _streamCosecha().combineLatest(_streamTweets(), (a, b) => [...a, ...b]);
-
   @override
   bool get wantKeepAlive => true;
 
@@ -78,6 +87,148 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
     rootBundle.loadString('assets/app/map_style.json').then((string) {
       _mapStyle = string;
     });
+
+    _cluster = ClusterManager<MapMarker>(
+      [],
+      _updateMarkers,
+      markerBuilder: _markerBuilder,
+      levels: [1, 2, 4, 6, 8, 10, 12, 14, 16],
+      extraPercent: 0.2,
+      stopClusteringZoom: 17.0,
+    );
+
+    Stream<List<dynamic>> markerStream =
+        _streamCosecha().combineLatest(_streamTweets(), (a, b) => [...a, ...b]);
+
+    _markerSubscription = markerStream.listen((event) {
+      _cluster.setItems(event
+          .expand((e) => _createMarker(e))
+          .where((e) => e != null)
+          .toList(growable: false));
+    });
+  }
+
+  void _updateMarkers(Set<Marker> markers) {
+    print('Updated ${markers.length} markers');
+    setState(() {
+      this.markers = markers;
+    });
+  }
+
+  @override
+  void dispose() {
+    _markerSubscription.cancel();
+    super.dispose();
+  }
+
+  Future<Marker> Function(Cluster<MapMarker>) get _markerBuilder =>
+      (cluster) async {
+        return Marker(
+          markerId: MarkerId(cluster.getId()),
+          position: cluster.location,
+          anchor: Offset(0.5, 0.5),
+          onTap: () {
+            hideBottomSheet();
+            if (!cluster.isMultiple) {
+              final only = cluster.items.first;
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                builder: (BuildContext builder) {
+                  return DraggableScrollableSheet(
+                    expand: false,
+                    builder: (context, scrollController) {
+                      if (only.model is Cosecha) {
+                        return CosechaDetail(only.model, scrollController);
+                      } else if (only.model is Tweet) {
+                        return TweetDetail(only.model.id, scrollController);
+                      } else {
+                        return Container();
+                      }
+                    },
+                  );
+                },
+              );
+            } else {
+              _bottomSheetController = showBottomSheet(
+                  context: context,
+                  constraints: BoxConstraints.loose(Size(
+                    double.infinity,
+                    MediaQuery.of(context).size.height * 0.9,
+                  )),
+                  builder: (context) => PreviewMarker(cluster.items));
+            }
+          },
+          icon: await _getMarker(cluster),
+        );
+      };
+
+  Future<BitmapDescriptor> _getMarker(Cluster<MapMarker> cluster) async {
+    if (cluster.isMultiple) {
+      return await _getMarkerBitmap(cluster);
+    } else {
+      return cluster.items.first.icon;
+    }
+  }
+
+  Future<BitmapDescriptor> _getMarkerBitmap(Cluster<MapMarker> cluster) async {
+    int size = 80;
+    if (kIsWeb) size = (size / 2).floor();
+
+    final String text = cluster.count.toString();
+    final Color primaryColor = cluster.items.first.color;
+
+    final PictureRecorder pictureRecorder = PictureRecorder();
+    final Canvas canvas = Canvas(pictureRecorder);
+    final Color backgroundColor = Theme.of(context).colorScheme.background;
+    final Paint backgroundPaint = Paint()
+      ..color = primaryColor.withOpacity(.04);
+
+    final double stroke = 4;
+    final Paint primaryPaint = Paint()
+      ..color = primaryColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = stroke;
+    final Offset center = Offset(size / 2, size / 2);
+
+    canvas.drawCircle(center, size / 2.0, backgroundPaint);
+    canvas.drawCircle(center, size / 2.0 - stroke / 2, primaryPaint);
+
+    TextPainter painter = TextPainter(textDirection: TextDirection.ltr);
+
+    painter.text = TextSpan(
+      text: text,
+      style: Theme.of(context).textTheme.bodyText1.copyWith(
+            fontSize: size / 3,
+            foreground: Paint()
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 8
+              ..color = backgroundColor,
+          ),
+    );
+    painter.layout();
+    painter.paint(
+      canvas,
+      Offset(size / 2 - painter.width / 2, size / 2 - painter.height / 2),
+    );
+
+    painter.text = TextSpan(
+      text: text,
+      style: Theme.of(context).textTheme.bodyText1.copyWith(
+            fontSize: size / 3,
+            color: primaryColor,
+          ),
+    );
+    painter.layout();
+    painter.paint(
+      canvas,
+      Offset(size / 2 - painter.width / 2, size / 2 - painter.height / 2),
+    );
+
+    final img = await pictureRecorder.endRecording().toImage(size, size);
+    final data = await img.toByteData(format: ImageByteFormat.png);
+
+    return BitmapDescriptor.fromBytes(data.buffer.asUint8List());
   }
 
   void initPosition() async {
@@ -115,67 +266,62 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
   Widget build(BuildContext context) {
     super.build(context);
     _createMarkerImageFromAsset(context);
-    return StreamBuilder<Iterable<dynamic>>(
-      stream: markerStream(),
-      builder: (BuildContext context, snapshot) {
-        Set<Marker> _markers = Set();
-
-        if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        }
-
-        if (snapshot.connectionState != ConnectionState.waiting) {
-          _markers.addAll(snapshot.data
-              .expand((e) => _createMarker(e))
-              .where((e) => e != null));
-        }
-
-        return Stack(children: [
-          GoogleMap(
-            mapType: MapType.normal,
-            markers: _markers,
-            compassEnabled: false,
-            mapToolbarEnabled: false,
-            myLocationButtonEnabled: false,
-            myLocationEnabled: true,
-            zoomControlsEnabled: false,
-            initialCameraPosition: initPos,
-            tileOverlays: selectedTilesProvider,
-            onMapCreated: (GoogleMapController controller) {
-              print("onMapCreated");
-              _controller.complete(controller);
-              controller.setMapStyle(_mapStyle);
-            },
-            onTap: (e) {
-              hideBottomSheet();
-              print(e);
-            },
+    return Stack(children: [
+      GoogleMap(
+        mapType: MapType.normal,
+        markers: markers,
+        compassEnabled: false,
+        mapToolbarEnabled: false,
+        myLocationButtonEnabled: false,
+        myLocationEnabled: true,
+        zoomControlsEnabled: false,
+        initialCameraPosition: initPos,
+        tileOverlays: selectedTilesProvider,
+        onCameraMove: _cluster.onCameraMove,
+        onCameraIdle: _cluster.updateMap,
+        onMapCreated: (GoogleMapController controller) {
+          print("onMapCreated");
+          _controller.complete(controller);
+          controller.setMapStyle(_mapStyle);
+          _cluster.setMapId(controller.mapId);
+        },
+        onTap: (e) {
+          hideBottomSheet();
+          print(e);
+        },
+      ),
+      SafeArea(
+        child: Align(
+          alignment: Alignment.topLeft,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: getLogo(context),
           ),
-          SafeArea(
-            child: Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: getLogo(context),
-              ),
-            ),
+        ),
+      ),
+      SafeArea(
+        child: Align(
+          alignment: Alignment.topRight,
+          child: topButtons(),
+        ),
+      ),
+      if (markers.isEmpty)
+        SafeArea(
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: LinearProgressIndicator(),
           ),
-          SafeArea(
-            child: Align(
-              alignment: Alignment.topRight,
-              child: topButtons(),
-            ),
+        ),
+      SafeArea(
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: _asyncCosecharButton(context),
           ),
-          if (snapshot.connectionState == ConnectionState.waiting)
-            SafeArea(
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: LinearProgressIndicator(),
-              ),
-            )
-        ]);
-      },
-    );
+        ),
+      )
+    ]);
   }
 
   String getInitials(String input) =>
@@ -213,6 +359,109 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
     if (_bottomSheetController != null) {
       _bottomSheetController.close();
       _bottomSheetController = null;
+    }
+  }
+
+  Widget _asyncCosecharButton(BuildContext context) {
+    return FutureBuilder<QuerySnapshot<FormSpec>>(
+        future: Database.instance.forms().get(),
+        builder: (context, snap) {
+          if (snap.hasError) {
+            return Text(snap.error.toString());
+          }
+
+          List<FormSpec> forms;
+          if (snap.connectionState == ConnectionState.done) {
+            forms = snap.data.docs
+                .map((e) => e.data())
+                .where((e) => e.isValid())
+                .toList();
+          }
+          print(
+              "Home: Cosechar: ${snap.connectionState}, forms=${forms?.length}");
+
+          return FloatingActionButton.extended(
+            heroTag: null,
+            onPressed: forms == null ? null : () => _onCosechar(context, forms),
+            label: Text(
+              'Cosechar',
+              style: TextStyle(color: Colors.white),
+            ),
+            icon: Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
+          );
+        });
+  }
+
+  void _onCosechar(BuildContext context, List<FormSpec> forms) async {
+    var selected = await showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(12),
+              child: Wrap(
+                runSpacing: 12,
+                spacing: 12,
+                alignment: WrapAlignment.center,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(top: 12),
+                    alignment: Alignment.center,
+                    child: Text(
+                      '¿Qué vas a cosechar?',
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                  ),
+                  ...forms.map(
+                    (e) => SizedBox.square(
+                      dimension: 128,
+                      child: GridIconButton(
+                        title: e.label,
+                        background: e.color,
+                        icon: e.icon == null
+                            ? null
+                            : Image.network(
+                                e.icon,
+                                fit: BoxFit.contain,
+                                // En caso de no existir, fallback a este icono
+                                errorBuilder: (_, __, ___) =>
+                                    Icon(Icons.report_rounded, size: 48),
+                              ),
+                        onPressed: () => Navigator.pop(
+                          context,
+                          e.getUrl().href,
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (kDebugMode)
+                    SizedBox.square(
+                      dimension: 128,
+                      child: GridIconButton(
+                        title: "Local",
+                        background: Colors.black87,
+                        onPressed: () => Navigator.pop(context, "local"),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          );
+        });
+
+    if (selected == "local") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => LocalForm()),
+      );
+    } else if (selected != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => OnlineForm(selected)),
+      );
     }
   }
 
@@ -333,103 +582,70 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
     );
   }
 
-  List<Marker> _createMarker(dynamic model) {
+  // TODO: Traelo desde los forms?
+  final colors = {
+    'granizada': Color(0xFF5F8FEE),
+    'helada': Color(0xFF51C6CC),
+    'inundacion': Color(0xFF7075C8),
+    'inundaciones': Color(0xFF7075C8),
+    'sequia': Color(0xFFF9787A),
+    'incendios': Color(0xFFF9787A),
+    'deriva': Color(0xFF4ED23A),
+    'fallback-tuit': Color(0xFF6E99EF),
+  };
+
+  List<MapMarker> _createMarker(dynamic model) {
     if (_markerIcons == null) {
       return null;
     }
     if (model is Cosecha) {
       return [
-        Marker(
-          markerId: MarkerId(model.id),
-          position: model.latLng,
+        MapMarker(
+          model: model,
           icon: _markerIcons.getOr(model.form.toLowerCase(), 'fallback'),
-          anchor: Offset(0.5, 0.5),
-          onTap: () {
-            hideBottomSheet();
-            _bottomSheetController = showBottomSheet(
-              context: context,
-              builder: (context) => previewContainer(
-                child: CosechaPreview(model),
-              ),
-            );
-          },
-        )
+          color: colors[model.form.toLowerCase()],
+          latLng: model.latLng,
+        ),
       ];
     }
     if (model is Tweet) {
       return model.places
-          .map((e) => Marker(
-                markerId: MarkerId(model.id),
-                position: LatLng(e.lat, e.lon),
-                anchor: Offset(0.5, 0.5),
+          .map((e) => MapMarker(
+                model: model,
                 icon: _markerIcons.getOr(
                   model.event_type + "-tuit",
                   'fallback-tuit',
                 ),
-                onTap: () {
-                  hideBottomSheet();
-                  _bottomSheetController = showBottomSheet(
-                    context: context,
-                    builder: (context) => previewContainer(
-                      child: TweetPreview(model.id),
-                    ),
-                  );
-                },
+                color: colors.getOr(model.event_type, 'fallback-tuit'),
+                latLng: LatLng(e.lat, e.lon),
               ))
           .toList();
     }
-    // if (model is Position) {
-    //   return [
-    //     Marker(
-    //       markerId: MarkerId("user_profile"),
-    //       position: latLngFromPosition(model),
-    //       icon: _markerProfile,
-    //       zIndex: 100,
-    //       anchor: Offset(0.5, 0.5),
-    //       rotation: model.heading,
-    //       onTap: showProfile,
-    //     )
-    //   ];
-    // }
     return null;
   }
 
   Future<void> _createMarkerImageFromAsset(BuildContext context) async {
-    if (_markerIcons == null) {
-      final ImageConfiguration imageConfiguration =
-          createLocalImageConfiguration(context);
+    if (_markerIcons != null) return;
+    final config = createLocalImageConfiguration(context);
 
-      final icons = {
-        'fallback': await BitmapDescriptor.fromAssetImage(
-            imageConfiguration, 'assets/app/pin.png'),
-        'fallback-tuit': await BitmapDescriptor.fromAssetImage(
-            imageConfiguration, 'assets/app/fallback-tuit.png'),
-        'granizada': await BitmapDescriptor.fromAssetImage(
-            imageConfiguration, 'assets/app/granizo.png'),
-        'granizo-tuit': await BitmapDescriptor.fromAssetImage(
-            imageConfiguration, 'assets/app/granizo-tuit.png'),
-        'helada': await BitmapDescriptor.fromAssetImage(
-            imageConfiguration, 'assets/app/helada.png'),
-        'helada-tuit': await BitmapDescriptor.fromAssetImage(
-            imageConfiguration, 'assets/app/helada-tuit.png'),
-        'inundacion': await BitmapDescriptor.fromAssetImage(
-            imageConfiguration, 'assets/app/inundacion.png'),
-        'inundaciones-tuit': await BitmapDescriptor.fromAssetImage(
-            imageConfiguration, 'assets/app/inundacion-tuit.png'),
-        'sequia': await BitmapDescriptor.fromAssetImage(
-            imageConfiguration, 'assets/app/sequia.png'),
-        'deriva': await BitmapDescriptor.fromAssetImage(
-            imageConfiguration, 'assets/app/deriva.png'),
-      };
+    fromAsset(String asset) => BitmapDescriptor.fromAssetImage(config, asset);
 
-      // final profile = await BitmapDescriptor.fromAssetImage(
-      //     imageConfiguration, 'assets/app/profile.png');
+    final icons = {
+      'fallback': await fromAsset('assets/app/pin.png'),
+      'fallback-tuit': await fromAsset('assets/app/fallback-tuit.png'),
+      'granizada': await fromAsset('assets/app/granizo.png'),
+      'granizo-tuit': await fromAsset('assets/app/granizo-tuit.png'),
+      'helada': await fromAsset('assets/app/helada.png'),
+      'helada-tuit': await fromAsset('assets/app/helada-tuit.png'),
+      'inundacion': await fromAsset('assets/app/inundacion.png'),
+      'inundaciones-tuit': await fromAsset('assets/app/inundacion-tuit.png'),
+      'sequia': await fromAsset('assets/app/sequia.png'),
+      'deriva': await fromAsset('assets/app/deriva.png'),
+    };
 
-      setState(() {
-        _markerIcons = icons;
-        // _markerProfile = profile;
-      });
-    }
+    setState(() {
+      _markerIcons = icons;
+    });
   }
 
   Widget previewContainer({Widget child}) => ConstrainedBox(

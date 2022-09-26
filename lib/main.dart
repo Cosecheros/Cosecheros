@@ -85,8 +85,13 @@ class MyApp extends StatelessWidget {
           ),
         ),
         bottomSheetTheme: BottomSheetThemeData(
-          backgroundColor: Colors.transparent,
-          modalBackgroundColor: Colors.transparent,
+          backgroundColor: background,
+          clipBehavior: Clip.hardEdge,
+          elevation: 16,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+          ),
+          modalBackgroundColor: background,
         ),
         textTheme: GoogleFonts.interTextTheme().apply(
           bodyColor: black,
