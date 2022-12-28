@@ -52,6 +52,7 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
   Map<String, BitmapDescriptor> _markerIcons;
 
   PersistentBottomSheetController _bottomSheetController;
+  Cluster<MapMarker> selected;
 
   Stream<Iterable<Cosecha>> _streamCosecha() => Database.instance
       .cosechas(DateTime.now().subtract(Duration(days: 30)))
@@ -129,7 +130,18 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
           anchor: Offset(0.5, 0.5),
           onTap: () {
             hideBottomSheet();
-            if (!cluster.isMultiple) {
+
+            final LocalHistoryEntry entry = LocalHistoryEntry(onRemove: () {
+              hideBottomSheet();
+            });
+
+            ModalRoute.of(context).addLocalHistoryEntry(entry);
+
+            if (cluster.isMultiple) {
+              setState(() {
+                selected = cluster;
+              });
+            } else {
               final only = cluster.items.first;
               showModalBottomSheet(
                 context: context,
@@ -149,15 +161,19 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
                   );
                 },
               );
-            } else {
-              _bottomSheetController = showBottomSheet(
-                  context: context,
-                  constraints: BoxConstraints.loose(Size(
-                    double.infinity,
-                    MediaQuery.of(context).size.height * 0.9,
-                  )),
-                  builder: (context) => PreviewMarker(cluster.items));
             }
+
+            // if (!cluster.isMultiple) {
+
+            // } else {
+            //   _bottomSheetController = showBottomSheet(
+            //       context: context,
+            //       constraints: BoxConstraints.loose(Size(
+            //         double.infinity,
+            //         MediaQuery.of(context).size.height * 0.9,
+            //       )),
+            //       builder: (context) => PreviewMarker(cluster.items));
+            // }
           },
           icon: await _getMarker(cluster),
         );
@@ -199,7 +215,7 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
     painter.text = TextSpan(
       text: text,
       style: Theme.of(context).textTheme.bodyText1.copyWith(
-            fontSize: size / 3,
+            fontSize: size / 2.5,
             foreground: Paint()
               ..style = PaintingStyle.stroke
               ..strokeWidth = 8
@@ -215,7 +231,7 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
     painter.text = TextSpan(
       text: text,
       style: Theme.of(context).textTheme.bodyText1.copyWith(
-            fontSize: size / 3,
+            fontSize: size / 2.5,
             color: primaryColor,
           ),
     );
@@ -320,7 +336,16 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
             child: _asyncCosecharButton(context),
           ),
         ),
-      )
+      ),
+      if (selected != null)
+        SafeArea(
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Card(
+              child: PreviewMarker(selected.items),
+            ),
+          ),
+        ),
     ]);
   }
 
@@ -356,6 +381,9 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
   }
 
   void hideBottomSheet() {
+    setState(() {
+      selected = null;
+    });
     if (_bottomSheetController != null) {
       _bottomSheetController.close();
       _bottomSheetController = null;

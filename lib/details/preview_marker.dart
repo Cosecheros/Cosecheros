@@ -12,12 +12,12 @@ class PreviewMarker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return ListView(
-    //   shrinkWrap: true,
-    //   children: [
-    //     ...models.map((e) => toPreview(e)).toList(growable: false)
-    //   ],
-    // );
+    return ListView(
+      shrinkWrap: true,
+      children: [
+        ...models.map((e) => toPreview(e)).toList(growable: false)
+      ],
+    );
     return DraggableScrollableSheet(
         expand: false,
         initialChildSize: 0.1,

@@ -13,22 +13,15 @@ class TweetPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<Tweet>(
-        stream:
-            Database.instance.tuit(id).snapshots().map((event) => event.data()),
+    return FutureBuilder<Tweet>(
+        future: Database.instance.tuit(id).get().then((value) => value.data()),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(
-                child: SizedBox(
-                  height: 30.0,
-                  width: 30.0,
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
+              padding: const EdgeInsets.symmetric(vertical: 24.0),
+              child: LinearProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  Theme.of(context).colorScheme.primary,
                 ),
               ),
             );
