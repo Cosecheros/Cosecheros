@@ -9,7 +9,7 @@ class Database {
   static final Database instance = Database._privateConstructor();
   static final String _tuitCollection =
       kReleaseMode ? "tweets_v3" : "tweets_v3";
-  static final String _cosechasCollection = kReleaseMode ? "prod_v2" : "dev";
+  static final String _cosechasCollection = !kReleaseMode ? "prod_v2" : "dev";
 
   Database._privateConstructor();
 
@@ -22,14 +22,17 @@ class Database {
         toFirestore: (tweet, _) => tweet.toJson(),
       );
 
-  Query<Cosecha> cosechas(DateTime from) => FirebaseFirestore.instance
-      .collection(_cosechasCollection)
-      .where("timestamp", isGreaterThan: from)
-      .orderBy("timestamp", descending: true)
-      .withConverter<Cosecha>(
-        fromFirestore: (snapshot, _) => Cosecha.fromSnapshot(snapshot),
-        toFirestore: (cosecha, _) => cosecha.toJson(),
-      );
+  Query<Cosecha> cosechas(DateTime from) {
+    print("Database: cosechas: from: $from");
+    return FirebaseFirestore.instance
+        .collection(_cosechasCollection)
+        .where("timestamp", isGreaterThan: from)
+        .orderBy("timestamp", descending: true)
+        .withConverter<Cosecha>(
+          fromFirestore: (snapshot, _) => Cosecha.fromSnapshot(snapshot),
+          toFirestore: (cosecha, _) => cosecha.toJson(),
+        );
+  }
 
   Query<FormSpec> forms() =>
       FirebaseFirestore.instance.collection("forms").withConverter<FormSpec>(

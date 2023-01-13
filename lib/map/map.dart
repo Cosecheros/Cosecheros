@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,6 +19,7 @@ import 'package:cosecheros/shared/constants.dart';
 import 'package:cosecheros/shared/extensions.dart';
 import 'package:cosecheros/shared/helpers.dart';
 import 'package:cosecheros/widgets/grid_icon_button.dart';
+import 'package:csv/csv.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +27,10 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_cluster_manager/google_maps_cluster_manager.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart' show DateFormat;
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import '../models/form_spec.dart';
@@ -47,6 +53,7 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
   ClusterManager _cluster;
   Set<Marker> markers = {};
   StreamSubscription _markerSubscription;
+  List<dynamic> lastMarkers; // Ultimos markers para el csv
 
   //BitmapDescriptor _markerProfile;
   Map<String, BitmapDescriptor> _markerIcons;
@@ -54,27 +61,36 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
   PersistentBottomSheetController _bottomSheetController;
   Cluster<MapMarker> selected;
 
-  Stream<Iterable<Cosecha>> _streamCosecha() => Database.instance
-      .cosechas(DateTime.now().subtract(Duration(days: 30)))
-      .snapshots()
-      .map((event) =>
-          event.docs.map((e) => e.data()).where((e) => e.latLng != null))
-      .startWith([]);
+  StreamController<Duration> filterController =
+      StreamController<Duration>.broadcast();
 
-  Stream<Iterable<Tweet>> _streamTweets() => Database.instance
-          .tuits(DateTime.now().subtract(Duration(days: 7)))
-          .snapshots(includeMetadataChanges: true)
-          .map((event) {
-        if (event.metadata.isFromCache) {
-          print("_streamTweets: from cache! ${event.docs.length}");
-        } else {
-          print("_streamTweets: online: ${event.docs.length}");
-        }
+  Stream<Iterable<Cosecha>> _streamCosecha() => filterController.stream
+      .asBroadcastStream()
+      .startWith(Duration(days: 1))
+      .switchMap((filter) => Database.instance
+          .cosechas(DateTime.now().subtract(filter))
+          .snapshots()
+          .map((event) =>
+              event.docs.map((e) => e.data()).where((e) => e.latLng != null))
+          .startWith([]));
 
-        return event.docs
-            .map((e) => e.data())
-            .where((e) => e != null && e.isValid());
-      }).startWith([]);
+  Stream<Iterable<Tweet>> _streamTweets() => filterController.stream
+      .asBroadcastStream()
+      .startWith(Duration(days: 1))
+      .switchMap((filter) => Database.instance
+              .tuits(DateTime.now().subtract(filter))
+              .snapshots(includeMetadataChanges: true)
+              .map((event) {
+            if (event.metadata.isFromCache) {
+              print("_streamTweets: from cache! ${event.docs.length}");
+            } else {
+              print("_streamTweets: online: ${event.docs.length}");
+            }
+
+            return event.docs
+                .map((e) => e.data())
+                .where((e) => e != null && e.isValid());
+          }).startWith([]));
 
   @override
   bool get wantKeepAlive => true;
@@ -102,6 +118,8 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
         _streamCosecha().combineLatest(_streamTweets(), (a, b) => [...a, ...b]);
 
     _markerSubscription = markerStream.listen((event) {
+      print('Home: markerStream: ${event.length}');
+      lastMarkers = event;
       _cluster.setItems(event
           .expand((e) => _createMarker(e))
           .where((e) => e != null)
@@ -110,7 +128,7 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
   }
 
   void _updateMarkers(Set<Marker> markers) {
-    print('Updated ${markers.length} markers');
+    print('Home: Set markers: ${markers.length}');
     setState(() {
       this.markers = markers;
     });
@@ -405,8 +423,7 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
                 .where((e) => e.isValid())
                 .toList();
           }
-          print(
-              "Home: Cosechar: ${snap.connectionState}, forms=${forms?.length}");
+          print("Home: State=${snap.connectionState}, forms=${forms?.length}");
 
           return FloatingActionButton.extended(
             heroTag: null,
@@ -598,6 +615,32 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
             mini: true,
             backgroundColor: Colors.white,
             child: Icon(
+              Icons.filter_list_rounded,
+              color: Theme.of(context).colorScheme.onBackground,
+            ),
+            onPressed: () {
+              showFilter();
+            },
+          ),
+          SizedBox(height: 4),
+          FloatingActionButton(
+            heroTag: null,
+            mini: true,
+            backgroundColor: Colors.white,
+            child: Icon(
+              Icons.download_rounded,
+              color: Theme.of(context).colorScheme.onBackground,
+            ),
+            onPressed: () {
+              saveCsv();
+            },
+          ),
+          SizedBox(height: 4),
+          FloatingActionButton(
+            heroTag: null,
+            mini: true,
+            backgroundColor: Colors.white,
+            child: Icon(
               Icons.gps_fixed,
               color: Theme.of(context).colorScheme.primary,
             ),
@@ -771,5 +814,97 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
         selectedTilesProvider = selected;
       });
     }
+  }
+
+  void showFilter() async {
+    var selected = await showDialog<Duration>(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          children: <Widget>[
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.pop(context, Duration(hours: 12));
+              },
+              child: const Text('Últimas 12 horas'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.pop(context, Duration(days: 1));
+              },
+              child: const Text('Último día'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.pop(context, Duration(days: 7));
+              },
+              child: const Text('Últimos 7 días'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.pop(context, Duration(days: 30));
+              },
+              child: const Text('Último mes'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.pop(context, Duration(days: 31*6));
+              },
+              child: const Text('Últimos 6 meses'),
+            ),
+          ],
+        );
+      },
+    );
+
+    print("Home: filter: ${selected.inDays}");
+    filterController.sink.add(selected);
+  }
+
+  void saveCsv() async {
+    if (await Permission.storage.request().isGranted) {
+      final data = lastMarkers.map((e) => _getData(e));
+      List<String> header = data
+          .expand((e) => e.keys)
+          .where((e) => e.isNotEmpty)
+          .toSet()
+          .toList();
+
+      List<List<dynamic>> rows = [];
+      rows.add(header);
+      for (Map<String, dynamic> row in data) {
+        rows.add(header.map((e) => row[e] ?? '').toList());
+      }
+
+      var savedDir = Directory('/storage/emulated/0/Download');
+      if (!(await savedDir.exists())) {
+        savedDir = await getExternalStorageDirectory();
+      }
+      String csv = const ListToCsvConverter().convert(rows);
+      print(csv);
+      final DateFormat formatter = DateFormat('yyyy-MM-dd');
+      final String now = formatter.format(DateTime.now());
+      File f = File("${savedDir.path}/cosechas-$now.txt");
+      f.writeAsString(csv);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('¡Guardado en Descargas!'),
+        action: SnackBarAction(
+          label: 'Abrir',
+          onPressed: () {
+            OpenFile.open(f.path);
+          },
+        ),
+      ));
+    }
+  }
+
+  Map<String, dynamic> _getData(dynamic model) {
+    if (model is Cosecha) {
+      return model.toJson();
+    }
+    if (model is Tweet) {
+      return model.toJson();
+    }
+    return null;
   }
 }

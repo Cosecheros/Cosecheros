@@ -64,8 +64,18 @@ class Tweet {
     return record;
   }
 
-  toJson() {
-    // todo
+  Map<String, dynamic> toJson() {
+    return {
+      'type': 'tuit',
+      'id': id,
+      'event': event_type,
+      'tweet_text': text,
+      'votes': sum(),
+      'timestamp': date.toIso8601String(),
+      'location': tw_place != null
+          ? "${tw_place.latitude},${tw_place.longitude}"
+          : places.map((e) => "${e.lat},${e.lon}").join(":"),
+    };
   }
 
   int ups() => votes.values.where((e) => e == 1).length;

@@ -38,7 +38,14 @@ class Cosecha {
     return result;
   }
 
-  toJson() {
-    // TODO!
+  Map<String, dynamic> toJson() {
+    return {
+      'type': 'cosecha',
+      'id' : id,
+      'event': form,
+      'timestamp': timestamp.toIso8601String(),
+      'location': "${latLng.latitude},${latLng.longitude}",
+      ...{ for (var v in payload) v.label: v.getValue() }
+    };
   }
 }

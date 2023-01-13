@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosecheros/data/current_user.dart';
-import 'package:cosecheros/home.dart';
 import 'package:cosecheros/login/intro.dart';
 import 'package:cosecheros/login/setup_user.dart';
 import 'package:cosecheros/shared/constants.dart';
@@ -16,6 +15,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import 'firebase_options.dart';
+import 'map/map.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -146,7 +146,9 @@ class MyApp extends StatelessWidget {
                   show = BeforeStart();
                   break;
                 case UserStatus.ready:
-                  show = HomePage();
+                  show = Scaffold(
+                    body: HomeMap(),
+                  );
                   break;
               }
             }
