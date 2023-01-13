@@ -1,6 +1,6 @@
 import 'package:cosecheros/details/cosecha_preview.dart';
 import 'package:cosecheros/details/tweet_preview.dart';
-import 'package:cosecheros/map/MapMarker.dart';
+import 'package:cosecheros/models/MapMarker.dart';
 import 'package:cosecheros/models/cosecha.dart';
 import 'package:cosecheros/models/tweet.dart';
 import 'package:flutter/material.dart';

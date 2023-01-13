@@ -1,7 +1,7 @@
 import 'package:cosecheros/details/details_widgets.dart';
 import 'package:cosecheros/models/cosecha.dart';
 import 'package:cosecheros/models/response_item.dart';
-import 'package:cosecheros/shared/extensions.dart';
+import 'package:cosecheros/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 

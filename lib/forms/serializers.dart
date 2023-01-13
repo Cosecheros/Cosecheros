@@ -4,7 +4,7 @@ import 'package:cosecheros/forms/multichoice/multichoice_group.dart';
 import 'package:cosecheros/forms/picture/pic.dart';
 import 'package:cosecheros/forms/singlechoice/singlechoice_group.dart';
 import 'package:cosecheros/models/response_item.dart';
-import 'package:cosecheros/shared/helpers.dart';
+import 'package:cosecheros/utils/helpers.dart';
 import 'package:dynamic_forms/dynamic_forms.dart';
 import 'package:flutter_dynamic_forms_components/flutter_dynamic_forms_components.dart'
     as model;

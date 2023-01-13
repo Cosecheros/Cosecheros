@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosecheros/models/geo_pos.dart';
-import 'package:cosecheros/shared/helpers.dart';
+import 'package:cosecheros/utils/helpers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:stream_transform/stream_transform.dart';

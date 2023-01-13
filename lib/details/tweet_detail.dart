@@ -1,7 +1,7 @@
 import 'package:cosecheros/data/current_user.dart';
 import 'package:cosecheros/data/database.dart';
 import 'package:cosecheros/models/tweet.dart';
-import 'package:cosecheros/shared/extensions.dart';
+import 'package:cosecheros/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:timeago/timeago.dart' as timeago;

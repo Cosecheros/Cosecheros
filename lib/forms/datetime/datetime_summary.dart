@@ -1,5 +1,5 @@
 import 'package:cosecheros/forms/page/sumary.dart';
-import 'package:cosecheros/shared/extensions.dart';
+import 'package:cosecheros/utils/extensions.dart';
 import 'package:cosecheros/widgets/info_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dynamic_forms_components/flutter_dynamic_forms_components.dart'

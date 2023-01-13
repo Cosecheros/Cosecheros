@@ -1,6 +1,6 @@
 import 'package:cosecheros/data/current_user.dart';
-import 'package:cosecheros/shared/constants.dart';
-import 'package:cosecheros/shared/extensions.dart';
+import 'package:cosecheros/utils/constants.dart';
+import 'package:cosecheros/utils/extensions.dart';
 import 'package:flutter/widgets.dart';
 
 class FormSpec {

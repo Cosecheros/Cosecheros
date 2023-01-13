@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:cosecheros/shared/helpers.dart';
+import 'package:cosecheros/utils/helpers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';

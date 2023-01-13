@@ -6,8 +6,8 @@ import 'package:cosecheros/forms/picture/pic.dart';
 import 'package:cosecheros/forms/serializers.dart';
 import 'package:cosecheros/data/current_user.dart';
 import 'package:cosecheros/models/response_item.dart';
-import 'package:cosecheros/shared/constants.dart';
-import 'package:cosecheros/shared/extensions.dart';
+import 'package:cosecheros/utils/constants.dart';
+import 'package:cosecheros/utils/extensions.dart';
 import 'package:dynamic_forms/dynamic_forms.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
