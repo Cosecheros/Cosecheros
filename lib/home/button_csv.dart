@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cosecheros/models/cosecha.dart';
 import 'package:cosecheros/models/tweet.dart';
 import 'package:csv/csv.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:open_file/open_file.dart';
@@ -31,7 +32,7 @@ class ButtonCsv extends StatelessWidget {
   }
 
   void saveCsv(context) async {
-    if (await Permission.storage.request().isGranted) {
+    if (kIsWeb || await Permission.storage.request().isGranted) {
       final data = lastMarkers.map((e) => _getData(e));
       List<String> header = data
           .expand((e) => e.keys)
