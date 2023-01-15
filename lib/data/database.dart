@@ -5,6 +5,7 @@ import 'package:cosecheros/models/form_spec.dart';
 import 'package:cosecheros/models/polygon.dart';
 import 'package:cosecheros/models/tweet.dart';
 import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
 
 class Database {
   static final Database instance = Database._privateConstructor();
@@ -51,11 +52,12 @@ class Database {
 
   Query<SMNPolygon> polygons(DateTime from) => FirebaseFirestore.instance
       .collection(_polygonsCollection)
-      .where(FieldPath.documentId, isGreaterThan: from)
+      .where(FieldPath.documentId,
+          isGreaterThan: DateFormat('yyyy-MM-dd').format(from))
       .withConverter<SMNPolygon>(
-    fromFirestore: (snapshot, _) => SMNPolygon.fromSnapshot(snapshot),
-    toFirestore: (it, _) => it.toJson(),
-  );
+        fromFirestore: (snapshot, _) => SMNPolygon.fromSnapshot(snapshot),
+        toFirestore: (it, _) => it.toJson(),
+      );
 
   voteTuit(String id, int vote) async {
     print("Add vote $vote to tweet $id");
