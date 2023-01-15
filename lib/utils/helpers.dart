@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../models/geo_pos.dart';
 
@@ -71,4 +75,18 @@ Future<LatLng> getLastPosition() async {
   }
 
   return latLngFromPosition(pos);
+}
+
+Future<String> download(String body, String name) async {
+  if (await Permission.storage.request().isGranted) {
+    var savedDir = Directory('/storage/emulated/0/Download');
+    if (!(await savedDir.exists())) {
+      savedDir = await getExternalStorageDirectory();
+    }
+
+    File f = File("${savedDir.path}/$name");
+    f.writeAsString(body);
+    return f.path;
+  }
+  return null;
 }
