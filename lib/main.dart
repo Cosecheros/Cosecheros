@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosecheros/data/current_user.dart';
+import 'package:cosecheros/home/button_cosechar.dart';
 import 'package:cosecheros/home/home_map.dart';
 import 'package:cosecheros/login/intro.dart';
 import 'package:cosecheros/login/setup_user.dart';
+import 'package:cosecheros/utils/CenterTrueFloatFabLocation.dart';
 import 'package:cosecheros/utils/constants.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -26,6 +28,8 @@ void main() async {
   // await initializeDateFormatting('es', null);
   runApp(MyApp());
 }
+
+GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
 final Color background = Color(0xFFEDF4F5);
 final Color black = Color(0xFF103940);
@@ -146,7 +150,15 @@ class MyApp extends StatelessWidget {
                   show = BeforeStart();
                   break;
                 case UserStatus.ready:
-                  show = Scaffold(body: HomeMap());
+                  // El hotreload parece tener un bug
+                  // Re inicializando el GlobalKey acá no tira exception
+                  scaffoldKey = GlobalKey<ScaffoldState>();
+                  show = Scaffold(
+                    key: scaffoldKey,
+                    body: HomeMap(),
+                    floatingActionButton: const ButtonCosechar(),
+                    floatingActionButtonLocation: CenterTrueFloatFabLocation(),
+                  );
                   break;
               }
             }

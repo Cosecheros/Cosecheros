@@ -10,6 +10,10 @@ class GeoPos {
       : assert(latitude >= -90 && latitude <= 90),
         assert(longitude >= -180 && longitude <= 180);
 
+  static GeoPos fromJson(Map<String, dynamic> json) {
+    return GeoPos(json["lat"], json["lon"]);
+  }
+
   @override
   int get hashCode => hashValues(latitude, longitude);
 

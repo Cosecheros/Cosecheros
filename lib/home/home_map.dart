@@ -1,24 +1,25 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:cosecheros/data/current_user.dart';
 import 'package:cosecheros/data/database.dart';
 import 'package:cosecheros/details/cosecha_detail.dart';
 import 'package:cosecheros/details/preview_marker.dart';
 import 'package:cosecheros/details/tweet_detail.dart';
-import 'package:cosecheros/home/button_cosechar.dart';
+import 'package:cosecheros/home/alert_bottom.dart';
 import 'package:cosecheros/home/button_csv.dart';
 import 'package:cosecheros/home/button_filters.dart';
 import 'package:cosecheros/home/button_layers.dart';
 import 'package:cosecheros/home/button_location.dart';
 import 'package:cosecheros/home/button_profile.dart';
 import 'package:cosecheros/home/logo.dart';
+import 'package:cosecheros/home/maker_helper.dart';
+import 'package:cosecheros/main.dart';
 import 'package:cosecheros/models/MapMarker.dart';
 import 'package:cosecheros/models/cosecha.dart';
+import 'package:cosecheros/models/polygon.dart';
 import 'package:cosecheros/models/tweet.dart';
 import 'package:cosecheros/utils/extensions.dart';
 import 'package:cosecheros/utils/helpers.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_maps_cluster_manager/google_maps_cluster_manager.dart';
@@ -46,10 +47,14 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
   StreamSubscription _markerSubscription;
   List<dynamic> lastMarkers; // Ultimos markers para el csv
 
+  Set<Polygon> polygons = <Polygon>{};
+  StreamSubscription _polygonsSubscription;
+
   //BitmapDescriptor _markerProfile;
   Map<String, BitmapDescriptor> _markerIcons;
 
   PersistentBottomSheetController _bottomSheetController;
+  PersistentBottomSheetController _alertBottomSheetController;
   Cluster<MapMarker> selected;
 
   Set<TileOverlay> selectedTilesProvider = {};
@@ -58,7 +63,6 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
       StreamController<Duration>.broadcast();
 
   Stream<Iterable<Cosecha>> _streamCosecha() => filterController.stream
-      .asBroadcastStream()
       .startWith(Duration(days: 1))
       .switchMap((filter) => Database.instance
           .cosechas(DateTime.now().subtract(filter))
@@ -68,7 +72,6 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
           .startWith([]));
 
   Stream<Iterable<Tweet>> _streamTweets() => filterController.stream
-      .asBroadcastStream()
       .startWith(Duration(days: 1))
       .switchMap((filter) => Database.instance
               .tuits(DateTime.now().subtract(filter))
@@ -118,6 +121,29 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
           .where((e) => e != null)
           .toList(growable: false));
     });
+
+    _polygonsSubscription = Database.instance
+        .polygons(DateTime.now().subtract(Duration(hours: 3)))
+        .snapshots()
+        .listen((event) {
+      setState(() {
+        polygons = event.docs
+            .map((e) => e.data())
+            .map((polygon) => _buildPolygon(polygon))
+            .toSet();
+        showAlert();
+      });
+    });
+  }
+
+  void showAlert() {
+    if (polygons.isNotEmpty && _bottomSheetController == null) {
+      _alertBottomSheetController =
+          scaffoldKey.currentState.showBottomSheet((context) => AlertBottom());
+      _alertBottomSheetController.closed.then((value) {
+        _alertBottomSheetController = null;
+      });
+    }
   }
 
   void _updateMarkers(Set<Marker> markers) {
@@ -127,9 +153,31 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
     });
   }
 
+  Polygon _buildPolygon(SMNPolygon polygon) {
+    final String polygonIdVal = 'polygon_${polygon.id}';
+    final PolygonId polygonId = PolygonId(polygonIdVal);
+
+    final color = Color(0xFFE178F9);
+
+    return Polygon(
+      polygonId: polygonId,
+      consumeTapEvents: true,
+      strokeColor: color,
+      strokeWidth: 2,
+      fillColor: color.withOpacity(0.04),
+      points: polygon.polygon
+          .map((pos) => latLngFromGeoPos(pos))
+          .toList(growable: false),
+      onTap: () {
+        print(polygonId);
+      },
+    );
+  }
+
   @override
   void dispose() {
     _markerSubscription.cancel();
+    _polygonsSubscription.cancel();
     super.dispose();
   }
 
@@ -140,122 +188,74 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
           position: cluster.location,
           anchor: Offset(0.5, 0.5),
           onTap: () {
-            hideBottomSheet();
-
-            final LocalHistoryEntry entry = LocalHistoryEntry(onRemove: () {
-              hideBottomSheet();
-            });
-
-            ModalRoute.of(context).addLocalHistoryEntry(entry);
-
             if (cluster.isMultiple) {
-              setState(() {
-                selected = cluster;
-              });
+              hideAlert();
+              showPreviewMarker(cluster);
             } else {
-              final only = cluster.items.first;
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                builder: (BuildContext builder) {
-                  return DraggableScrollableSheet(
-                    expand: false,
-                    builder: (context, scrollController) {
-                      if (only.model is Cosecha) {
-                        return CosechaDetail(only.model, scrollController);
-                      } else if (only.model is Tweet) {
-                        return TweetDetail(only.model.id, scrollController);
-                      } else {
-                        return Container();
-                      }
-                    },
-                  );
-                },
-              );
+              showDetail(cluster.items.first);
             }
-
-            // if (!cluster.isMultiple) {
-
-            // } else {
-            //   _bottomSheetController = showBottomSheet(
-            //       context: context,
-            //       constraints: BoxConstraints.loose(Size(
-            //         double.infinity,
-            //         MediaQuery.of(context).size.height * 0.9,
-            //       )),
-            //       builder: (context) => PreviewMarker(cluster.items));
-            // }
           },
           icon: await _getMarker(cluster),
         );
       };
 
-  Future<BitmapDescriptor> _getMarker(Cluster<MapMarker> cluster) async {
-    if (cluster.isMultiple) {
-      return await _getMarkerBitmap(cluster);
-    } else {
-      return cluster.items.first.icon;
+  void showDetail(MapMarker only) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext builder) {
+        return DraggableScrollableSheet(
+          expand: false,
+          builder: (context, scrollController) {
+            if (only.model is Cosecha) {
+              return CosechaDetail(only.model, scrollController);
+            } else if (only.model is Tweet) {
+              return TweetDetail(only.model.id, scrollController);
+            } else {
+              return Container();
+            }
+          },
+        );
+      },
+    );
+  }
+
+  void showPreviewMarker(Cluster<MapMarker> cluster) {
+    // Guardamos el viejo controller para cerrarlo después del nuevo
+    // Hay que cerrarlo a mano porque sinó queda un LocalHistoryEntry extra
+    // y luego se necesitan varios "back" para cerrar la app.
+    final oldController = _bottomSheetController;
+
+    _bottomSheetController = scaffoldKey.currentState.showBottomSheet(
+      (context) => PreviewMarker(cluster.items),
+      constraints: BoxConstraints.loose(
+        Size(
+          double.infinity,
+          MediaQuery.of(context).size.height * 0.5,
+        ),
+      ),
+    )
+      // Cada vez que se cierre (correctamente) el bottomSheet
+      // tratar de levantar la Alerta de nuevo
+      ..closed.then((value) {
+        _bottomSheetController = null;
+        showAlert();
+      });
+
+    // Ahora tenemos otro bottomSheet en el Scaffold
+    // podemos llamar a close() sin que se complete el closed (Future)
+    // y por lo tanto, sin que se vuelva a abrir el Alert.
+    if (oldController != null) {
+      oldController.close();
     }
   }
 
-  Future<BitmapDescriptor> _getMarkerBitmap(Cluster<MapMarker> cluster) async {
-    int size = 80;
-    if (kIsWeb) size = (size / 2).floor();
-
-    final String text = cluster.count.toString();
-    final Color primaryColor = cluster.items.first.color;
-
-    final PictureRecorder pictureRecorder = PictureRecorder();
-    final Canvas canvas = Canvas(pictureRecorder);
-    final Color backgroundColor = Theme.of(context).colorScheme.background;
-    final Paint backgroundPaint = Paint()
-      ..color = primaryColor.withOpacity(.04);
-
-    final double stroke = 4;
-    final Paint primaryPaint = Paint()
-      ..color = primaryColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = stroke;
-    final Offset center = Offset(size / 2, size / 2);
-
-    canvas.drawCircle(center, size / 2.0, backgroundPaint);
-    canvas.drawCircle(center, size / 2.0 - stroke / 2, primaryPaint);
-
-    TextPainter painter = TextPainter(textDirection: TextDirection.ltr);
-
-    painter.text = TextSpan(
-      text: text,
-      style: Theme.of(context).textTheme.bodyText1.copyWith(
-            fontSize: size / 2.5,
-            foreground: Paint()
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = 8
-              ..color = backgroundColor,
-          ),
-    );
-    painter.layout();
-    painter.paint(
-      canvas,
-      Offset(size / 2 - painter.width / 2, size / 2 - painter.height / 2),
-    );
-
-    painter.text = TextSpan(
-      text: text,
-      style: Theme.of(context).textTheme.bodyText1.copyWith(
-            fontSize: size / 2.5,
-            color: primaryColor,
-          ),
-    );
-    painter.layout();
-    painter.paint(
-      canvas,
-      Offset(size / 2 - painter.width / 2, size / 2 - painter.height / 2),
-    );
-
-    final img = await pictureRecorder.endRecording().toImage(size, size);
-    final data = await img.toByteData(format: ImageByteFormat.png);
-
-    return BitmapDescriptor.fromBytes(data.buffer.asUint8List());
+  Future<BitmapDescriptor> _getMarker(Cluster<MapMarker> cluster) async {
+    if (cluster.isMultiple) {
+      return await getMarkerBitmap(cluster, context);
+    } else {
+      return cluster.items.first.icon;
+    }
   }
 
   void initPosition() async {
@@ -297,6 +297,7 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
       GoogleMap(
         mapType: MapType.normal,
         markers: markers,
+        polygons: polygons,
         compassEnabled: false,
         mapToolbarEnabled: false,
         myLocationButtonEnabled: false,
@@ -358,32 +359,19 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
           alignment: Alignment.topLeft,
           child: const Logo(),
         ),
-      ),
-      const SafeArea(
-        child: const Align(
-          alignment: Alignment.bottomCenter,
-          child: const ButtonCosechar(),
-        ),
-      ),
-      if (selected != null)
-        SafeArea(
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: Card(
-              child: PreviewMarker(selected.items),
-            ),
-          ),
-        ),
+      )
     ]);
   }
 
   void hideBottomSheet() {
-    setState(() {
-      selected = null;
-    });
     if (_bottomSheetController != null) {
       _bottomSheetController.close();
-      _bottomSheetController = null;
+    }
+  }
+
+  void hideAlert() {
+    if (_alertBottomSheetController != null) {
+      _alertBottomSheetController.close();
     }
   }
 
@@ -452,15 +440,4 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
       _markerIcons = icons;
     });
   }
-
-  Widget previewContainer({Widget child}) => ConstrainedBox(
-        constraints: BoxConstraints.tightFor(width: double.infinity),
-        child: Card(
-          margin: EdgeInsets.only(top: 36),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
-          ),
-          child: child,
-        ),
-      );
 }

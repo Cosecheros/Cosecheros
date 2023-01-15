@@ -28,8 +28,7 @@ class ButtonCosechar extends StatelessWidget {
                   .where((e) => e.isValid())
                   .toList();
             }
-            print(
-                "Home: State=${snap.connectionState}, forms=${forms?.length}");
+            print("Home: ButtonCosechar: forms=${forms?.map((e) => e.label)}");
 
             return FloatingActionButton.extended(
               heroTag: null,

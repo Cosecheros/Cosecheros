@@ -2,14 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosecheros/data/current_user.dart';
 import 'package:cosecheros/models/cosecha.dart';
 import 'package:cosecheros/models/form_spec.dart';
+import 'package:cosecheros/models/polygon.dart';
 import 'package:cosecheros/models/tweet.dart';
 import 'package:flutter/foundation.dart';
 
 class Database {
   static final Database instance = Database._privateConstructor();
-  static final String _tuitCollection =
-      kReleaseMode ? "tweets_v3" : "tweets_v3";
   static final String _cosechasCollection = !kReleaseMode ? "prod_v2" : "dev";
+  static final String _tuitCollection = "tweets_v3";
+  static final String _polygonsCollection = "polygons";
 
   Database._privateConstructor();
 
@@ -47,6 +48,14 @@ class Database {
         fromFirestore: (snapshot, _) => Tweet.fromSnapshot(snapshot),
         toFirestore: (tweet, _) => tweet.toJson(),
       );
+
+  Query<SMNPolygon> polygons(DateTime from) => FirebaseFirestore.instance
+      .collection(_polygonsCollection)
+      .where(FieldPath.documentId, isGreaterThan: from)
+      .withConverter<SMNPolygon>(
+    fromFirestore: (snapshot, _) => SMNPolygon.fromSnapshot(snapshot),
+    toFirestore: (it, _) => it.toJson(),
+  );
 
   voteTuit(String id, int vote) async {
     print("Add vote $vote to tweet $id");
