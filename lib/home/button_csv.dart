@@ -29,6 +29,7 @@ class ButtonCsv extends StatelessWidget {
   }
 
   void saveCsv(context) async {
+    print("CSV: generating");
     final data = lastMarkers.map((e) => _getData(e));
     List<String> header =
         data.expand((e) => e.keys).where((e) => e.isNotEmpty).toSet().toList();
@@ -38,22 +39,26 @@ class ButtonCsv extends StatelessWidget {
     for (Map<String, dynamic> row in data) {
       rows.add(header.map((e) => row[e] ?? '').toList());
     }
+    print("CSV: generating: ${rows.length} rows");
     String csv = const ListToCsvConverter().convert(rows);
-    print(csv);
+    print("CSV: done: $csv");
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
     final String now = formatter.format(DateTime.now());
+
+    // Depende de la plataforma
     final path = await download(csv, "cosechas-$now.csv");
-    if (path != null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('¡Guardado en Descargas!'),
-        action: SnackBarAction(
-          label: 'Abrir',
-          onPressed: () {
-            OpenFile.open(path);
-          },
-        ),
-      ));
-    }
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('¡Guardado en Descargas!'),
+      action: path == null
+          ? null
+          : SnackBarAction(
+              label: 'Abrir',
+              onPressed: () {
+                OpenFile.open(path);
+              },
+            ),
+    ));
   }
 
   Map<String, dynamic> _getData(dynamic model) {

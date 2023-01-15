@@ -78,6 +78,7 @@ Future<LatLng> getLastPosition() async {
 }
 
 Future<String> download(String body, String name) async {
+  print("downloading in android $name");
   if (await Permission.storage.request().isGranted) {
     var savedDir = Directory('/storage/emulated/0/Download');
     if (!(await savedDir.exists())) {
