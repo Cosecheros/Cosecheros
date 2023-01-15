@@ -41,7 +41,7 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDa9TADhZWXcOwF8xNvyDD4Pdkhzm6epqI',
+    apiKey: 'AIzaSyBWY_wphzzNdDR47NxPmFeIzMMlU-zgpY4',
     appId: '1:786218857395:web:4d855e48848c44532d11c6',
     messagingSenderId: '786218857395',
     projectId: 'cosecheros',
