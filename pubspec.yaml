@@ -12,7 +12,7 @@ publish_to: 'none'
 # build by specifying --build-name and --build-number, respectively.
 # In Android, build-name is used as versionName while build-number used as versionCode.
 # Read more about Android versioning at https://developer.android.com/studio/publish/versioning
-version: 9.0.0+9
+version: 13.0.0+13
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -35,9 +35,9 @@ dependencies:
 
   # CSV
   csv: ^5.0.1
-  permission_handler: ^9.2.0
+  permission_handler: ^10.0.0
   path_provider: ^2.0.11
-  open_file: ^3.2.1
+  open_file_safe: ^3.2.1
 
   # caches
   cached_network_image: ^3.2.0
@@ -50,7 +50,7 @@ dependencies:
   # maps and gps
   google_maps_flutter: ^2.1.1
   google_maps_flutter_web: ^0.3.2+1
-  geolocator: ^8.0.1
+  geolocator: ^9.0.0
   geocoding: ^2.0.1
   google_maps_cluster_manager: ^3.0.0+1
 

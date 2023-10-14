@@ -5,7 +5,7 @@ import 'package:cosecheros/utils/helpers.dart'
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:open_file/open_file.dart';
+import 'package:open_file_safe/open_file_safe.dart';
 
 class ButtonCsv extends StatelessWidget {
   const ButtonCsv({Key key, this.lastMarkers}) : super(key: key);
