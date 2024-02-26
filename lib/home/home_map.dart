@@ -45,7 +45,10 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
   ClusterManager _cluster;
   Set<Marker> markers = {};
   StreamSubscription _markerSubscription;
-  List<dynamic> lastMarkers; // Ultimos markers para el csv
+  List<dynamic> lastMarkers; // Últimos markers para el csv
+
+  bool isLoading = true;
+  StreamSubscription _filterSubscription;
 
   Set<Polygon> polygons = <Polygon>{};
   StreamSubscription _polygonsSubscription;
@@ -67,9 +70,16 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
       .switchMap((filter) => Database.instance
           .cosechas(DateTime.now().subtract(filter))
           .snapshots()
-          .map((event) =>
-              event.docs.map((e) => e.data()).where((e) => e.latLng != null))
-          .startWith([]));
+          .map((event) {
+            if (event.metadata.isFromCache) {
+              print("_streamCosecha: from cache! ${event.docs.length}");
+            } else {
+              print("_streamCosecha: online: ${event.docs.length}");
+            }
+            return event.docs.map((e) => e.data()).where((e) => e.latLng != null);
+          })
+          .startWith([])
+      );
 
   Stream<Iterable<Tweet>> _streamTweets() => filterController.stream
       .startWith(Duration(days: 1))
@@ -113,8 +123,12 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
     Stream<List<dynamic>> markerStream =
         _streamCosecha().combineLatest(_streamTweets(), (a, b) => [...a, ...b]);
 
-    _markerSubscription = markerStream.listen((event) {
+    _markerSubscription = markerStream.listen((event) async {
       print('Home: markerStream: ${event.length}');
+
+      //print('Home: simule DELAY');
+      //await Future.delayed(const Duration(seconds: 5));
+
       lastMarkers = event;
       _cluster.setItems(event
           .expand((e) => _createMarker(e))
@@ -134,6 +148,14 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
         showAlert();
       });
     });
+
+    _filterSubscription = filterController.stream
+      .listen((e) {
+        setState(() {
+          print("Home: set is loading");
+          isLoading = true;
+        });
+      });
   }
 
   void showAlert() {
@@ -150,6 +172,8 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
     print('Home: Set markers: ${markers.length}');
     setState(() {
       this.markers = markers;
+      print("Home: set is not loading");
+      this.isLoading = false;
     });
   }
 
@@ -178,6 +202,7 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
   void dispose() {
     _markerSubscription.cancel();
     _polygonsSubscription.cancel();
+    _filterSubscription.cancel();
     super.dispose();
   }
 
@@ -347,7 +372,7 @@ class HomeMapState extends State<HomeMap> with AutomaticKeepAliveClientMixin {
           ),
         ),
       ),
-      if (markers.isEmpty)
+      if (isLoading)
         const SafeArea(
           child: Align(
             alignment: Alignment.topCenter,
