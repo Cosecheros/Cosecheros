@@ -7,6 +7,8 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <!-- Alguna dependencia agrega este permiso -->
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove" />
 

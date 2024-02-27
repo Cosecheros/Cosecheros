@@ -5,8 +5,8 @@ import 'package:cosecheros/forms/form_manager.dart';
 import 'package:cosecheros/forms/picture/pic.dart';
 import 'package:cosecheros/forms/serializers.dart';
 import 'package:cosecheros/data/current_user.dart';
+import 'package:cosecheros/data/database.dart';
 import 'package:cosecheros/models/response_item.dart';
-import 'package:cosecheros/utils/constants.dart';
 import 'package:cosecheros/utils/extensions.dart';
 import 'package:dynamic_forms/dynamic_forms.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -85,10 +85,7 @@ class SubmitFirestore {
       'payload': responses.map((e) => e.toJson()).toList(),
     };
 
-    DocumentReference ref = firestore.collection(Constants.collection).doc(id);
-
-    print(out);
-    await ref.set(out);
+    await Database.instance.saveCosecha(id, out);
 
     yield SubmitProgress("Cosechado", Mode.Done);
   }

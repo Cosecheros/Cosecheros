@@ -4,12 +4,13 @@ import 'package:cosecheros/models/cosecha.dart';
 import 'package:cosecheros/models/form_spec.dart';
 import 'package:cosecheros/models/polygon.dart';
 import 'package:cosecheros/models/tweet.dart';
+import 'package:cosecheros/utils/constants.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 
 class Database {
   static final Database instance = Database._privateConstructor();
-  static final String _cosechasCollection = !kReleaseMode ? "prod_v2" : "dev";
+  static final String _cosechasCollection = kReleaseMode ? "prod_v2" : "dev";
   static final String _tuitCollection = "tweets_v3";
   static final String _polygonsCollection = "polygons";
 
@@ -65,5 +66,13 @@ class Database {
         .collection(_tuitCollection)
         .doc(id)
         .update({"votes.${CurrentUser.instance.data.uid}": vote});
+  }
+
+  saveCosecha(String id, var out) async {
+    print(out);
+    await FirebaseFirestore.instance
+      .collection(_cosechasCollection)
+      .doc(id)
+      .set(out);
   }
 }
